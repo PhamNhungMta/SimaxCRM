@@ -1,0 +1,66 @@
+@model SimaxCrm.Model.Entity.EmailSent
+
+@{
+    ViewData["Title"] = "Create";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <strong>Send New Email</strong>
+            </div>
+            <div class="card-body">
+                @if (!string.IsNullOrEmpty(ViewBag.Result))
+                {
+                    <div class="alert alert-success">@ViewBag.Result</div>
+                }
+                @if (!string.IsNullOrEmpty(ViewBag.ResultError))
+                {
+                    <div class="alert alert-danger">@ViewBag.ResultError</div>
+                }
+                <div class="row">
+                    <div class="col-md-12">
+                        <form asp-action="New">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                            <div class="form-group">
+                                <label asp-for="FromEmail" class="control-label"></label>
+                                <select style="height:35px" asp-for="FromEmail" class="form-control" asp-items="ViewBag.Emails">
+                                    <option value=""></option>
+                                </select>
+                                <span asp-validation-for="FromEmail" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group"><label asp-for="ToEmail" class="control-label"></label><input asp-for="ToEmail" class="form-control" /><span asp-validation-for="ToEmail" class="text-danger"></span></div>
+
+                            <div class="form-group"><label asp-for="Subject" class="control-label"></label><input asp-for="Subject" class="form-control" /><span asp-validation-for="Subject" class="text-danger"></span></div>
+
+                            <div class="form-group">
+                                <label asp-for="Body" class="control-label"></label>
+                                <textarea name="Body" id="editor1"></textarea>
+                                <span asp-validation-for="Body" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <input type="submit" onclick="return processData()" value="Create" class="btn btn-primary" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script type="text/javascript">
+    CKEDITOR.replace('editor1');
+    function processData() {
+        return true;
+    }
+
+</script>
+}

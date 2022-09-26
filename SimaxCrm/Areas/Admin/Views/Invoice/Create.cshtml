@@ -1,0 +1,226 @@
+@model SimaxCrm.Model.Entity.Invoice
+
+@{
+    ViewData["Title"] = "Create";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <strong>Invoice - (@Model.OrderStatus.ToString())</strong>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="divErrorSummary" class="alert" asp-validation-summary="All"></div>
+                        <form id="formBill" asp-action="Create">
+
+                            <input type="hidden" asp-for="InvoiceDetailJson" />
+                            <input type="hidden" asp-for="Id" />
+
+                            <div class="form-group col-sm-3 float-left">
+                                <label class="control-label">Lead ID</label>
+                                <input class="form-control" id="LeadId" name="LeadId" value="@ViewBag.Lead.Id" readonly="readonly" />
+                            </div>
+
+                            <div class="form-group col-sm-3 float-left">
+                                <label class="control-label">Name</label>
+                                <input class="form-control" value="@ViewBag.Lead.Name" readonly="readonly" />
+                            </div>
+
+                            <div class="form-group col-sm-3 float-left">
+                                <label class="control-label">Assigned To</label>
+                                <input class="form-control" value="@ViewBag.Lead.User.Name" readonly="readonly" />
+                            </div>
+
+                            <div class="clearfix"></div>
+
+                            <div class="form-group col-sm-6 float-left">
+                                <label asp-for="Remarks" class="control-label"></label>
+                                <input asp-for="Remarks" class="form-control" />
+                            </div>
+
+
+                            <div class="clearfix"></div>
+
+                            <div class="grid-container">
+                                <table class="table table-responsive-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Product</th>
+                                            <th width="150px" style="text-align:center">Qty</th>
+                                            <th width="150px" style="text-align:center">Price</th>
+                                            <th width="150px" style="text-align:center">Amount</th>
+                                            <th width="100px"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="gridData">
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="clearfix"></div>
+
+                            <div class="form-group col-sm-3 float-left">
+                                <label asp-for="TotalAmount" class="control-label"></label>
+                                <input asp-for="TotalAmount" readonly="readonly" class="form-control" />
+                            </div>
+
+                            <div class="form-group col-sm-3 float-left">
+                                <label asp-for="DiscountAmount" class="control-label"></label>
+                                <input asp-for="DiscountAmount" class="form-control" onchange="saleBill.bottomCalculation()" />
+                            </div>
+
+                            <div class="form-group col-sm-3 float-left">
+                                <label asp-for="OtherCharges" class="control-label"></label>
+                                <input asp-for="OtherCharges" class="form-control" onchange="saleBill.bottomCalculation()" />
+                            </div>
+
+                            <div class="form-group col-sm-3 float-left">
+                                <label asp-for="TaxPercent" class="control-label"></label>
+                                <input asp-for="TaxPercent" readonly="readonly" class="form-control" onchange="saleBill.bottomCalculation()" />
+                            </div>
+
+                            <div class="form-group col-sm-3 float-left">
+                                <label asp-for="TaxAmount" class="control-label"></label>
+                                <input asp-for="TaxAmount" readonly="readonly" class="form-control" />
+                            </div>
+
+                            <div class="form-group col-sm-3 float-left">
+                                <label asp-for="GrandTotal" class="control-label"></label>
+                                <input asp-for="GrandTotal" readonly="readonly" class="form-control" />
+                            </div>
+
+                            <div class="clearfix"></div>
+                            <div class="form-group col-sm-12">
+                                @if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Account))
+                                {
+                                    <input onclick="showModal('Approved')" type="button" value="Approve" class="btn btn-success" />
+                                    <input onclick="showModal('Rejected')" type="button" value="Reject" class="btn btn-danger" />
+                                }
+                                else
+                                {
+                                    <input type="submit" value="Save" class="btn btn-primary" />
+                                }
+                                <div id="btnPrint" class="btn" style="display:none;">
+                                    <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="    padding: 7px 10px;">
+                                        Invoice
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="dropdown-item" href="javascript:report.reportAction($('#Id').val(), report.reportFormTypeEnum.Invoice, report.reportTypeEnum.Preview)">Preview</a>
+                                        <a class="dropdown-item" href="javascript:report.reportAction($('#Id').val(), report.reportFormTypeEnum.Invoice, report.reportTypeEnum.doc)">Download Word</a>
+                                        <a class="dropdown-item" href="javascript:report.reportAction($('#Id').val(), report.reportFormTypeEnum.Invoice, report.reportTypeEnum.pdf)">Download Pdf</a>
+                                        <a class="dropdown-item" href="javascript:report.reportAction($('#Id').val(), report.reportFormTypeEnum.Invoice, report.reportTypeEnum.xls)">Download Excel</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            @if (ViewBag.CallLog != null && Enumerable.Count(ViewBag.CallLog) > 0)
+            {
+                <div class="card-header">
+                    <strong>Invoice Logs</strong>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table table-responsive-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Dated</th>
+                                        <th>Status</th>
+                                        <th>Remarks</th>
+                                        <th>Message</th>
+                                        <th>Start Time</th>
+                                        <th>End Time</th>
+                                        <th>User</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in (ViewBag.CallLog as List<SimaxCrm.Model.Entity.CallLog>))
+                                    {
+                                        <tr>
+                                            <td>@item.CreatedDate.ToString("dd/MM/yyyy")</td>
+                                            <td>@item.Status</td>
+                                            <td>@item.Remarks</td>
+                                            <td>@item.Message</td>
+                                            <td>@item.StartTime.ToFormat("hh:mm tt")</td>
+                                            <td>@item.EndTime.ToFormat("hh:mm tt")</td>
+                                            <td>@item.User.Name</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="accountActionModal" tabindex="-1" role="dialog" aria-labelledby="accountActionModal" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title lblStatus"></h5>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="control-label">Remarks</label>
+                    <textarea Id="StatusRemarks" class="form-control" rows="5"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="updateInvoiceStatus()">Submit</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/sale-bill.js"></script>
+    <script type="text/javascript">
+        var systemSetup = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.SystemSetup));
+
+        $(document).ready(function () {
+            $("#TaxPercent").val(systemSetup.TaxPercent);
+            $("#formBill").submit(function (e) {
+                saleBill.update(e);
+            });
+
+            saleBill.init(function () {
+                saleBill.fillDetail('@Html.Raw(Model.InvoiceDetailJson)');
+            });
+        });
+
+        function showModal(status) {
+            $(".lblStatus").html(status);
+            $("#accountActionModal").modal('show');
+            $("#StatusRemarks").val('');
+        }
+
+        function updateInvoiceStatus() {
+            if (!$("#StatusRemarks").val()) {
+                alert("Enter remarks");
+                return;
+            }
+
+            var param = { id: $("#Id").val(), leadId: $("#LeadId").val(), status: $(".lblStatus").text(), remarks: $("#StatusRemarks").val() };
+            ajaxCall("/Admin/Invoice/UpdateInvoiceStatus", "POST", param, function (data) {
+                if (data.success) {
+                    $("#accountActionModal").modal('hide');
+                    window.location.reload();
+                }
+            });
+        }
+
+    </script>
+}

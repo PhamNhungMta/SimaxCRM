@@ -1,0 +1,110 @@
+﻿@model SimaxCrm.Model.Entity.SystemSetup
+
+<div id="app">
+    <div class="bgheadproject hidden-xs" style="background: url('/Main/storage/general/breadcrumb-background.jpg')">
+        <div class="description">
+            <div class="container-fluid w90">
+                <h1 class="text-center">Contact</h1>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item active">Contact</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class=" container  padtop50">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="scontent">
+                    <div id="contact">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="wrapper">
+                                    <h2 class="h2">Contact information</h2>
+                                    <div class="contact-main">
+                                        <div class="contact-name" style="text-transform: uppercase">@Model.CompanyName</div>
+                                        <div class="contact-address">
+                                            @Model.AddressPlain
+                                        </div>
+                                        <div class="contact-phone">Hotline: @Model.CompanyContact</div>
+                                        <div class="contact-email">Email: @Model.CompanyEmail</div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <form action="https://flex-home.botble.com/contact/send" method="post" class="generic-form">
+                                    <div class="wrapper">
+                                        <h2 class="h2">HOW WE CAN HELP YOU?</h2>
+                                        <input type="hidden" name="_token" value="juiUyk7Ibg1OVkWLzNoyJ0mbcryyZkaapO5pg32T"> <div class="form-group">
+                                            <input class="form-control" type="text" name="name" placeholder="Name *" required="">
+                                        </div>
+                                        <div class="form-group">
+                                            <input class="form-control" type="text" name="email" placeholder="Email *" required="">
+                                        </div>
+                                        <div class="form-group">
+                                            <input class="form-control" type="text" name="phone" placeholder="Phone">
+                                        </div>
+                                        <div class="form-group">
+<textarea class="form-control" name="content" rows="6" minlength="10" placeholder="Message *" required=""></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <script data-cfasync="false" src="cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+                                            <script src="../www.google.com/recaptcha/apifef7.js?hl=en" async defer type="2e8a4842e31c91420d42cb77-text/javascript"></script>
+                                            <script type="2e8a4842e31c91420d42cb77-text/javascript">"use strict"; var refreshRecaptcha = function () { grecaptcha.reset(); };</script><div class="g-recaptcha" theme="light" id="buzzNoCaptchaId_60604cdbb4e6703ab1c276679979254a" data-sitekey="6LcjXnAUAAAAABn6hzo7WpoEKkg_we777yg-mK4-"></div>
+                                        </div>
+                                        <div class="alert alert-success text-success text-left" style="display: none;">
+                                            <span></span>
+                                        </div>
+                                        <div class="alert alert-danger text-danger text-left" style="display: none;">
+                                            <span></span>
+                                        </div>
+                                        <br>
+                                        <div class="form-actions">
+                                            <button class="btn-special" type="submit">Send message</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    </p>
+                    <h3>Directions</h3>
+                    <p>
+                        <div style="height: 400px; width: 100%; position: relative; text-align: right;">
+                            <div id="trafficMap" style="height: 400px; width: 100%; overflow: hidden; background: none!important;">
+                            </div>
+                        </div>
+                    </p>
+                    <p> </p>
+
+                    <br>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            loadGoogleMap();
+        });
+
+        function loadGoogleMap() {
+             var mapParam = [{
+                lat: '@Model.AddressLat',
+                lng: '@Model.AddressLng'
+            }];
+            setTimeout(function () {
+                googleApi.loadGoogleMap(mapParam, 'trafficMap');
+            },1000)
+        }
+    </script>
+}

@@ -1,0 +1,33 @@
+﻿@model SimaxCrm.Model.Entity.CustomerQuery
+
+<form asp-action="CustomerQuery" asp-controller="Contact" method="POST" id="contact-form-single" class="generic-form-my">
+    <div id="divContactSingleErrorSummary" class="alert"></div>
+    <input type="hidden" id="ProjectId" name="ProjectId">
+    <input type="hidden" id="ProductId" name="ProductId">
+    <input type="hidden" id="UserId" name="UserId">
+    <div class="head">Contact</div>
+    <div class="form-group">
+        <input type="text" asp-for="CustomerName" class="form-control" placeholder="Name">
+        <span asp-validation-for="CustomerName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <input type="text" asp-for="CustomerPhone" class="form-control" placeholder="Phone">
+        <span asp-validation-for="CustomerPhone" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <input type="email" asp-for="CustomerEmail" class="form-control" placeholder="Email">
+        <span asp-validation-for="CustomerEmail" class="text-danger"></span>
+    </div>
+@*    <div class="form-group">
+        <input type="text" asp-for="CustomerSubject" class="form-control" placeholder="Subject">
+        <span asp-validation-for="CustomerSubject" class="text-danger"></span>
+    </div>*@
+    <div class="form-group">
+        <textarea asp-for="CustomerMessage" class="form-control" rows="5" placeholder="Message"></textarea>
+        <span asp-validation-for="CustomerMessage" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-lg btn-head btn-block">Send</button>
+    </div>
+    <div class="clearfix"></div>
+</form>

@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <_PublishTargetUrl>C:\Users\Webstore9\Desktop\PropmanCRM_PUBLISH</_PublishTargetUrl>
+    <History>True|2021-06-02T13:14:52.5203459Z;True|2021-06-01T22:44:47.0600216+05:30;True|2021-05-28T14:07:44.8796599+05:30;True|2021-05-27T11:53:36.0701700+05:30;True|2021-05-26T23:25:20.2550463+05:30;True|2021-05-26T21:45:49.5649946+05:30;True|2021-05-26T18:57:11.1630468+05:30;True|2021-05-25T14:00:32.6237134+05:30;</History>
+  </PropertyGroup>
+</Project>

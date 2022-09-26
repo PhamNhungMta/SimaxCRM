@@ -1,0 +1,19 @@
+﻿   
+   <partial name="_Banner" />
+
+   <partial name="_LatestProject" />
+
+    <partial name="_LatestProperties" />
+
+    <partial name="_Agents" />
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            dropdown.fillDropdown("propertyCity", "#propertyCitySearch", null);
+        });
+    </script>
+}

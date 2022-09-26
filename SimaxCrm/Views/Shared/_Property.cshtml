@@ -1,0 +1,49 @@
+﻿@model SimaxCrm.Model.Entity.Product
+
+<div class="carousel-item-b swiper-slide">
+    <div class="card-box-a card-shadow">
+        <div class="img-box-a">
+            <img class="img-a img-fluid" src="/@Model.MainImage" alt="@Model.Name">
+        </div>
+        <div class="card-overlay">
+            <div class="card-overlay-a-content">
+                <div class="card-header-a">
+                    <h5 class="card-title-a">@Model.Name</h5>
+                </div>
+                <div class="card-body-a">
+                    <div class="price-box d-flex">
+                        <span class="price-a"> @Model.MaxSaleRateString</span>
+                    </div>
+                    <a href="/properties/single/@Model.Id/@Model.Name.ToFriendlyUrl()" class="link-a">
+                        Click here to view
+                        <span class="bi bi-chevron-right"></span>
+                    </a>
+                    <a id="wishlist-@Model.Id" href="javascript:user.addToWishList(null,@Model.Id)" class="text-orange heart" data-id="17" title="Add to wishlist">
+                        @if (Model.IsWishlist)
+                        {
+                            <i class="bi bi-heart"></i>
+                        }
+                        else
+                        {
+                            <i class="bi bi-heart"></i>
+                        }
+                    </a>
+                </div>
+                <div class="card-footer-a">
+                    <ul class="card-info d-flex justify-content-around">
+                        <li>
+                            <h4 class="card-info-title">Area</h4>
+                            <span>
+                                @Model.TotalArea  @Model.PropertyDimType
+                            </span>
+                        </li>
+                        <li>
+                            <h4 class="card-info-title">Type</h4>
+                            <span>@Model.PropertySubcategoryId</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div><!-- End carousel item -->
+</div>

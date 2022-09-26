@@ -1,0 +1,78 @@
+@model SimaxCrm.Model.Entity.SystemSetup
+
+@{
+    ViewData["Title"] = "Create";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <strong>Create New</strong>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <form asp-action="Create" enctype="multipart/form-data">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                            <div class="form-group"><label asp-for="CompanyName" class="control-label"></label><input asp-for="CompanyName" class="form-control" /><span asp-validation-for="CompanyName" class="text-danger"></span></div>
+
+                            <div class="form-group"><label asp-for="AddressPlain" class="control-label"></label><input asp-for="AddressPlain" class="form-control" /><span asp-validation-for="AddressPlain" class="text-danger"></span></div>
+
+                            <div class="form-group">
+                                <label asp-for="Address" class="control-label"></label>
+                                <input type="text" asp-for="Address" class="form-control" />
+                                <input type="hidden" asp-for="AddressLat" />
+                                <input type="hidden" asp-for="AddressLng" />
+                                <span asp-validation-for="Address" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group"><label asp-for="CompanyEmail" class="control-label"></label><input asp-for="CompanyEmail" class="form-control" /><span asp-validation-for="CompanyEmail" class="text-danger"></span></div>
+                            <div class="form-group"><label asp-for="CompanyContact" class="control-label"></label><input asp-for="CompanyContact" class="form-control" /><span asp-validation-for="CompanyContact" class="text-danger"></span></div>
+
+                            <div class="form-group"><label asp-for="CompanyGstNumber" class="control-label"></label><input asp-for="CompanyGstNumber" class="form-control" /><span asp-validation-for="CompanyGstNumber" class="text-danger"></span></div>
+                            <div class="form-group"><label asp-for="TaxPercent" class="control-label"></label><input asp-for="TaxPercent" class="form-control" /><span asp-validation-for="TaxPercent" class="text-danger"></span></div>
+
+                            <div class="form-group"><label asp-for="Currency" class="control-label"></label><input asp-for="Currency" class="form-control" /><span asp-validation-for="Currency" class="text-danger"></span></div>
+
+                            <div class="form-group"><label asp-for="CurrencySymbol" class="control-label"></label><input asp-for="CurrencySymbol" class="form-control" /><span asp-validation-for="CurrencySymbol" class="text-danger"></span></div>
+
+
+                            <div class="control-group">
+                                <label asp-for="CompanyLogo" class="control-label"></label>
+                                <div class="controls">
+                                    <input type="file" id="PostedFile" name="PostedFile" class="span6" />
+                                </div>
+                            </div>
+
+                            <div class="form-group"><label asp-for="Status" class="control-label"></label><input asp-for="Status" /><span asp-validation-for="Status" class="text-danger"></span></div>
+
+                            <div class="form-group">
+                                <input type="submit" value="Create" class="btn btn-primary" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div>
+                    <a asp-action="Index">Back to List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript">
+
+
+    $(document).ready(function () {
+
+        googleApi.loadGoogleAddress();
+    });
+    </script>
+}

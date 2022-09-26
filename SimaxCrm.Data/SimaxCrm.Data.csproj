@@ -1,0 +1,64 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20210314065243_Changes18.cs" />
+    <Compile Remove="Migrations\20210314065243_Changes18.Designer.cs" />
+    <Compile Remove="Migrations\20210314065422_Changes18.cs" />
+    <Compile Remove="Migrations\20210314065422_Changes18.Designer.cs" />
+    <Compile Remove="Migrations\20210317075337_Changes22.cs" />
+    <Compile Remove="Migrations\20210317075337_Changes22.Designer.cs" />
+    <Compile Remove="Migrations\20210317124626_Changes222.cs" />
+    <Compile Remove="Migrations\20210317124626_Changes222.Designer.cs" />
+    <Compile Remove="Migrations\20210502080234_LeadChanges.cs" />
+    <Compile Remove="Migrations\20210502080234_LeadChanges.Designer.cs" />
+    <Compile Remove="Migrations\20210502080636_LeadChanges.cs" />
+    <Compile Remove="Migrations\20210502080636_LeadChanges.Designer.cs" />
+    <Compile Remove="Migrations\20210502080728_LeadChanges.cs" />
+    <Compile Remove="Migrations\20210502080728_LeadChanges.Designer.cs" />
+    <Compile Remove="Migrations\20210502081501_LeadChangesRelation.cs" />
+    <Compile Remove="Migrations\20210502081501_LeadChangesRelation.Designer.cs" />
+    <Compile Remove="Migrations\20210502081812_LeadChangesRelation.cs" />
+    <Compile Remove="Migrations\20210502081812_LeadChangesRelation.Designer.cs" />
+    <Compile Remove="Migrations\20210502081917_LeadChangesRelation.cs" />
+    <Compile Remove="Migrations\20210502081917_LeadChangesRelation.Designer.cs" />
+    <Compile Remove="Migrations\20210502082036_LeadChangesRelation.cs" />
+    <Compile Remove="Migrations\20210502082036_LeadChangesRelation.Designer.cs" />
+    <Compile Remove="Migrations\20210503045625_Lead.cs" />
+    <Compile Remove="Migrations\20210503045625_Lead.Designer.cs" />
+    <Compile Remove="Migrations\20210506060847_LeadChanges_1.cs" />
+    <Compile Remove="Migrations\20210506060847_LeadChanges_1.Designer.cs" />
+    <Compile Remove="Migrations\20210506060942_LeadChanges_12.cs" />
+    <Compile Remove="Migrations\20210506060942_LeadChanges_12.Designer.cs" />
+    <Compile Remove="Migrations\20210506061110_LeadChanges_12.cs" />
+    <Compile Remove="Migrations\20210506061110_LeadChanges_12.Designer.cs" />
+    <Compile Remove="Migrations\20210506145728_LeadChanges_1211.cs" />
+    <Compile Remove="Migrations\20210506145728_LeadChanges_1211.Designer.cs" />
+    <Compile Remove="Migrations\20211112163416_Changes_Invoice_!.cs" />
+    <Compile Remove="Migrations\20211112163416_Changes_Invoice_!.Designer.cs" />
+    <Compile Remove="Migrations\20211112163438_Changes_Invoice_1.cs" />
+    <Compile Remove="Migrations\20211112163438_Changes_Invoice_1.Designer.cs" />
+    <Compile Remove="Migrations\20211112163732_Changes_Invoice_2.cs" />
+    <Compile Remove="Migrations\20211112163732_Changes_Invoice_2.Designer.cs" />
+    <Compile Remove="Migrations\20220210171639_CHanges_prod_11_2.cs" />
+    <Compile Remove="Migrations\20220210171639_CHanges_prod_11_2.Designer.cs" />
+    <Compile Remove="Migrations\20220228161220_chnges_vid3.cs" />
+    <Compile Remove="Migrations\20220228161220_chnges_vid3.Designer.cs" />
+    <Compile Remove="Migrations\20220412155901_changes_11.cs" />
+    <Compile Remove="Migrations\20220412155901_changes_11.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.2" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.11.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SimaxCrm.Model\SimaxCrm.Model.csproj" />
+  </ItemGroup>
+
+</Project>

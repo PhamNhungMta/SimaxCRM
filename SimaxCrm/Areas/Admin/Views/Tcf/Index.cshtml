@@ -1,0 +1,150 @@
+@model IEnumerable<SimaxCrm.Model.Entity.Tcf>
+
+@{
+    ViewData["Title"] = "Index";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="fa fa-align-justify"></i> TCF Report
+            </div>
+            <div class="card-body">
+                <table class="table table-responsive-sm data-table-cl">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>@Html.DisplayNameFor(model => model.Id)</th>
+                            <th>@Html.DisplayNameFor(model => model.LeadId)</th>
+                            <th>@Html.DisplayNameFor(model => model.Property)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.Rate)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.Size)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.BSP)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.OtherCharges)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.BookingForm)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.PaymentDetails)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.OpsChecklist)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.DiscountApproval)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.AadharCard)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.PanCard)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.VoterID)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.Passport)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.BrokerageRate)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.RoyaltyDiscount)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.ReferralBrokerage)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.FinalBrokerage)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.EmployeeCode)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <a asp-controller="View" asp-action="TCF" asp-route-id="@item.Lead.IdStr">Edit</a>
+                                </td>
+                                <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Lead.IdStr)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Property)</td>
+
+                                <td>@Html.DisplayFor(modelItem => item.Rate)</td>
+
+                                <td>@Html.DisplayFor(modelItem => item.Size)</td>
+
+                                <td>@Html.DisplayFor(modelItem => item.BSP)</td>
+
+                                <td>@Html.DisplayFor(modelItem => item.OtherCharges)</td>
+
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.BookingForm))
+                                    {
+                                        <a target="_blank" href="/@item.BookingForm">View Image</a>
+                                    }
+                                </td>
+
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.PaymentDetails))
+                                    {
+                                        <a target="_blank" href="/@item.PaymentDetails">View Image</a>
+                                    }
+                                </td>
+
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.OpsChecklist))
+                                    {
+                                        <a target="_blank" href="/@item.OpsChecklist">View Image</a>
+                                    }
+                                </td>
+
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.DiscountApproval))
+                                    {
+                                        <a target="_blank" href="/@item.DiscountApproval">View Image</a>
+                                    }
+                                </td>
+
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.AadharCard))
+                                    {
+                                        <a target="_blank" href="/@item.AadharCard">View Image</a>
+                                    }
+                                </td>
+
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.PanCard))
+                                    {
+                                        <a target="_blank" href="/@item.PanCard">View Image</a>
+                                    }
+                                </td>
+
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.VoterID))
+                                    {
+                                        <a target="_blank" href="/@item.VoterID">View Image</a>
+                                    }
+                                </td>
+
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.Passport))
+                                    {
+                                        <a target="_blank" href="/@item.Passport">View Image</a>
+                                    }
+                                </td>
+
+                                <td>@Html.DisplayFor(modelItem => item.BrokerageRate)</td>
+
+                                <td>@Html.DisplayFor(modelItem => item.RoyaltyDiscount)</td>
+
+                                <td>@Html.DisplayFor(modelItem => item.ReferralBrokerage)</td>
+
+                                <td>@Html.DisplayFor(modelItem => item.FinalBrokerage)</td>
+
+                                <td>@Html.DisplayFor(modelItem => item.EmployeeCode)</td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

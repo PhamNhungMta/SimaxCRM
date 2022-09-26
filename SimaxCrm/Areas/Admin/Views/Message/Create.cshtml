@@ -1,0 +1,73 @@
+@model SimaxCrm.Model.Entity.Message
+
+@{
+    ViewData["Title"] = "Create";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <strong>Create New</strong>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <form asp-action="Create">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                            <div class="form-group">
+                                <label asp-for="Users" class="control-label"></label>
+                                <input asp-for="Users" class="control-label" type="hidden" />
+                                <select style="height:35px" id="UserMulti" name="UserMulti" multiple class="multipleSelect form-control" asp-items="ViewBag.UserId">
+                                    <option value="All">All</option>
+                                </select><span asp-validation-for="Users" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group"><label asp-for="Name" class="control-label"></label><input asp-for="Name" class="form-control" /><span asp-validation-for="Name" class="text-danger"></span></div>
+                            <div class="form-group"><label asp-for="Body" class="control-label"></label><textarea asp-for="Body" class="form-control" rows="5"></textarea><span asp-validation-for="Body" class="text-danger"></span></div>
+
+
+                            <div class="form-group">
+                                <input type="submit" value="Send" onclick="return processData()" class="btn btn-primary" />
+                                <a asp-action="Index" class="btn btn-primary">Back to List</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+    $(document).ready(function () {
+            @{ var tagIds = Model?.Users != null ? string.Join(',', Model?.Users?.Split(',').ToArray()) : ""; }
+        fillTags1('@tagIds', '#UserMulti');
+    });
+
+        function fillTags1(ids, ddl) {
+            $.each(ids.split(','), function (i, v) {
+                if (v) {
+                    $(ddl + ' option[value="' + v + '"]').attr('selected', 'selected');
+                }
+            });
+        }
+
+        function processData() {
+            var ids = helper.getFastSelectValue('UserMulti');
+            $("#Users").val(ids);
+
+            if (!$("#Users").val()) {
+                alert("Select any user");
+                return;
+            }
+
+            return true;
+        }
+
+    </script>
+}

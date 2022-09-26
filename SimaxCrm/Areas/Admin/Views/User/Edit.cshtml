@@ -1,0 +1,77 @@
+@model SimaxCrm.Model.RequestModel.RegistrationUpdateModel
+
+@{
+    ViewData["Title"] = "Edit";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-sm-6">
+        <div class="card">
+            <div class="card-header">
+                <strong>Update</strong>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <form asp-action="Edit">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <input type="hidden" asp-for="Id" />
+
+                            <div class="form-group"><label asp-for="Name" class="control-label"></label><input asp-for="Name" class="form-control" /><span asp-validation-for="Name" class="text-danger"></span></div>
+
+                            <div class="form-group"><label asp-for="Email" class="control-label"></label><input asp-for="Email" class="form-control" /><span asp-validation-for="Email" class="text-danger"></span></div>
+                            <div class="form-group"><label asp-for="PhoneNumber" class="control-label"></label><input asp-for="PhoneNumber" class="form-control" /><span asp-validation-for="PhoneNumber" class="text-danger"></span></div>
+
+                            <div class="form-group">
+                                <label asp-for="Role" class="control-label"></label>
+                                <select asp-for="Role" class="form-control" onchange="roleChange()">
+                                    <option value=""></option>
+                                    @if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Admin))
+                                    {
+                                        <option value="Agent">Agent</option>
+                                        <option value="Admin">Admin</option>
+                                        <option value="QA">Team Leader</option>
+                                        <option value="Account">Inventory Manager</option>
+                                    }
+                                    else if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.QA))
+                                    {
+                                        <option value="Agent">Agent</option>
+                                    }
+
+                                </select>
+                                <span asp-validation-for="Role" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group"><label asp-for="ShowInHomePage" class="control-label"></label><input asp-for="ShowInHomePage" /><span asp-validation-for="ShowInHomePage" class="text-danger"></span></div>
+                            <div class="form-group"><label asp-for="IsActive" class="control-label"></label><input asp-for="IsActive" /><span asp-validation-for="IsActive" class="text-danger"></span></div>
+
+                            <div class="form-group">
+                                <input type="submit" value="Save" class="btn btn-primary" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div>
+                    <a asp-action="Index">Back to List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            roleChange();
+        });
+        function roleChange() {
+            $("#divFin").hide();
+            if ($("#Role").val() == "Franchise") {
+                $("#divFin").show();
+            }
+        }
+    </script>
+}

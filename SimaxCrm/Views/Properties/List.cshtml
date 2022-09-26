@@ -1,0 +1,146 @@
+﻿@{
+    var searchModel = ViewBag.SearchModel as SimaxCrm.Model.RequestModel.MainSearchModel;
+}
+
+<!-- ======= Intro Single ======= -->
+<section class="intro-single">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-lg-8">
+                <div class="title-single-box">
+                    <h1 class="title-single">Our Amazing Properties</h1>
+                    <span class="color-text-a">Properties</span>
+                </div>
+            </div>
+            <div class="col-md-12 col-lg-4">
+                <nav aria-label="breadcrumb" class="breadcrumb-box d-flex justify-content-lg-end">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="/">Home</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            Properties
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <br />
+        <div class="projecthome">
+            <div class="search-box">
+                <div class="screen-darken"></div>
+                <div class="search-box-content">
+                    <div class="d-md-none bg-primary p-2">
+                        <span class="text-white">Filter</span>
+                        <span class="float-right toggle-filter-offcanvas text-white">
+                            <i class="far fa-times-circle"></i>
+                        </span>
+                    </div>
+                    <div class="search-box-items">
+                        <div class="row ml-md-0 mr-md-0">
+                            <div class="col-xl-3 col-lg-2 col-md-4 px-1">
+                                <div class="form-group">
+                                    <label for="keyword" class="control-label">Keyword</label>
+                                    <div class="input-has-icon">
+                                        <input type="text" id="propertyKeyword" class="form-control" name="k" value="" placeholder="Enter keyword...">
+                                        <i class="bi bi-search"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-md-4 px-1">
+                                 <div class="form-group">
+                                     <label class="control-label">City</label>
+                                      <div class="select--arrow">
+                                       <select class="form-control" style="height:35px" name="propertycity" id="propertycity"  asp-items="ViewBag.City">
+                                          <option value="">Select</option>
+                                       </select><span class="text-danger"></span>
+                                     <i class="bi bi-chevron-down"></i>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="col-lg-2 col-md-4 px-1">
+                                <div class="form-group">
+                                    <label for="select-floor" class="control-label">Buy/Rent</label>
+                                    <div class="select--arrow">
+                                        <select name="prop_type" id="prop_type" class="form-control">
+                                            <option value="">Select</option>
+                                            <option value="Sell">Buy</option>
+                                            <option value="Rent">Rent</option>
+                                        </select>
+                                       <i class="bi bi-chevron-down"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-2 col-xl-1 col-md-2 px-1 button-search-wrapper">
+                                <div class="btn-group text-center w-100 ">
+                                    <button type="button" class="btn btn-primary btn-full" onclick="loadListData()">Search</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row rowm10 project-list-data">
+            </div>
+        </div>
+    </div>
+</section><!-- End Intro Single-->
+@section Scripts {
+        @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        dropdown.fillDropdown("propertyCity", "#propertyCity", null);
+        $("#propertycity").val('@searchModel.Location');
+        $("#propertyKeyword").val('@searchModel.Keyword');
+        $("#prop_type").val('@searchModel.TagName');
+
+    
+        loadListData();
+    });
+
+    function loadListData(page) {
+        var param = {
+            keyword: $("#propertyKeyword").val() || '',
+            sortBy: $("#sort-by").val() || '1',
+            take: $("#per-page").val() || '15',
+            currentPage: page || 1,
+            cityId: $("#propertycity").val() || '0',
+            type: $("#prop_type").val() || ''
+        };
+        $("#loading").show();
+        ajaxCall("/Properties/ListAjax", "POST", param, function (data) {
+            $("#loading").hide();
+            $(".project-list-data").html(data);
+            $("#per-page").val($("#per-page").attr('value'));
+            $("#sort-by").val($("#sort-by").attr('value'));
+        }, "html");
+    }
+
+    function navigatePage(page) {
+        loadListData(page);
+    }
+
+    function selectMultiChoise2(source, op1, op2) {
+        $(source).find('span').html($(op1).val() + ", " + $(op2).val());
+    }
+    function selectMultiChoise4(source, op1, op2, op3, op4) {
+        $(source).find('span').html(getNumVal(op1) + ", " + getNumVal(op2) + ", " + getNumVal(op3) + ", " + getNumVal(op4));
+    }
+
+    function fillSubCategory() {
+        var type = $("#propertyType").val();
+        dropdown.fillDropdown("propertySubcategory", "#propertySubcategory", type);
+    }
+
+    function getNumVal(op) {
+        return $(op).val() || '';
+    }
+
+</script>
+    }

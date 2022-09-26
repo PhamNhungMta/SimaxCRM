@@ -1,0 +1,134 @@
+<nav class="sidebar-nav">
+    <ul class="nav">
+        <li class="nav-item">
+            <a class="nav-link" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
+                <i class="nav-icon icon-speedometer"></i> Dashboard
+            </a>
+        </li>
+
+        @if (!this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Customer))
+        {
+            <li class="nav-item nav-dropdown">
+                <a class="nav-link nav-dropdown-toggle" href="#">
+                    <i class="nav-icon icon-call-in"></i>
+                    Manage Lead
+                </a>
+                <ul class="nav-dropdown-items">
+                    <li class="nav-item ">
+                        <a class="nav-link" asp-area="Admin" asp-controller="Lead" asp-action="Create">
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i> Create Lead
+                        </a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Leads" asp-route-id="FollowUp">
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i> Today Follow Up
+                        </a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Leads" asp-route-id="MissedFollowUp">
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i> Missed Follow Up
+                        </a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Leads" asp-route-id="AllFollowUp">
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i> My Follow Up
+                        </a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Leads" asp-route-id="Converted">
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i> Converted
+                        </a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Leads" asp-route-id="Postpone">
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i> Postpone
+                        </a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Leads" asp-route-id="Reopen">
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i> Reopen
+                        </a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Leads" asp-route-id="Closed">
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i> Closed
+                        </a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Leads" asp-route-id="Surrender">
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i> Surrender
+                        </a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Leads" asp-route-id="AllLead">
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i> All Leads
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        }
+
+        <li class="nav-item nav-dropdown">
+            <a class="nav-link nav-dropdown-toggle" href="#">
+                <i class="nav-icon icon-call-in"></i>
+                Manage Inventory
+            </a>
+            <ul class="nav-dropdown-items">
+                <li class="nav-item ">
+                    <a class="nav-link" asp-area="Admin" asp-controller="Product" asp-action="Create">
+                        <i class="fa fa-arrow-right" aria-hidden="true"></i> Inventory Create
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Products" asp-route-id="AllProduct">
+                        <i class="fa fa-arrow-right" aria-hidden="true"></i> All Inventory
+                    </a>
+                </li>
+                @if (!this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Customer))
+                {
+                    <li class="nav-item ">
+                        <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Products" asp-route-id="ProductFollowUp">
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i> Today Follow Up
+                        </a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Products" asp-route-id="ProductMissedFollowUp">
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i> Missed Follow Up
+                        </a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Products" asp-route-id="ProductMyFollowUp">
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i> My Follow Up
+                        </a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Products" asp-route-id="Soldout">
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i> Soldout Property
+                        </a>
+                    </li>
+                }
+            </ul>
+        </li>
+
+        @if (!this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Customer))
+        {
+            <li class="nav-item">
+                <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Leads" asp-route-id="Buy">
+                    <i class="nav-icon icon-home"></i> Buy Leads
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" asp-area="Admin" asp-controller="Wallet" asp-action="AddMoney">
+                    <i class="nav-icon icon-home"></i> Wallet
+                </a>
+            </li>
+        }
+        <li class="nav-item">
+            <a class="nav-link" asp-area="Admin" asp-controller="User" asp-action="ResetInit">
+                <i class="nav-icon icon-login"></i> Password Reset
+            </a>
+        </li>
+
+    </ul>
+</nav>

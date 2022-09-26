@@ -1,0 +1,61 @@
+@model IEnumerable<SimaxCrm.Model.Entity.SubCategory>
+
+@{
+    ViewData["Title"] = "SubCategory List";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="fa fa-align-justify"></i> SubCategory List
+            </div>
+            <div class="card-body">
+                <table class="table table-responsive-sm">
+                    <thead>
+                        <tr>
+                            <th>@Html.DisplayNameFor(model => model.Category.Name)</th>
+                            <th>@Html.DisplayNameFor(model => model.Name)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.Status)</th>
+
+                            @*HtmlTableHeader*@
+
+
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@Html.DisplayFor(modelItem => item.Category.Name)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+
+                                <td>@Html.DisplayFor(modelItem => item.Status)</td>
+
+                                @*HtmlTableData*@
+
+
+                                <td>
+                                    <form asp-action="Delete" class="form-delete">
+                                        <input type="hidden" name="Id" value="@item.Id" />
+                                        <button type="submit" onclick="return confirm('Do you want to delete this record')" class="btn btn-danger btn-sm">
+                                            Delete
+                                        </button>
+                                    </form>
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-success btn-sm">Edit</a>
+
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

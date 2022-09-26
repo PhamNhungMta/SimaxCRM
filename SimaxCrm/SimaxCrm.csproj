@@ -1,0 +1,109 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>aspnet-SimaxCrm-7C9E5FAA-ECD0-4E33-BF9D-63FCD6D8FDDD</UserSecretsId>
+    <AssemblyName>SimaxEstateCrm</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Areas\Identity\**" />
+    <Compile Remove="Views\TableSample\**" />
+    <Compile Remove="Data\**" />
+    <Content Remove="Areas\Identity\**" />
+    <Content Remove="Views\TableSample\**" />
+    <Content Remove="Data\**" />
+    <EmbeddedResource Remove="Areas\Identity\**" />
+    <EmbeddedResource Remove="Views\TableSample\**" />
+    <EmbeddedResource Remove="Data\**" />
+    <None Remove="Areas\Identity\**" />
+    <None Remove="Views\TableSample\**" />
+    <None Remove="Data\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Areas\Admin\Views\Tcf\Index.cshtml" />
+    <None Include="wwwroot\Site\js\main.js" />
+    <None Include="wwwroot\Site\vendor\bootstrap-icons\fonts\bootstrap-icons.woff2" />
+    <None Include="wwwroot\Site\vendor\bootstrap\css\bootstrap-grid.css.map" />
+    <None Include="wwwroot\Site\vendor\bootstrap\css\bootstrap-grid.min.css.map" />
+    <None Include="wwwroot\Site\vendor\bootstrap\css\bootstrap-grid.rtl.css.map" />
+    <None Include="wwwroot\Site\vendor\bootstrap\css\bootstrap-grid.rtl.min.css.map" />
+    <None Include="wwwroot\Site\vendor\bootstrap\css\bootstrap-reboot.css.map" />
+    <None Include="wwwroot\Site\vendor\bootstrap\css\bootstrap-reboot.min.css.map" />
+    <None Include="wwwroot\Site\vendor\bootstrap\css\bootstrap-reboot.rtl.css.map" />
+    <None Include="wwwroot\Site\vendor\bootstrap\css\bootstrap-reboot.rtl.min.css.map" />
+    <None Include="wwwroot\Site\vendor\bootstrap\css\bootstrap-utilities.css.map" />
+    <None Include="wwwroot\Site\vendor\bootstrap\css\bootstrap-utilities.min.css.map" />
+    <None Include="wwwroot\Site\vendor\bootstrap\css\bootstrap-utilities.rtl.css.map" />
+    <None Include="wwwroot\Site\vendor\bootstrap\css\bootstrap-utilities.rtl.min.css.map" />
+    <None Include="wwwroot\Site\vendor\bootstrap\css\bootstrap.css.map" />
+    <None Include="wwwroot\Site\vendor\bootstrap\css\bootstrap.min.css.map" />
+    <None Include="wwwroot\Site\vendor\bootstrap\css\bootstrap.rtl.css.map" />
+    <None Include="wwwroot\Site\vendor\bootstrap\css\bootstrap.rtl.min.css.map" />
+    <None Include="wwwroot\Site\vendor\bootstrap\js\bootstrap.bundle.js" />
+    <None Include="wwwroot\Site\vendor\bootstrap\js\bootstrap.bundle.js.map" />
+    <None Include="wwwroot\Site\vendor\bootstrap\js\bootstrap.bundle.min.js" />
+    <None Include="wwwroot\Site\vendor\bootstrap\js\bootstrap.bundle.min.js.map" />
+    <None Include="wwwroot\Site\vendor\bootstrap\js\bootstrap.esm.js" />
+    <None Include="wwwroot\Site\vendor\bootstrap\js\bootstrap.esm.js.map" />
+    <None Include="wwwroot\Site\vendor\bootstrap\js\bootstrap.esm.min.js" />
+    <None Include="wwwroot\Site\vendor\bootstrap\js\bootstrap.esm.min.js.map" />
+    <None Include="wwwroot\Site\vendor\bootstrap\js\bootstrap.js" />
+    <None Include="wwwroot\Site\vendor\bootstrap\js\bootstrap.js.map" />
+    <None Include="wwwroot\Site\vendor\bootstrap\js\bootstrap.min.js" />
+    <None Include="wwwroot\Site\vendor\bootstrap\js\bootstrap.min.js.map" />
+    <None Include="wwwroot\Site\vendor\php-email-form\validate.js" />
+    <None Include="wwwroot\Site\vendor\swiper\swiper-bundle.min.js" />
+    <None Include="wwwroot\vendors\api-view\js\script.js" />
+    <None Include="wwwroot\vendors\fastselect-master\dist\fastselect.js" />
+    <None Include="wwwroot\vendors\fastselect-master\dist\fastselect.min.js" />
+    <None Include="wwwroot\vendors\fastselect-master\dist\fastselect.standalone.js" />
+    <None Include="wwwroot\vendors\fastselect-master\dist\fastselect.standalone.min.js" />
+    <None Include="wwwroot\vendors\fullcalendar-master\assets\js\fullcalendar.js" />
+    <None Include="wwwroot\vendors\fullcalendar-master\assets\js\jquery-1.10.2.js" />
+    <None Include="wwwroot\vendors\fullcalendar-master\assets\js\jquery-ui.custom.min.js" />
+    <None Include="wwwroot\vendors\fullcalendar-master\README.md" />
+    <None Include="wwwroot\vendors\rating\jquery.star-rating-svg.js" />
+    <None Include="wwwroot\vendors\toast\dist\index.js" />
+    <None Include="wwwroot\vendors\toast\dist\simple-notify.es.js" />
+    <None Include="wwwroot\vendors\toast\dist\simple-notify.min.js" />
+    <None Include="wwwroot\vendors\upload\upload.js" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="DNTCaptcha.Core" Version="4.1.0" />
+    <PackageReference Include="Lamar" Version="4.2.1" />
+    <PackageReference Include="Lamar.Microsoft.DependencyInjection" Version="4.1.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.15" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.2" />
+    <PackageReference Include="MediaTypeMap" Version="2.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.2" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
+    <PackageReference Include="Razorpay" Version="3.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.1" />
+    <PackageReference Include="System.CodeDom" Version="5.0.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
+    <PackageReference Include="OptimizedConnection" Version="1.2.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.11.0" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\SimaxCrm.Data\SimaxCrm.Data.csproj" />
+    <ProjectReference Include="..\SimaxCrm.Service\SimaxCrm.Service.csproj" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <TypeScriptCompile Include="wwwroot\vendors\toast\dist\effects.d.ts" />
+    <TypeScriptCompile Include="wwwroot\vendors\toast\dist\index.d.ts" />
+  </ItemGroup>
+
+</Project>

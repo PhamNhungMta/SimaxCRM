@@ -1,0 +1,89 @@
+﻿@{
+    var systemSetup = ViewBag.SystemSetup as SimaxCrm.Model.Entity.SystemSetup;
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=5, user-scalable=1" name="viewport" />
+    <meta name="csrf-token" content="cv9QwmXxKwDrVAolgTQ0MOoRxI4BcA3JkICBhzkY">
+
+    <style>
+        :root {
+            --primary-color: #1D5F6F;
+            --primary-color-rgb: rgba(29,95,111, 0.8);
+            --primary-color-hover: #063A5D;
+            --primary-font: 'Nunito Sans';
+        }
+    </style>
+    @*<link rel="shortcut icon" href="/main/storage/logo/favicon.png">*@
+    <title>@ViewData["Title"]</title>
+    <meta name="keywords" content="@ViewData["MetaKeyword"]">
+    <meta name="description" content="@ViewData["MetaDescription"]">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+   
+    <!-- Favicons -->
+    <link href="~/Site/img/favicon.png" rel="icon">
+    <link href="~/Site/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="~/Site/vendor/animate.css/animate.min.css" rel="stylesheet">
+    <link href="~/Site/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/Site/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="~/Site/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+    <link media="all" type="text/css" rel="stylesheet" href="~/vendors/rating/css/star-rating-svg.css">
+
+    <!-- Template Main CSS File -->
+    <link href="~/Site/css/style.css" rel="stylesheet">
+    <link href="~/Site/css/StyleSheet.css" rel="stylesheet">
+    <script src="~/vendors/jquery/dist/jquery.js"></script>
+   
+    <script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=62053a4aa311b1001939f843&product=inline-share-buttons" async="async"></script>
+</head>
+<body>
+    <partial name="_AdminLink" />
+
+    <partial name="_Search" />
+
+    <partial name="_Header" />
+
+
+    @RenderBody()
+
+    <partial name="_Footer" />
+
+
+    <div id="preloader"></div>
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+
+
+   
+   
+    <!-- Vendor JS Files -->
+
+    <script src="~/Site/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/Site/vendor/swiper/swiper-bundle.min.js"></script>
+    <script src="~/Site/vendor/php-email-form/validate.js"></script>
+    <script src="~/vendors/rating/jquery.star-rating-svg.js" type="text/javascript"></script>
+    <script src="~/js/app-main.js" type="text/javascript"></script>
+
+    <!-- Template Main JS File -->
+    <script src="~/Site/js/main.js"></script>
+    <script src="~/js/app-main.js" type="text/javascript"></script>
+    <script src="~/js/dropdown.js" type="text/javascript"></script>
+    <!-- VIEW-SCRIPTS -->
+    @RenderSection("Scripts", required: false)
+    <!-- /VIEW-SCRIPTS -->
+</body>
+</html>

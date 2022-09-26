@@ -1,0 +1,130 @@
+﻿@model SimaxCrm.Model.ResponseModel.ListResponseModel<SimaxCrm.Model.Entity.ApplicationUser, SimaxCrm.Model.Entity.Product>
+
+@{
+    Layout = null;
+}
+
+
+<div class="container">
+<div class="shop__sort bg-light p-2 round mb-3">
+    
+    <div class="row">       
+         <div class="col-sort-by col-6 col-sm-5 col-md-6 my-1">
+            <div class="form-group--inline">
+                <div class="form-group__content-1">
+                    <div class="select--arrow">
+                        <select name="per_page" id="per-page" class="form-control" value="@Model.Take" onchange="loadListData()">
+                            <option value="15">15</option>
+                            <option value="30">30</option>
+                            <option value="45">45</option>
+                            <option value="75">75</option>
+                            <option value="120">120</option>
+                        </select>
+                        <i class="bi bi-chevron-down"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+        </div>
+    </div>
+</div>
+<main id="main">
+   
+    <!-- ======= Agents Grid ======= -->
+    <section class="agents-grid grid">
+      <div class="container">
+        <div class="row">
+
+                @foreach (var item in Model.List)
+                {
+                     var products = Model.ListHelper.Where(m => m.CreatedBy == item.Id).OrderByDescending(m => m.Id).ToList();
+           <div class="col-md-4">
+            <div class="card-box-d">
+              <div class="card-img-d">
+                <img src="/@item.ImagePath" alt="" class="img-d img-fluid">
+              </div>
+              <div class="card-overlay card-overlay-hover">
+                <div class="card-header-d">
+                  <div class="card-title-d align-self-center">
+                    <h3 class="title-d">
+                      <a href="#" class="link-two">@item.Name
+                       </a>
+                    </h3>
+                  </div>
+                </div>
+                <div class="card-body-d">
+                  <p class="content-d color-text-a">
+                    Sed porttitor lectus nibh, Cras ultricies ligula sed magna dictum porta two.
+                  </p>
+                   <div class="info-agents color-a">
+                       <p>
+                           <strong>Company: </strong> @item.CompanyName
+                       </p>
+                        <p>
+                          <strong>Phone: </strong> @item.PhoneNumber
+                        </p>
+                         <p>
+                          <strong>Email: </strong>@item.Email
+                         </p>
+                          <p>
+                           <strong>Agent: </strong> <a asp-action="single" asp-controller="agents" asp-route-id="@item.Id">Click here to view</a>                                           
+                          </p>
+                    </div>
+                </div>
+                
+              </div>
+            </div>
+          </div>  
+                }
+       
+        
+        </div>
+       
+      </div>
+    </section><!-- End Agents Grid-->
+
+  </main><!-- End #main -->
+
+
+
+
+<div class="row">
+    <!--Pagination 1-->
+    <nav class="Pager1" aria-label="pagination example">
+      <ul class="pagination pagination-circle justify-content-center">
+
+                    @{
+                        var nextPage = Model.CurrentPage + 1;
+                        var prevPage = Model.CurrentPage - 1;
+                    }
+
+                    <!--First-->
+                    <li class="page-item"><a href="javascript:navigatePage(1)" class="page-link">First</a></li>
+
+                    @if (prevPage > 0)
+                    {
+                        <li class="page-item"><a href="javascript:navigatePage(@prevPage)" class="page-link">Prev</a></li>
+                    }
+                    else
+                    {
+                        <li class="page-item"><a href="javascript:;" class="page-link">Prev</a></li>
+                    }
+
+                    @if (nextPage <= Model.TotalPages)
+                    {
+                        <li class="page-item"><a href="javascript:navigatePage(@nextPage)" class="page-link">Next</a></li>
+                    }
+                    else
+                    {
+                        <li class="page-item"><a href="javascript:;" class="page-link">Next</a></li>
+                    }
+
+                    <!--Last-->
+                    <li class="page-item"><a href="javascript:navigatePage(@Model.TotalPages)" class="page-link">Last</a></li>
+
+                </ul>
+    </nav>
+</div>
+
+

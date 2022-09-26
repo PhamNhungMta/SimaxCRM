@@ -1,0 +1,65 @@
+﻿@model IEnumerable<SimaxCrm.Model.Entity.Attachment>
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8" />
+    <title>File upload</title>
+    <link href="~/vendors/upload/upload.css" rel="stylesheet" type="text/css" media="all" />
+    <script src="~/vendors/jquery/dist/jquery.min.js"></script>
+    <script src="~/vendors/upload/upload.js"></script>
+</head>
+<body onload="OnLoad()">
+
+    <form id="form1" method="POST" enctype="multipart/form-data">
+        <input type="hidden" id="folderType" value="@ViewBag.folderType" />
+        <input type="hidden" id="uploadCategory" value="@ViewBag.uploadCategory" />
+        <input type="hidden" id="tempId" value="@ViewBag.tempId" />
+        <input type="hidden" id="recId" value="@ViewBag.recId" />
+
+        @if (!ViewBag.isView)
+        {
+            <div id="hideUploadControl" runat="server">
+                <label for="file1">Files to upload:</label>
+                <input type="file" id="file1" name="file1" multiple="multiple" />
+                <input type="button" value="Refresh" onclick="window.location.reload()" />
+                <input type="submit" value="Delete" name="btnDelete" id="btnDelete" style="display: none;" hidden>
+
+                <div style="display:none">
+                    <div id="divDropHere">or drop files here</div>
+                </div>
+            </div>
+        }
+        <div id="divStatus"></div>
+
+        <table id='tbServer' runat="server" class='rtable StatusTable' border="1" cellspacing="0" cellpadding="3">
+            <tr id="trHeader">
+                <th>File name</th>
+                <th>Size</th>
+                <th>Dated</th>
+                <th>Action</th>
+            </tr>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><a href="/@item.FilePath" target="_blank">@item.FileName</a></td>
+                    <td>@item.FileSizeInfo</td>
+                    <td>@item.CreatedDate</td>
+                    <td>
+                        @if (!ViewBag.isView)
+                        {
+                            <a href='javascript:deleteFile(@item.Id)'>Delete</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </table>
+
+        <input type="hidden" name="hdnFolder" value="" />
+    </form>
+</body>
+</html>

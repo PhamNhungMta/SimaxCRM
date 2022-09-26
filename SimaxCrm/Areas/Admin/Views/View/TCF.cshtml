@@ -1,0 +1,155 @@
+@model SimaxCrm.Model.Entity.Tcf
+
+@{
+    ViewData["Title"] = "Create";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <strong>TCF</strong>
+            </div>
+            <div class="card-body">
+                <form asp-action="TCF" enctype="multipart/form-data">
+                    <div class="row">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="LeadId" />
+
+                        <input type="hidden" asp-for="BookingForm" />
+                        <input type="hidden" asp-for="PaymentDetails" />
+                        <input type="hidden" asp-for="OpsChecklist" />
+                        <input type="hidden" asp-for="DiscountApproval" />
+                        <input type="hidden" asp-for="AadharCard" />
+                        <input type="hidden" asp-for="PanCard" />
+                        <input type="hidden" asp-for="VoterID" />
+                        <input type="hidden" asp-for="Passport" />
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Property" class="control-label"></label>
+                                <select asp-for="Property" class="form-control">
+                                    <option value="">Select</option>
+                                    <option value="Apartment">Apartment</option>
+                                    <option value="Plot">Plot</option>
+                                    <option value="Villa">Villa</option>
+                                    <option value="Shop">Shop</option>
+                                    <option value="Office Space">Office Space</option>
+                                    <option value="Retail Space">Retail Space</option>
+                                    <option value="Studio">Studio</option>
+                                </select>
+                                <span asp-validation-for="Property" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group"><label asp-for="Rate" class="control-label"></label><input asp-for="Rate" class="form-control" /><span asp-validation-for="Rate" class="text-danger"></span></div>
+
+                            <div class="form-group"><label asp-for="Size" class="control-label"></label><input asp-for="Size" class="form-control" /><span asp-validation-for="Size" class="text-danger"></span></div>
+
+                            <div class="form-group"><label asp-for="BSP" class="control-label"></label><input asp-for="BSP" class="form-control" /><span asp-validation-for="BSP" class="text-danger"></span></div>
+
+                            <div class="form-group"><label asp-for="OtherCharges" class="control-label"></label><input asp-for="OtherCharges" class="form-control" /><span asp-validation-for="OtherCharges" class="text-danger"></span></div>
+
+                            <div class="form-group"><label asp-for="BrokerageRate" class="control-label"></label><input asp-for="BrokerageRate" class="form-control" /><span asp-validation-for="BrokerageRate" class="text-danger"></span></div>
+
+                            <div class="form-group"><label asp-for="RoyaltyDiscount" class="control-label"></label><input asp-for="RoyaltyDiscount" class="form-control" /><span asp-validation-for="RoyaltyDiscount" class="text-danger"></span></div>
+
+                            <div class="form-group"><label asp-for="ReferralBrokerage" class="control-label"></label><input asp-for="ReferralBrokerage" class="form-control" /><span asp-validation-for="ReferralBrokerage" class="text-danger"></span></div>
+
+                            <div class="form-group"><label asp-for="FinalBrokerage" class="control-label"></label><input asp-for="FinalBrokerage" class="form-control" /><span asp-validation-for="FinalBrokerage" class="text-danger"></span></div>
+
+                            <div class="form-group"><label asp-for="EmployeeCode" class="control-label"></label><input asp-for="EmployeeCode" class="form-control" /><span asp-validation-for="EmployeeCode" class="text-danger"></span></div>
+                        </div>
+                        <div class="col-md-6">
+
+                            <div class="form-group">
+                                <label asp-for="BookingForm" class="control-label"></label>
+                                @if (!string.IsNullOrEmpty(Model.BookingForm))
+                                {
+                                    <a target="_blank" href="/@Model.BookingForm">View Image</a>
+                                }
+                                <input type="file" name="BookingForm" class="form-control" /><span asp-validation-for="BookingForm" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="PaymentDetails" class="control-label"></label>
+                                @if (!string.IsNullOrEmpty(Model.PaymentDetails))
+                                {
+                                    <a target="_blank" href="/@Model.PaymentDetails">View Image</a>
+                                }
+                                <input type="file" name="PaymentDetails" class="form-control" /><span asp-validation-for="PaymentDetails" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="OpsChecklist" class="control-label"></label>
+                                @if (!string.IsNullOrEmpty(Model.OpsChecklist))
+                                {
+                                    <a target="_blank" href="/@Model.OpsChecklist">View Image</a>
+                                }
+                                <input type="file" name="OpsChecklist" class="form-control" /><span asp-validation-for="OpsChecklist" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="DiscountApproval" class="control-label"></label>
+                                @if (!string.IsNullOrEmpty(Model.DiscountApproval))
+                                {
+                                    <a target="_blank" href="/@Model.DiscountApproval">View Image</a>
+                                }
+                                <input type="file" name="DiscountApproval" class="form-control" /><span asp-validation-for="DiscountApproval" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="AadharCard" class="control-label"></label>
+                                @if (!string.IsNullOrEmpty(Model.AadharCard))
+                                {
+                                    <a target="_blank" href="/@Model.AadharCard">View Image</a>
+                                }
+                                <input type="file" name="AadharCard" class="form-control" /><span asp-validation-for="AadharCard" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="PanCard" class="control-label"></label>
+                                @if (!string.IsNullOrEmpty(Model.PanCard))
+                                {
+                                    <a target="_blank" href="/@Model.PanCard">View Image</a>
+                                }
+                                <input type="file" name="PanCard" class="form-control" /><span asp-validation-for="PanCard" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="VoterID" class="control-label"></label>
+                                @if (!string.IsNullOrEmpty(Model.VoterID))
+                                {
+                                    <a target="_blank" href="/@Model.VoterID">View Image</a>
+                                }
+                                <input type="file" name="VoterID" class="form-control" /><span asp-validation-for="VoterID" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Passport" class="control-label"></label>
+                                @if (!string.IsNullOrEmpty(Model.Passport))
+                                {
+                                    <a target="_blank" href="/@Model.Passport">View Image</a>
+                                }
+                                <input type="file" name="Passport" class="form-control" /><span asp-validation-for="Passport" class="text-danger"></span>
+                            </div>
+
+
+                        </div>
+
+                        <div class="form-group">
+                            <input type="submit" value="Save" class="btn btn-primary" />
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

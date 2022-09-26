@@ -1,0 +1,43 @@
+@{
+    ViewData["Title"] = "Create";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <strong>Import From CSV</strong>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <form asp-action="Import" enctype="multipart/form-data">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                            @Html.Raw(ViewBag.MessageHtml)
+
+                            <div class="form-group">
+                                <label for="PostedFile" class="control-label"></label>
+                                <input id="PostedFile" name="PostedFile" type="file" class="form-control" />
+                            </div>
+
+                            <div class="form-group">
+                                <a target="_blank" asp-action="ImportSample" asp-controller="TempLead">
+                                    <input type="button" value="Download Sample File" class="btn" />
+                                </a>
+                                <input type="submit" value="Upload" class="btn btn-primary" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

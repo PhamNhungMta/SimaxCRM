@@ -1,0 +1,52 @@
+@model SimaxCrm.Model.Entity.Seo
+
+@{
+    ViewData["Title"] = "Create";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <strong>Create New</strong>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <form asp-action="Create">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                            <div class="form-group">
+                                <label asp-for="SeoPage" class="control-label"></label>
+
+                                <select asp-for="SeoPage" class="form-control" style="height:35px" asp-items="Html.GetEnumSelectList<SimaxCrm.Model.Enum.SeoPage>()">
+                                    <option value="">Select</option>
+                                </select><span asp-validation-for="SeoPage" class="text-danger"></span>
+                            </div>
+                            <div class="form-group"><label asp-for="PageTitle" class="control-label"></label><input asp-for="PageTitle" class="form-control" /><span asp-validation-for="PageTitle" class="text-danger"></span></div>
+                            <div class="form-group"><label asp-for="MetaKeyword" class="control-label"></label><input asp-for="MetaKeyword" class="form-control" /><span asp-validation-for="MetaKeyword" class="text-danger"></span></div>
+                            <div class="form-group"><label asp-for="MetaDescription" class="control-label"></label><input asp-for="MetaDescription" class="form-control" /><span asp-validation-for="MetaDescription" class="text-danger"></span></div>
+
+                            <div class="form-group"><label asp-for="Status" class="control-label"></label><input asp-for="Status" /><span asp-validation-for="Status" class="text-danger"></span></div>
+
+                            @*SampleFields*@
+
+                            <div class="form-group">
+                                <input type="submit" value="Create" class="btn btn-primary" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div>
+                    <a asp-action="Index">Back to List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

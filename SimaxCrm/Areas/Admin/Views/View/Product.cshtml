@@ -1,0 +1,269 @@
+@model SimaxCrm.Model.Entity.Product
+
+@{
+    ViewData["Title"] = "Lead View";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-sm-4">
+        <div class="card">
+
+            <div class="card-header">
+                <strong>Update Remarks</strong>
+            </div>
+
+            <div class="card-body">
+                <partial name="_remarksProduct" model="new SimaxCrm.Model.Entity.CallLogProduct()" />
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-8">
+        <div class="card" style="margin-bottom:0">
+            <div>
+                <ul class="nav nav-tabs tabs-head" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#lead" role="tab" aria-controls="lead">Inventory Info</a>
+                    </li>
+                    <li class="nav-item">
+                        @{var callLogCount = Model.CallLogProduct == null ? 0 : Model.CallLogProduct.Count;}
+                        <a class="nav-link" data-toggle="tab" href="#calllog" role="tab" aria-controls="calllog">History (@callLogCount)</a>
+                    </li>
+                    <li class="nav-item">
+                        @{var phoneLogCount = Model.PhoneCallProductLog == null ? 0 : Model.PhoneCallProductLog.Count;}
+                        <a class="nav-link" data-toggle="tab" href="#calllogphone" role="tab" aria-controls="calllogphone">Call Log (@phoneLogCount)</a>
+                    </li>
+                    @*<li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#message" role="tab" aria-controls="messages">Send Messages or Email</a>
+                      </li>*@
+                </ul>
+
+                <div class="tab-content">
+                    <div class="tab-pane active" id="lead" role="tabpanel">
+                        <partial name="~/Areas/Admin/Views/Product/EditShared.cshtml" model="Model" />
+                    </div>
+                    <div class="tab-pane" id="calllog" role="tabpanel">
+
+                        @if (Model.CallLogProduct != null)
+                        {
+
+                            <table class="table table-responsive-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Dated</th>
+                                        <th>Status</th>
+                                        <th>Remarks</th>
+                                        <th>Message</th>
+                                        <th>Start Time</th>
+                                        <th>End Time</th>
+                                        <th>Follow Up Time</th>
+                                        <th>User</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.CallLogProduct.OrderByDescending(m => m.Id))
+                                    {
+                                        <tr>
+                                            <td>@item.CreatedDate.ToString("dd/MM/yyyy")</td>
+                                            <td>@item.Status</td>
+                                            <td>@item.Remarks</td>
+                                            <td>@item.Message</td>
+                                            <td>@item.StartTime.ToFormat("hh:mm tt")</td>
+                                            <td>@item.EndTime.ToFormat("hh:mm tt")</td>
+                                            <td>@item.AlertDate</td>
+                                            <td>@item.User.Name</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+
+                    </div>
+                    <div class="tab-pane" id="calllogphone" role="tabpanel">
+
+                        @if (Model.PhoneCallProductLog != null)
+                        {
+
+                            <table class="table table-responsive-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Dated</th>
+                                        <th>Time</th>
+                                        <th>Duration</th>
+                                        <th>Type</th>
+                                        <th>User</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.PhoneCallProductLog.OrderByDescending(m => m.Id))
+                                    {
+                                        <tr>
+                                            <td>@item.CallTime.ToString("dd/MM/yyyy")</td>
+                                            <td>@item.CallTime.ToString("hh:mm tt")</td>
+                                            <td>@item.DurationMin</td>
+                                            <td>@item.Type</td>
+                                            <td>@item.User.Name</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+
+                    </div>
+                    <div class="tab-pane" id="message" role="tabpanel">
+                        <partial name="_send-sms-email" model="new SimaxCrm.Model.RequestModel.SendTextModel()" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script type="text/javascript">
+
+        $(document).ready(function () {
+            googleApi.loadGoogleAddress();
+
+        setTimeout(function () {
+            $(".alert-success").hide();
+        }, 5000);
+
+         dropdown.fillDropdown("inventorySource", "#Source", null);
+
+
+        var tagIds = '@string.Join(',', Model.InventoryTagMapping.Select(m=>m.InventoryTagId).Distinct().ToArray())';
+            fillTags(tagIds, '#InventoryTagMulti');
+
+             @*$("#PropertyCategoryId").val('@Model?.PropertyCategoryId');
+            fillSubCategory();
+            $("#PropertySubcategoryId").val('@Model?.PropertySubcategoryId');*@
+            //$("#PropertySubcategoryId").val('@Model?.PropertySubcategoryId');
+            //$("#CityId").val('@Model?.CityId');
+            //$("#Source").val('@Model?.Source');
+
+            //$('#City').select2({
+            //    selectOnClose: true
+            //});
+            fillSubCategory();
+
+             getSubCategory(function () {
+                $("#PropertySubcategory").val(@Model.PropertySubcategoryId);
+            });
+
+            getLocation(function () {
+                $("#LocationId").val(@Model.LocationId);
+             });
+
+            getSociety(function () {
+                $("#SocietyId").val(@Model.SocietyId);
+            });
+    });
+
+    function fillTags(ids, ddl) {
+        $.each(ids.split(','), function (i, v) {
+            if (v) {
+                $(ddl + ' option[value="' + v + '"]').attr('selected', 'selected');
+            }
+        });
+    }
+
+     function getSubCategory(callback) {
+            var param = { categoryId: $("#PropertyCategoryId").val() };
+            $("#PropertySubcategoryId").html('<option value="">Select</option>');
+            if (param.categoryId) {
+                ajaxCall("/Admin/SubCategory/List", "GET", param, function (data) {
+                    var html = "";
+                    html = '<option value="">Select</option>';
+                    $.each(data, function (index, value) {
+                        html += '<option value="' + value.id + '">' + value.name + '</option>';
+                    });
+                    $("#PropertySubcategoryId").html(html);
+
+                     $("#PropertySubcategoryId").val(@Model.PropertySubcategoryId);
+                    if (callback) {
+                        callback();
+                    }
+                });
+            }
+        }
+
+    function getLocation(callback) {
+            var param = { cityId: $("#CityId").val() };
+            $("#LocationId").html('<option value="">Select</option>');
+            if (param.cityId) {
+                ajaxCall("/Admin/Location/List", "GET", param, function (data) {
+                    var html = "";
+                    html = '<option value="">Select</option>';
+                    $.each(data, function (index, value) {
+                        html += '<option value="' + value.id + '">' + value.name + '</option>';
+                    });
+                    $("#LocationId").html(html);
+
+                    if (callback) {
+                        callback();
+                    }
+                });
+            }
+        }
+
+    function getSociety(callback) {
+            var param = { cityId: $("#CityId").val() };
+            $("#SocietyId").html('<option value="">Select</option>');
+            if (param.cityId) {
+                ajaxCall("/Admin/Society/List", "GET", param, function (data) {
+                    var html = "";
+                    html = '<option value="">Select</option>';
+                    $.each(data, function (index, value) {
+                        html += '<option value="' + value.id + '">' + value.name + '</option>';
+                    });
+                    $("#SocietyId").html(html);
+
+                    if (callback) {
+                        callback();
+                    }
+                });
+            }
+        }
+    function fillSubCategory(callback) {
+        var type = $("#PropertyType").val();
+        dropdown.fillDropdown("propertySubcategory", "#PropertySubcategory", type);
+        //setTimeout(function () {
+        //    $('#PropertySubcategory').data('fastselect').destroy();
+        //    $('#PropertySubcategory').fastselect();
+        //    if (callback) {
+        //        callback();
+        //    }
+        //}, 500);
+    }
+
+
+        function calculation() {
+            //var area = parseFloat($("#TotalArea").val() || "0");
+            //var price = parseFloat($("#PropertyPrice").val() || "0");
+            //var totalPrice = area * price;
+            //$("#TotalPropertyPrice").val(totalPrice.toFixed(2));
+
+            //var maintenanceCharges = parseFloat($("#MaintenanceCharges").val() || "0");
+            //var totalMaintenanceCharges = maintenanceCharges * totalPrice;
+            //$("#TotalMaintenanceCharges").val(totalMaintenanceCharges.toFixed(2));
+        }
+
+    function processData() {
+        var ids = helper.getFastSelectValue('InventoryTagMulti');
+        $("#InventoryTags").val(ids);
+
+        var minSaleRate = $("#MinSaleRate").val();
+        var maxSaleRate = $("#MaxSaleRate").val();
+        if (maxSaleRate < minSaleRate) {
+            alert("Max sale rate cannot be less then min rale rate");
+            return false;
+        }
+
+        return true;
+        }
+
+</script>
+}

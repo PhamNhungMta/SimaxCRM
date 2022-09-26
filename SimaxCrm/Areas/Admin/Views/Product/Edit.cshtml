@@ -1,0 +1,173 @@
+@model SimaxCrm.Model.Entity.Product
+
+@{
+    ViewData["Title"] = "Property";
+    var uploadCategory = ViewBag.UploadCategory as List<SimaxCrm.Model.Entity.UploadCategory>;
+}
+
+<style>
+    .prop-img-view {
+        width: 100%;
+        max-height: 200px;
+    }
+</style>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                @if (ViewBag.IsView == true)
+                {
+                    <strong>View</strong>
+                }
+                else
+                {
+                    <strong>Update</strong>
+                }
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <partial name="~/Areas/Admin/Views/Product/EditShared.cshtml" model="Model" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script type="text/javascript">
+
+        $(document).ready(function () {
+            googleApi.loadGoogleAddress();
+
+        setTimeout(function () {
+            $(".alert-success").hide();
+        }, 5000);
+
+            var tagIds = '@string.Join(',', Model.InventoryTagMapping.Select(m=>m.InventoryTagId).Distinct().ToArray())';
+            fillTags(tagIds, '#InventoryTagMulti');
+
+            @*$("#PropertyCategoryId").val('@Model?.PropertyCategoryId');
+            fillSubCategory();
+            $("#PropertySubcategoryId").val('@Model?.PropertySubcategoryId');*@
+             fillSubCategory();
+
+             getSubCategory(function () {
+                $("#PropertySubcategory").val(@Model.PropertySubcategoryId);
+            });
+
+            getLocation(function () {
+                $("#LocationId").val(@Model.LocationId);
+             });
+
+            getSociety(function () {
+                $("#SocietyId").val(@Model.SocietyId);
+            });
+
+        });
+
+
+    function getSubCategory(callback) {
+            var param = { categoryId: $("#PropertyCategoryId").val() };
+            $("#PropertySubcategoryId").html('<option value="">Select</option>');
+            if (param.categoryId) {
+                ajaxCall("/Admin/SubCategory/List", "GET", param, function (data) {
+                    var html = "";
+                    html = '<option value="">Select</option>';
+                    $.each(data, function (index, value) {
+                        html += '<option value="' + value.id + '">' + value.name + '</option>';
+                    });
+                    $("#PropertySubcategoryId").html(html);
+
+                     $("#PropertySubcategoryId").val(@Model.PropertySubcategoryId);
+                    if (callback) {
+                        callback();
+                    }
+                });
+            }
+        }
+
+    function getLocation(callback) {
+        var param = { cityId: $("#CityId").val() };
+        $("#LocationId").html('<option value="">Select</option>');
+        if (param.cityId) {
+            ajaxCall("/Admin/Location/List", "GET", param, function (data) {
+                var html = "";
+                html = '<option value="">Select</option>';
+                $.each(data, function (index, value) {
+                    html += '<option value="' + value.id + '">' + value.name + '</option>';
+                });
+                $("#LocationId").html(html);
+                  $("#LocationId").val(@Model.LocationId);
+                if (callback) {
+                    callback();
+                }
+            });
+        }
+    }
+
+    function getSociety(callback) {
+        var param = { cityId: $("#CityId").val() };
+        $("#SocietyId").html('<option value="">Select</option>');
+        if (param.cityId) {
+            ajaxCall("/Admin/Society/List", "GET", param, function (data) {
+                var html = "";
+                html = '<option value="">Select</option>';
+                $.each(data, function (index, value) {
+                    html += '<option value="' + value.id + '">' + value.name + '</option>';
+                });
+                $("#SocietyId").html(html);
+
+                if (callback) {
+                    callback();
+                }
+            });
+        }
+    }
+
+    function fillTags(ids, ddl) {
+        $.each(ids.split(','), function (i, v) {
+            if (v) {
+                $(ddl + ' option[value="' + v + '"]').attr('selected', 'selected');
+            }
+        });
+    }
+
+    function fillSubCategory(callback) {
+        var type = $("#PropertyType").val();
+        dropdown.fillDropdown("propertySubcategory", "#PropertySubcategory", type);
+      
+    }
+
+
+        function calculation() {
+            //var area = parseFloat($("#TotalArea").val() || "0");
+            //var price = parseFloat($("#PropertyPrice").val() || "0");
+            //var totalPrice = area * price;
+            //$("#TotalPropertyPrice").val(totalPrice.toFixed(2));
+
+            //var maintenanceCharges = parseFloat($("#MaintenanceCharges").val() || "0");
+            //var totalMaintenanceCharges = maintenanceCharges * totalPrice;
+            //$("#TotalMaintenanceCharges").val(totalMaintenanceCharges.toFixed(2));
+        }
+
+    function processData() {
+        var ids = helper.getFastSelectValue('InventoryTagMulti');
+        $("#InventoryTags").val(ids);
+
+        var minSaleRate = $("#MinSaleRate").val();
+        var maxSaleRate = $("#MaxSaleRate").val();
+        if (maxSaleRate < minSaleRate) {
+            alert("Max sale rate cannot be less then min rale rate");
+            return false;
+        }
+
+        return true;
+        }
+
+</script>
+}

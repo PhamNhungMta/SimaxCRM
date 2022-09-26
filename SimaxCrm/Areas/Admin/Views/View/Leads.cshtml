@@ -1,0 +1,655 @@
+@model IEnumerable<SimaxCrm.Model.Entity.Lead>
+
+@{
+    ViewData["Title"] = @ViewBag.Title;
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    @@media (min-width: 992px) {
+        .modal-lg {
+            max-width: 1200px !important;
+        }
+    }
+</style>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="fa fa-align-justify"></i> @ViewBag.Title.ToUpper()
+            </div>
+            <div class="card-body">
+
+                @if (ViewBag.Title.ToLower() == "alllead" || ViewBag.Title.ToLower() == "buy" || ViewBag.AllLead.LeadStatus.ToLower() == "buyhistory")
+                {
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form asp-action="Leads">
+                                <input type="hidden" name="CurrentLeadStatus" value="@ViewBag.Title" />
+
+
+                                @if (ViewBag.Title.ToLower() != "buy")
+                                {
+                                    <div class="form-group col-md-2 float-left">
+                                        <label class="control-label">Start Date</label>
+                                        <input type="date" id="StartDate" name="StartDate" class="form-control" value="@ViewBag.AllLead.StartDate" />
+                                    </div>
+                                    <div class="form-group col-md-2 float-left">
+                                        <label class="control-label">End Date</label>
+                                        <input type="date" id="EndDate" name="EndDate" class="form-control" value="@ViewBag.AllLead.EndDate" />
+                                    </div>
+
+                                    @if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Admin) ||
+this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.QA) )
+                                    {
+                                        <div class="form-group col-md-2 float-left">
+                                            <label class="control-label">User</label>
+                                            <select style="height:35px" Id="UserId" name="UserId" class="form-control" asp-items="ViewBag.UserId">
+                                                <option value="">All</option>
+                                            </select>
+                                        </div>
+                                    }
+                                    <div class="form-group col-md-2 float-left">
+                                        <label class="control-label">Lead Status</label>
+                                        <select id="LeadStatus" name="LeadStatus" class="form-control">
+                                            <option value="alllead">All</option>
+                                            <option value="followup">Today Follow Up</option>
+                                            <option value="missedfollowup">Missed Follow Up</option>
+                                            <option value="postpone">Postpone</option>
+                                            <option value="converted">Converted</option>
+                                            <option value="reopen">Reopen</option>
+                                            <option value="closed">Cancel</option>
+                                            <option value="surrender">Surrender</option>
+                                        </select>
+                                    </div>
+
+                                }
+                                else
+                                {
+                                    <input type="hidden" id="LeadStatus" name="LeadStatus" class="form-control" />
+                                }
+                                <div class="form-group col-md-2 float-left">
+                                    <label class="control-label">Lead Type</label>
+                                    <select class="form-control" asp-items="ViewBag.LeadType">
+                                        <option value="">Select</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-2 float-left">
+                                    <label class="control-label">Property Category</label>
+                                    <select  onchange="getSubCategory()" id="PropertyCategoryId" name="PropertyCategoryId" class="form-control" asp-items="ViewBag.CategoryId">
+                                        <option value="0">Select</option>
+                                    </select>
+                                </div>
+                                <div class="clearfix"></div>
+                                <div class="form-group col-md-2 float-left">
+                                    <label class="control-label">Subcategory</label>
+                                    <select class="form-control" id="PropertySubcategoryId" name="PropertySubcategoryId">
+                                        <option value="">Select</option>
+                                    </select>
+                                </div>
+                               
+                                <div class="form-group col-md-2 float-left">
+                                    <label class="control-label">Budget</label>
+                                    <input type="number" id="Budget" name="Budget" class="form-control" />
+                                </div>
+                                <div class="form-group col-md-2 float-left">
+                                    <input type="submit" id="filter" value="Filter" class="btn btn-primary" />
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                }
+
+                <div class="row lblCountContainer" style="display:none">
+                    <div class="col-md-12">
+                        <div class="form-group col-md-12 float-left">
+                            <b>
+                                <label class="control-label">Selected Leads: </label>
+                                <label class="control-label lblCount">0 </label>
+                            </b>
+                            <input type="button" value="Re-Assign" onclick="reassignPopup()" class="btn btn-primary" />
+                            <input type="button" value="Delete" onclick="deleteBulk()" class="btn btn-danger" />
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row lblCountContainerPoints" style="display:none">
+                    <div class="col-md-12">
+                        <div class="form-group col-md-12 float-left">
+                            <b>
+                                <label class="control-label">Selected Leads: </label>
+                                <label class="control-label lblCount">0 </label>
+                            </b>
+                            <input type="button" value="Buy" onclick="buyLeads()" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </div>
+
+                <table class="table table-responsive-sm data-table-cl">
+                    <thead>
+                        <tr>
+                            @if (ViewBag.AllLead.LeadStatus.ToLower() == "buy")
+                            {
+                                <th><input type="checkbox" onchange="checkAllPoints(this)" style="margin-right:5px" /> Buy</th>
+                                @if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Admin))
+                                {
+                                    <th></th>
+                                }
+                                <th>Points</th>
+                            }
+                            else if (ViewBag.AllLead.LeadStatus.ToLower() == "buyhistory")
+                            {
+                                <th>Points</th>
+                                <th>Created Date</th>
+                                <th>Purchased Count</th>
+                            }
+                            else if (ViewBag.AllLead.LeadStatus.ToLower() == "deleted")
+                            {
+                                <th>Deleted By</th>
+                                <th>Deleted Date</th>
+                                <th></th>
+                                <th></th>
+                            }
+                            else
+                            {
+                                @if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Admin) ||
+this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.QA) )
+                                {
+                                    <th><input type="checkbox" onchange="checkAll(this)" style="margin-right:5px" /></th>
+                                }
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                @*@if (ViewBag.Title == SimaxCrm.Model.Enum.LeadStatusType.Converted.ToString())
+                                    {
+                                        <th></th>
+                                    }*@
+
+                            }
+
+                            <th>@Html.DisplayNameFor(model => model.Id)</th>
+                            <th>@Html.DisplayNameFor(model => model.Name)</th>
+                            @if (ViewBag.AllLead.LeadStatus.ToLower() != "buy")
+                            {
+                                <th>@Html.DisplayNameFor(model => model.PhoneNumber)</th>
+                            }
+                            <th>@Html.DisplayNameFor(model => model.LeadSourceId)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.LeadType)</th>
+                           @* <th>@Html.DisplayNameFor(model => model.PropertyType)</th>
+                            <th>@Html.DisplayNameFor(model => model.PropertySubcategory)</th>*@
+
+
+                            <th>@Html.DisplayNameFor(model => model.LeadTags)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.City)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.UserId)</th>
+                            <th>@Html.DisplayNameFor(model => model.AlertDate)</th>
+                            <th>@Html.DisplayNameFor(model => model.AssignedDate)</th>
+                            <th>@Html.DisplayNameFor(model => model.LeadStatus)</th>
+                            @*<th>Remarks</th>*@
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+
+                                @if (ViewBag.AllLead.LeadStatus.ToLower() == "buy")
+                                {
+                                    <td><input onchange="getCheckCountPoints()" type="checkbox" name="chkIds" value="@item.Id" /></td>
+                                    @if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Admin))
+                                    {
+                                        <td>
+                                            <a asp-action="Lead" asp-route-id="@item.IdStr" class="btn btn-success btn-sm">Edit</a>
+                                        </td>
+                                    }
+                                   
+                                }
+                                else if (ViewBag.AllLead.LeadStatus.ToLower() == "buyhistory")
+                                {
+                                    
+                                    <td>@item.CreatedDate</td>
+                                    <td>
+                                        @if (@item.PurchasedCount != null)
+                                        {
+                                            <input type="button" class="btn btn-primary" value="@item.PurchasedCount" onclick="leadPurchasePopup(@item.Id)" />
+                                        }
+                                    </td>
+                                }
+                                else if (ViewBag.AllLead.LeadStatus.ToLower() == "deleted")
+                                {
+                                    <td>@item.DeletedBy?.UserName</td>
+                                    <td>@Html.DisplayFor(modelItem => item.DeletedDate)</td>
+
+                                    @if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Admin))
+                                    {
+                                        <td>
+                                            <form asp-action="DeleteDone" class="form-delete" asp-controller="Lead">
+                                                <input type="hidden" name="Id" value="@item.Id" />
+                                                <input type="hidden" class="RetrunUrlCls" name="RetrunUrl" value="" />
+
+                                                <button type="submit" onclick="return confirm('Do you want to delete this record')" class="btn btn-danger btn-sm">
+                                                    Delete
+                                                </button>
+                                            </form>
+                                        </td>
+
+                                        <td>
+                                            <a asp-action="Lead" asp-route-id="@item.IdStr" class="btn btn-success btn-sm">Edit</a>
+                                        </td>
+                                    }
+                                }
+                                else
+                                {
+                                    @if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Admin) ||
+this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.QA) )
+                                    {
+                                        <td>
+                                            <input onchange="getCheckCount()" type="checkbox" name="chkIds" value="@item.Id" />
+                                        </td>
+                                    }
+                                    <td>
+                                        <a asp-action="Lead" asp-route-id="@item.IdStr" class="btn btn-success btn-sm">Follow Up</a>
+                                    </td>
+                                    <td>
+                                        @if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Admin))
+                                        {
+                                            <form asp-action="Delete" class="form-delete" asp-controller="Lead">
+                                                <input type="hidden" name="Id" value="@item.Id" />
+                                                <input type="hidden" class="RetrunUrlCls" name="RetrunUrl" value="" />
+
+                                                <button type="submit" onclick="return confirm('Do you want to delete this record')" class="btn btn-danger btn-sm">
+                                                    Delete
+                                                </button>
+                                            </form>
+                                        }
+                                    </td>
+                                    <td>
+                                        <a href="javascript:matchingPopup(@item.Id)" class="btn btn-success btn-sm">Matching</a>
+                                    </td>
+                                }
+
+                                <td>@Html.DisplayFor(modelItem => item.IdStr)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+
+                                @if (ViewBag.AllLead.LeadStatus.ToLower() != "buy")
+                                {
+                                    <td>
+                                        <a href="tel:@item.PhoneNumber">@item.PhoneNumber</a>
+                                    </td>
+                                }
+
+                                <td>@Html.DisplayFor(modelItem => item.LeadSource.Name)</td>
+                                <td>@Html.DisplayFor(modelItem => item.LeadType)</td>
+                              
+
+                                <td>
+                                    @foreach (var tag in item.LeadTagMapping)
+                                    {
+                                        <span class="tags">@tag.LeadTag.Name</span>
+                                    }
+                                    @if (item.IsPurchased)
+                                    {
+                                        <span class="tags">Purchased</span>
+                                    }
+
+                                </td>
+
+                                <td>@item.City @item.State @item.Country</td>
+
+                                <td>@{var seluser = item.User?.Name ?? "Unassigned";} @seluser</td>
+
+                                <td>@Html.DisplayFor(modelItem => item.AlertDate)</td>
+                                <td>@Html.DisplayFor(modelItem => item.AssignedDate)</td>
+                                <td>@Html.DisplayFor(modelItem => item.LeadStatus)</td>
+                                @*<td>@item.CallLog?.OrderByDescending(m => m.Id)?.FirstOrDefault()?.Remarks</td>*@
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="leadAssignModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Assign To</h5>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="control-label">Agent</label>
+                    <select style="height:35px" Id="AssignUserId" class="form-control" asp-items="ViewBag.UserId">
+                        <option value=""></option>
+                    </select>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="reassignUsers()">Update</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="MatchingPopup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Matching Property</h5>
+            </div>
+            <div class="modal-body tbl-matching-con">
+                <table class="table table-responsive-sm tbl-matching">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>City</th>
+                            <th>Property Type</th>
+                            <th>Sub Category</th>
+                            <th>Size</th>
+                            <th>Total Property Price</th>
+                            <th>Location</th>
+                            <th>Society</th>
+                            <th>Type</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tblProductBody">
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="LeadPurchasedPopup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Matching Property</h5>
+            </div>
+            <div class="modal-body">
+                <table class="table table-responsive-sm">
+                    <thead>
+                        <tr>
+                            <th>User Name</th>
+                            <th>User Email</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tblPurchaseBody">
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript">
+        var tableRef = null;
+    $(document).ready(function () {
+        $(".RetrunUrlCls").val(window.location.href);
+        @{
+            var startDate = ViewBag.AllLead.StartDate != null ? ViewBag.AllLead.StartDate.ToString("yyyy-MM-dd") : "";
+            var endDate = ViewBag.AllLead.EndDate != null ? ViewBag.AllLead.EndDate.ToString("yyyy-MM-dd") : "";
+        }
+
+            dropdown.fillDropdown("leadType", "#LeadType", null);
+        //dropdown.fillDropdown("propertyType", "#PropertyType", null);
+
+
+            $("#LeadStatus").val('@ViewBag.AllLead.LeadStatus');
+            $("#UserId").val('@ViewBag.AllLead.UserId');
+            $("#StartDate").val('@startDate');
+            $("#EndDate").val('@endDate');
+            $("#LeadType").val('@ViewBag.AllLead.LeadType');
+        $("#PropertyCategoryId").val('@ViewBag.AllLead.PropertyCategoryId');
+        getSubCategory(function () {
+             $("#PropertySubcategoryId").val('@ViewBag.AllLead.PropertySubcategoryId');  
+            });
+              
+       
+        $("#Budget").val('@ViewBag.AllLead.Budget');
+
+
+        });
+        function processData() {
+            var leadTags = helper.getFastSelectValue('LeadTagMulti');
+            $("#LeadTags").val(leadTags);
+            return true;
+        }
+
+        function checkAll(event) {
+            $("input[name='chkIds']").prop('checked', event.checked);
+            getCheckCount();
+        }
+
+        function checkAllPoints(event) {
+            $("input[name='chkIds']").prop('checked', event.checked);
+            getCheckCountPoints();
+        }
+
+    function getCheckCount() {
+            var checked = $("input[name='chkIds']:checked").length;
+            $(".lblCountContainer").hide();
+            if (checked && checked > 0) {
+                $(".lblCount").html(checked);
+                $(".lblCountContainer").show();
+            }
+        }
+
+
+        function getCheckCountPoints() {
+            var checked = $("input[name='chkIds']:checked").length;
+            $(".lblCountContainerPoints").hide();
+            if (checked && checked > 0) {
+                $(".lblCount").html(checked);
+                $(".lblCountContainerPoints").show();
+            }
+        }
+
+        function reassignPopup() {
+            $("#leadAssignModal").modal('show');
+        }
+
+        function leadPurchasePopup(leadId) {
+
+            var param = { leadId: leadId };
+
+            ajaxCall("/Admin/Wallet/LeadOrderLog", "GET", param, function (data) {
+                if (data) {
+                    var str = "";
+                    $.each(data, function (i, v) {
+                        str += "<tr>";
+                        str += "<td>" + v.userName + "</td>";
+                        str += "<td>" + v.userEmail + "</td>";
+                        str += "</tr>";
+                    });
+                    $("#tblPurchaseBody").html(str);
+                }
+            });
+
+            $("#LeadPurchasedPopup").modal('show');
+        }
+
+        function reassignUsers() {
+            var ids = [];
+            $("input[name='chkIds']").each(function (el) {
+                if ($(this).prop('checked')) {
+                    ids.push($(this).prop('value'));
+                }
+            });
+            if (ids.length == 0) {
+                alert("Please select any lead");
+                return;
+            }
+
+
+            var param = { ids: ids.join(","), userId: $("#AssignUserId").val() };
+
+            ajaxCall("/Admin/View/ReAssign", "POST", param, function (data) {
+                if (data.success) {
+                    $("#leadAssignModal").modal('hide');
+                    $("#filter").click();
+                }
+            });
+        }
+
+    function matchingPopup(leadId) {
+        var param = { leadId: leadId };
+            //$("#tbl-matching-con").hide();
+            $("#tblProductBody").html('');
+
+        ajaxCall("/Admin/View/Matching", "GET", param, function (data) {
+                if (tableRef != null) {
+                    tableRef.destroy();
+                    tableRef = null;
+                }
+
+                $("#MatchingPopup").modal('show');
+                $("#tblProductBody").html('');
+
+                if (data && data.length > 0) {
+                    var str = "";
+                    $.each(data, function (i, v) {
+                        var vv = "<a class='btn btn-primary' href='/Product/Edit/" + v.idStr + "?isView=true'>View</a> &nbsp;";
+                        vv += "<a target='_blank' class='btn btn-primary' href='/Product/Download/" + v.idStr + "'>PDF</a>";
+                        if (!v.canView) {
+                            vv = v.userStr;
+                        }
+
+                        str += "<tr>";
+                        str += "<td>" + vv + "</td>";
+                        str += "<td>" + v.idStr + "</td>";
+                        str += "<td>" + v.name + "</td>";
+                        str += "<td>" + v.city + "</td>";
+                        str += "<td>" + v.propertyType + "</td>";
+                        str += "<td>" + v.propertySubcategory + "</td>";
+                        str += "<td>" + v.totalArea + " " + v.propertyDimType + "</td>";
+                        str += "<td>" + v.totalPropertyPrice + "</td>";
+                        str += "<td>" + v.location?.name + "</td>";
+                        str += "<td>" + v.society?.name + "</td>";
+                        str += "<td>" + v.type + "</td>";
+                        str += "</tr>";
+                    });
+                    $("#tblProductBody").html(str);
+
+
+                    setTimeout(function () {
+                        tableRef = $('.tbl-matching').DataTable({
+                            destroy: true,
+                            "scrollX": true,
+                            "ordering": false,
+                            dom: 'Bfrtip',
+                            buttons: [
+                                'copy', 'csv', 'excel', 'pdf', 'print'
+                            ]
+                        });
+                    }, 500);
+                }
+
+
+
+            });
+    }
+
+     function getSubCategory(callback) {
+            var param = { categoryId: $("#PropertyCategoryId").val() };
+            $("#PropertySubcategoryId").html('<option value="">Select</option>');
+            if (param.categoryId) {
+                ajaxCall("/Admin/SubCategory/List", "GET", param, function (data) {
+                    var html = "";
+                    html = '<option value="0">Select</option>';
+                    $.each(data, function (index, value) {
+                        html += '<option value="' + value.id + '">' + value.name + '</option>';
+                    });
+                    $("#PropertySubcategoryId").html(html);
+
+                    if (callback) {
+                        callback();
+                    }
+                });
+            }
+        }
+
+  
+    function fillSubCategory() {
+        var type = $("#PropertyType").val();
+        dropdown.fillDropdown("propertySubcategory", "#PropertySubcategory", type);
+    }
+
+    function buyLeads() {
+        var ids = [];
+        $("input[name='chkIds']").each(function (el) {
+            if ($(this).prop('checked')) {
+                ids.push($(this).prop('value'));
+            }
+        });
+        if (ids.length == 0) {
+            alert("Please select any lead");
+            return;
+        }
+
+
+        var param = { ids: ids.join(",") };
+
+        ajaxCall("/Admin/Wallet/LeadBuy", "POST", param, function (data) {
+            if (data.success) {
+                alert("Leads Purchased Successfully")
+                $("#filter").click();
+            }
+            else {
+                alert(data.response);
+            }
+        });
+    }
+
+
+        function deleteBulk() {
+
+            if (confirm("Do you want to delete selected leads")) {
+                var ids = [];
+                $("input[name='chkIds']").each(function (el) {
+                    if ($(this).prop('checked')) {
+                        ids.push($(this).prop('value'));
+                    }
+                });
+                if (ids.length == 0) {
+                    alert("Please select any lead");
+                    return;
+                }
+
+
+                var param = { ids: ids.join(","), userId: $("#AssignUserId").val() };
+
+                ajaxCall("/Admin/Lead/DeleteBulk", "POST", param, function (data) {
+                    if (data.success) {
+                        alert("Leads Deleted Successfully");
+                        window.location.reload();
+                    }
+                });
+            }
+        }
+
+    </script>
+
+}

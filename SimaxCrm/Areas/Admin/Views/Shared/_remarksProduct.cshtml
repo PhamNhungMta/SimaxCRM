@@ -1,0 +1,149 @@
+@model SimaxCrm.Model.Entity.CallLogProduct
+
+<form id="formRemarks" asp-action="Update" asp-controller="CallLogProduct">
+    <div class="row">
+        <div class="col-md-12">
+            <div id="divRemarksErrorSummary" class="alert" asp-validation-summary="All"></div>
+
+            <div class="form-group timmer">
+                Follow up Start Time: <label id="lblStartTime" class="control-label"></label> <br /> Follow up End Time:
+                <label id="lblEndTime" class="control-label"></label>
+                <input asp-for="StartTime" type="hidden" />
+                <input asp-for="EndTime" type="hidden" />
+                <input asp-for="ProductId" type="hidden" />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Status" class="control-label"></label>
+                <select asp-for="Status" class="form-control remarks-status" onchange="statusChange()"></select>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Remarks" class="control-label"></label>
+                <select asp-for="Remarks" class="form-control"></select>
+            </div>
+
+            <div class="form-group reminder" style="display:none">
+                <label asp-for="AlertDate" class="control-label"></label>
+                <input type="datetime-local" asp-for="AlertDate" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Message" class="control-label"></label>
+                <textarea asp-for="Message" rows="4" class="form-control"></textarea>
+
+                <p><button class="btn btn-primary" type="button" onclick="runSpeechRecognition('Message')">Speech to Text</button> &nbsp; <span id="action"></span></p>
+                <div id="output" class="hide"></div>
+            </div>
+
+        </div>
+        <div class="col-md-12">
+            <div class="form-group">
+                <input type="submit" value="Submit" onclick="return processRemarksData()" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript">
+    var timmer = null;
+    var initFun = function () {
+        $(document).ready(function () {
+            if (timmer) {
+                clearInterval(timmer);
+                timmer = null;
+            }
+            runStartEndTime();
+
+            helper.fillProductCallStatus('.remarks-status', '');
+
+            $("#formRemarks").submit(function (e) {
+                updateRemarks(e);
+            });
+        });
+    };
+
+    var fnCheckJQuery = function () {
+        if (window.jQuery) {
+            initFun();
+        }
+        else {
+            setTimeout(function () {
+                fnCheckJQuery();
+            }, 1000);
+        }
+    }
+
+    fnCheckJQuery();
+
+
+    function statusChange() {
+        var status = $(".remarks-status").val();
+        helper.fillCallRemarks(status, 'Remarks');
+        if (status == "FollowUp" || status == "Postpone")
+            $(".reminder").show();
+        else
+            $(".reminder").hide();
+    }
+
+    function processRemarksData() {
+        stopTimmer();
+        $("#StartTime").val($("#lblStartTime").text());
+        $("#EndTime").val($("#lblEndTime").text());
+        $("#ProductId").val($("#Id").val());
+        return true;
+    }
+
+    function runStartEndTime() {
+        var startTime = helper.getTimeFormated()[1];
+        $("#lblStartTime").text(startTime);
+        timmer = setInterval(function () {
+            var endTime = helper.getTimeFormated()[0];
+            $("#lblEndTime").text(endTime);
+        }, 1000);
+    }
+
+    function stopTimmer() {
+        var fn = function () {
+            if (timmer) {
+                clearInterval(timmer);
+                timmer = null;
+                var endTime = helper.getTimeFormated()[1];
+                $("#lblEndTime").text(endTime);
+            }
+        }
+
+        fn();
+    }
+
+    function updateRemarks(e) {
+        e.preventDefault();
+        if ($('#formRemarks').valid()) {
+            var formData = helper.getFormData($("#formRemarks"));
+            if ((formData.Status == "FollowUp" || formData.Status == "Postpone") && !formData.AlertDate) {
+                helper.addErrorInForm('divRemarksErrorSummary', ["Reminder At is Required"]);
+                return;
+            }
+
+            ajaxFormPost($("#formRemarks").attr('action'), formData, function (data) {
+                if (!data.success) {
+                    helper.addErrorInForm('divRemarksErrorSummary', [data.response]);
+                }
+                else {
+                    $('#formRemarks').trigger("reset");
+                    helper.addSuccessInForm('divRemarksErrorSummary', ["Remarks Saved Successfully"]);
+                    if (timmer) {
+                        clearInterval(timmer);
+                        timmer = null;
+                    }
+                    runStartEndTime();
+                }
+            });
+        }
+        else {
+            $("#divRemarksErrorSummary").addClass("alert-danger");
+            helper.clearMessage('divRemarksErrorSummary');
+        }
+    }
+
+</script>

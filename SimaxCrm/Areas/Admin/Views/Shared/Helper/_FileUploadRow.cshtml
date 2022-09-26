@@ -1,0 +1,28 @@
+@model IEnumerable<SimaxCrm.Model.Entity.UploadCategory>
+
+@{
+    Layout = null;
+    var recId = DateTime.Now.ToFileTime();
+}
+
+@*<tr id="row_@recId">
+    <td>
+        <select id="ddl_@recId" class="form-control">
+            <option value=""> Select </option>
+            @foreach (var item in Model)
+            {
+                <option value="@item.Id">@item.Name</option>
+            }
+        </select>
+    </td>
+    <td>
+        <input id="file_@recId" type="file" onchange="" />
+    </td>
+    <td>
+        <img src="~/images/progress.gif" />
+    </td>
+    <td>
+        <input type="button" value="Add Row" class="btn btn-primary" onclick="imageUpload.newRow()" />
+        <input type="button" value="Delete" class="btn btn-danger" onclick="imageUpload.deleteRow('row_@recId')" />
+    </td>
+</tr>*@

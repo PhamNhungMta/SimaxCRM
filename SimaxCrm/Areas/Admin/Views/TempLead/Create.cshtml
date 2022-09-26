@@ -1,0 +1,65 @@
+@model SimaxCrm.Model.Entity.TempLead
+
+@{
+    ViewData["Title"] = "Create";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <strong>Create Cold Lead</strong>
+                <a asp-action="Import">Import From CSV</a>
+
+            </div>
+            <div class="card-body">
+                <form asp-action="Create">
+                    @if (!string.IsNullOrEmpty(ViewBag.Result))
+                    {
+                        <div class="alert alert-success">@ViewBag.Result</div>
+                    }
+                    <div class="row">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="col-md-4">
+
+                            <div class="form-group"><label asp-for="Name" class="control-label"></label><input asp-for="Name" class="form-control" /><span asp-validation-for="Name" class="text-danger"></span></div>
+
+                            <div class="form-group"><label asp-for="PhoneNumber" class="control-label"></label><input asp-for="PhoneNumber" class="form-control" /><span asp-validation-for="PhoneNumber" class="text-danger"></span></div>
+
+                            <div class="form-group"><label asp-for="Email" class="control-label"></label><input asp-for="Email" class="form-control" /><span asp-validation-for="Email" class="text-danger"></span></div>
+
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <input type="submit" value="Create" onclick="return processData()" class="btn btn-primary" />
+                                <a asp-action="Index" class="btn btn-primary">Back to List</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            setTimeout(function () {
+                $(".alert-success").hide();
+            }, 5000);
+        });
+
+
+        function processData() {
+            return true;
+        }
+
+
+    </script>
+
+}

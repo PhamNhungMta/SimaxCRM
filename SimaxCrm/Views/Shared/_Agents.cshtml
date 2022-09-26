@@ -1,0 +1,73 @@
+﻿@{
+    var objAgents = ViewBag.FeaturedAgents as List<SimaxCrm.Model.Entity.ApplicationUser>;
+}
+<!-- ======= Agents Section ======= -->
+<section class="section-agents section-t8">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="title-wrap d-flex justify-content-between">
+                    <div class="title-box">
+                        <h2 class="title-a">Best Agents</h2>
+                    </div>
+                    <div class="title-link">
+                        <a asp-controller="agents" asp-action="list">
+                            All Agents
+                            <span class="bi bi-chevron-right"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div id="property-carousel" class="swiper">
+                <div class="swiper-wrapper">
+                    @foreach (var item in objAgents)
+                    {
+                      <div class="carousel-item-b swiper-slide">                       
+                            <div class="card-box-d">
+                                <div class="card-img-d">
+                                    <img src="/@item.ImagePath" alt="@item.Name" class="img-d img-fluid">
+                                </div>
+                                <div class="card-overlay card-overlay-hover">
+                                    <div class="card-header-d">
+                                        <div class="card-title-d align-self-center">
+                                            <h3 class="title-d">
+                                                <a href="agent-single.html" class="link-two">
+                                                    @item.Name
+                                                </a>
+                                            </h3>
+                                        </div>
+                                    </div>
+                                    <div class="card-body-d">
+                                        <p class="content-d color-text-a">
+                                            Sed porttitor lectus nibh, Cras ultricies ligula sed magna dictum porta two.
+                                        </p>
+                                        <div class="info-agents color-a">
+                                            <p>
+                                                <strong>Company: </strong> @item.CompanyName
+                                            </p>
+                                            <p>
+                                                <strong>Phone: </strong> @item.PhoneNumber
+                                            </p>
+                                            <p>
+                                                <strong>Email: </strong>@item.Email
+                                            </p>
+                                            <p>
+                                             <strong>Agent: </strong> <a asp-action="single" asp-controller="agents" asp-route-id="@item.Id">Click here to view</a>                                           
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                   
+                    }
+                </div>
+              <div class="propery-carousel-pagination carousel-pagination"></div>
+            </div>
+           
+        </div>
+    </div>
+</section><!-- End Agents Section -->

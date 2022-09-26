@@ -1,0 +1,170 @@
+@model IEnumerable<SimaxCrm.Model.Entity.ApplicationUser>
+
+@{
+    ViewData["Title"] = "Index";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .user_free {
+        background-color: yellow;
+    }
+
+    .user_paid {
+        background-color: lightgreen;
+    }
+
+    .user_expired {
+        background-color: lightcoral;
+    }
+</style>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="fa fa-align-justify"></i> Users
+            </div>
+            <div class="card-body">
+
+                @if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Admin))
+                {
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form asp-action="Index">
+                                <div class="form-group col-md-2 float-left">
+                                    <label class="control-label">Start Date</label>
+                                    <input type="date" id="StartDate" name="StartDate" class="form-control" value="@ViewBag.Filter.StartDate" />
+                                </div>
+                                <div class="form-group col-md-2 float-left">
+                                    <label class="control-label">End Date</label>
+                                    <input type="date" id="EndDate" name="EndDate" class="form-control" value="@ViewBag.Filter.EndDate" />
+                                </div>
+                                <div class="form-group col-md-2 float-left">
+                                    <input type="submit" id="filter" value="Filter" class="btn btn-primary" />
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                }
+
+                <table class="table table-responsive-sm data-table-cl">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>@Html.DisplayNameFor(model => model.Name)</th>
+                            @if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Admin))
+                            {
+                                <th>@Html.DisplayNameFor(model => model.UserStatus)</th>
+                            }
+                            <th>@Html.DisplayNameFor(model => model.Email)</th>
+                            <th>@Html.DisplayNameFor(model => model.PhoneNumber)</th>
+
+                            <th>Role</th>
+                            @if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Admin))
+                            {
+                                <th>@Html.DisplayNameFor(model => model.StartDate)</th>
+                                <th>@Html.DisplayNameFor(model => model.EndDate)</th>
+                            }
+                            <th>@Html.DisplayNameFor(model => model.IsActive)</th>
+                            <th>@Html.DisplayNameFor(model => model.CreatedDate)</th>
+
+                           
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <form asp-action="Delete" class="form-delete">
+                                        <input type="hidden" name="Id" value="@item.Id" />
+                                        <button type="submit" onclick="return confirm('Do you want to delete this record')" class="btn btn-danger btn-sm">
+                                            Delete
+                                        </button>
+                                    </form>
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-success btn-sm">Edit</a>
+                                    <a asp-action="Reset" asp-route-id="@item.Id" class="btn btn-success btn-sm">Reset Password</a>
+                                    @if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Admin))
+                                    {
+                                        <a asp-action="SsoLogin" asp-route-id="@item.Id" class="btn btn-success btn-sm">Auto Login</a>
+                                    }
+                                </td>
+
+                                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                                @if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Admin))
+                                {
+                                    <td class="user_@item.UserStatus.ToLower()">@Html.DisplayFor(modelItem => item.UserStatus)</td>
+                                }
+                                <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                                <td>@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
+
+                                <td>
+                                    @if (item.UserRoles.FirstOrDefault().Role.Name == SimaxCrm.Model.Enum.UserType.QA.ToString())
+                                    {
+                                        @Html.Raw("Team Leader")
+                                    }
+                                    else if (item.UserRoles.FirstOrDefault().Role.Name == SimaxCrm.Model.Enum.UserType.Account.ToString())
+                                    {
+                                        @Html.Raw("Inventory Manager")
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw(item.UserRoles.FirstOrDefault().Role.Name)
+                                    }
+
+                                </td>
+                                @if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Admin))
+                                {
+                                    <td>@item.StartDate?.Date.ToString("dd/MM/yyyy")</td>
+                                    <td>@item.EndDate?.Date.ToString("dd/MM/yyyy")</td>
+                                }
+                                <td>@Html.DisplayFor(modelItem => item.IsActive)</td>
+                                <td>@item.CreatedDate?.Date.ToString("dd/MM/yyyy")</td>
+
+                               
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            @{
+                var startDate = ViewBag.Filter.StartDate != null ? ViewBag.Filter.StartDate.ToString("yyyy-MM-dd") : "";
+                var endDate = ViewBag.Filter.EndDate != null ? ViewBag.Filter.EndDate.ToString("yyyy-MM-dd") : "";
+            }
+
+            $("#StartDate").val('@startDate');
+            $("#EndDate").val('@endDate');
+        });
+
+        function addWalletPoints(userId) {
+            var points = prompt("Enter Points", "");
+            if (points) {
+                var floatPoints = parseFloat(points);
+                if (floatPoints && floatPoints > 0) {
+                    var param = { points: floatPoints, userId: userId };
+                    ajaxCall("/Admin/Wallet/ManualPoints", "POST", param, function (data) {
+                        alert("Points Added Successfully");
+                    });
+                }
+            }
+        }
+
+    </script>
+
+}

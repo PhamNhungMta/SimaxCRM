@@ -1,0 +1,95 @@
+﻿
+@{
+    ViewData["Title"] = "Api";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/vendors/api-view/css/style.css" rel="stylesheet" />
+<link href="~/vendors/api-view/css/hightlightjs-dark.css" rel="stylesheet" />
+<div class="content-page">
+    <div class="content-code"></div>
+    <div class="content">
+        <div class="overflow-hidden content-section" id="content-get-started">
+            <h1 id="get-started">Lead Api for Websites</h1>
+            <pre>
+    API Endpoint
+
+            <span class="apiEndPoint"></span>
+                </pre>
+        </div>
+        <div class="overflow-hidden content-section" id="content-get-characters">
+            @*<h2 id="get-characters">get characters</h2>*@
+            <pre><code class="bash">
+# Here is a curl example
+curl 
+-X POST <span class="apiEndPoint"></span> 
+                </code></pre>
+            @*<p>
+                    To get characters you need to make a POST call to the following url :<br>
+                    <code class="higlighted">http://api.westeros.com/character/get</code>
+                </p>*@
+            <br>
+            <pre><code class="json">
+
+    Request example :
+    {
+        "Name": "xxxxxx xxxxx",
+        "PhoneNumber": "xxxxxxxxx",
+        "Email": "xxxx@xxxx.com",
+        "Source": "Website"
+    }
+
+    Result example :
+    {
+        "success": true,
+        "response": "Lead created.",
+        "data": null
+    }
+</code></pre>
+            <h4>QUERY PARAMETERS</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Name</td>
+                        <td>String</td>
+                        <td>Lead Name</td>
+                    </tr>
+                    <tr>
+                        <td>Source</td>
+                        <td>String</td>
+                        <td>Query Source Like Facebook, Website</td>
+                    </tr>
+                    <tr>
+                        <td>PhoneNumber</td>
+                        <td>String</td>
+                        <td>Lead Phone Number</td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td>String</td>
+                        <td>(optional) Lead Email Address</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <br />
+    <br />
+    <br />
+    <div class="content-code"></div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript" src="~/vendors/api-view/js/script.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".apiEndPoint").html(window.location.origin + "/api/lead/create");
+        });
+    </script>
+}

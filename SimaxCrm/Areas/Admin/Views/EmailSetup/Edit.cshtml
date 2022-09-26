@@ -1,0 +1,62 @@
+@model SimaxCrm.Model.Entity.EmailSetup
+
+@{
+    ViewData["Title"] = "Edit";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-sm-6">
+        <div class="card">
+            <div class="card-header">
+                <strong>Update Email Setup</strong>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <form asp-action="Edit">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <input type="hidden" asp-for="Id" />
+
+                            <div class="form-group"><label asp-for="Email" class="control-label"></label><input asp-for="Email" class="form-control" /><span asp-validation-for="Email" class="text-danger"></span></div>
+
+                            <div class="form-group"><label asp-for="SmtpServer" class="control-label"></label><input asp-for="SmtpServer" class="form-control" /><span asp-validation-for="SmtpServer" class="text-danger"></span></div>
+
+                            <div class="form-group"><label asp-for="SmtpPort" class="control-label"></label><input asp-for="SmtpPort" class="form-control" /><span asp-validation-for="SmtpPort" class="text-danger"></span></div>
+
+                            <div class="form-group"><label asp-for="IncommingMailServer" class="control-label"></label><input asp-for="IncommingMailServer" class="form-control" /><span asp-validation-for="IncommingMailServer" class="text-danger"></span></div>
+
+                            <div class="form-group"><label asp-for="IncommingMailPort" class="control-label"></label><input asp-for="IncommingMailPort" class="form-control" /><span asp-validation-for="IncommingMailPort" class="text-danger"></span></div>
+
+                            <div class="form-group">
+                                <label asp-for="UseSsl" class="control-label"></label>
+                                <select style="height:35px" asp-for="UseSsl" class="form-control">
+                                    <option value="No">No</option>
+                                    <option value="Yes">Yes</option>
+                                </select><span asp-validation-for="UseSsl" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group"><label asp-for="Username" class="control-label"></label><input asp-for="Username" class="form-control" /><span asp-validation-for="Username" class="text-danger"></span></div>
+
+                            <div class="form-group"><label asp-for="Password" class="control-label"></label><input type="password" asp-for="Password" class="form-control" value="@Model.Password" /><span asp-validation-for="Password" class="text-danger"></span></div>
+
+                            <div class="form-group"><label asp-for="Status" class="control-label"></label><input asp-for="Status" class="form-control-checkbox" /><span asp-validation-for="Status" class="text-danger"></span></div>
+
+                            <div class="form-group">
+                                <input type="submit" value="Save" class="btn btn-primary" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div>
+                    <a asp-action="Index">Back to List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

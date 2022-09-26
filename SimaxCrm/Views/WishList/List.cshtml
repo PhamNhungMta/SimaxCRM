@@ -1,0 +1,77 @@
+﻿@{
+    var objProject = (ViewBag.Project as List<SimaxCrm.Model.Entity.Wishlist>).Select(m => m.Project).ToList();
+    var objProduct = (ViewBag.Product as List<SimaxCrm.Model.Entity.Wishlist>).Select(m => m.Product).ToList();
+}
+<div id="app">
+     <section class="intro-single">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-lg-8">
+                    <div class="title-single-box">
+                        <h1 class="title-single">Your WishList</h1>
+                        <span class="color-text-a">WishList</span>
+                    </div>
+                </div>
+                <div class="col-md-12 col-lg-4">
+                    <nav aria-label="breadcrumb" class="breadcrumb-box d-flex justify-content-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="/">Home</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">
+                                WishList
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+            <br />
+        
+            <div class="row rowm10">
+                @if (objProject.Count > 0)
+                {
+                    <h2>Projects</h2>
+                    <div class="col-md-12 projecthome">
+                        <div class="row">
+                            @foreach (var item in objProject)
+                            {
+                                <div class="col-12 col-sm-6 col-md-4 col-lg-4 colm10mb10 mb-5">
+                                    <partial name="_project" model="item" />
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+
+                @if (objProduct.Count > 0)
+                {
+                    <h2>Properties</h2>
+                    <div class="col-md-12 projecthome">
+                        <div class="row">
+                            @foreach (var item in objProduct)
+                            {
+                                <div class="col-12 col-sm-6 col-md-4 col-lg-4 colm10-mb10 mb-5">
+                                    <partial name="_property" model="item" />
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+
+                @if (objProduct.Count == 0 && objProject.Count == 0)
+                {
+                    <div class="col-md-12 projecthome">
+                        <div class="row">
+                            <div class="alert alert-warning w-100" role="alert">
+                                No Record Found
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>       
+    </section>
+    <br>
+    <br>
+    <br>
+</div>

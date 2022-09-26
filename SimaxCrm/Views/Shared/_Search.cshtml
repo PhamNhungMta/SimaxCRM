@@ -1,0 +1,73 @@
+﻿ <!-- ======= Property Search Section ======= -->
+<div class="click-closed"></div>
+<!--/ Form Search Star /-->
+<div class="box-collapse">
+    <div class="title-box-d">
+        <h3 class="title-d">Search Property</h3>
+    </div>
+    <span class="close-box-collapse right-boxed bi bi-x"></span>
+    <div class="box-collapse-wrap form">
+        <form asp-action="Search" asp-controller="Home">
+            <div class="row">
+                <div class="col-md-12 mb-2">
+                    <div class="form-group">
+                        <label class="pb-2" for="Type">Keyword</label>
+                        <input type="text" name="Keyword" id="propertiesKeyword" class="form-control form-control-lg form-control-a" placeholder="Keyword">
+                    </div>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <div class="form-group mt-3">
+                        <label class="pb-2" for="Type">Type</label>
+                        <select class="form-control form-select form-control-a typesearch" name="TagName" id="hometypesearch" >
+                            <option>All Type</option>
+                            <option value="Project">Projects</option>
+                            <option value="Sell">Sale</option>
+                            <option value="Rent">Rent</option>                                      
+                        </select>
+                    </div>                  
+                </div>
+                <div class="col-md-6 mb-2">
+                    <div class="form-group mt-3">
+                        <label class="pb-2" for="city">City</label>  
+                        <input type="hidden" name="city_id">
+                        <select  id="propertyCitySearch" name="Location" class="form-control form-select form-control-a" >
+                            <option value="">Select</option>
+                        </select>
+                    </div>
+                </div>                
+                               
+                <div class="col-md-12">
+                    <button class="btn btn-b" type="submit" onclick="return processSearchData()">Search</button>
+                    <script type="text/javascript">
+                        function processSearchData() {
+                            return true;
+                        }
+                    </script>
+                  
+                </div>
+            </div>
+        </form>
+        <div class="listsuggest">
+            </div>
+    </div>
+  </div><!-- End Property Search Section -->
+  <script>
+    $(document).ready(function () {
+       ajaxCall("/Home/CityList", "GET","", function (data) {
+                var html = "";
+                html = '<option value="">Select</option>';
+                $.each(data, function (index, value) {
+                    html += '<option value="' + value.id + '">' + value.name + '</option>';
+                });
+                $("#propertyCitySearch").html(html);
+            });        
+        
+       
+
+       
+    });
+
+    
+
+</script>
+

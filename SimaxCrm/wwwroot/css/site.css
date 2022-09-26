@@ -1,0 +1,303 @@
+/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification\ 
+
+
+/* Make .svg files in the carousel display properly in older browsers */
+.carousel-inner .item img[src$=".svg"] {
+    width: 100%;
+}
+
+/* QR code generator */
+#qrCode {
+    margin: 15px;
+}
+
+/* Hide/rearrange for smaller screens */
+@media screen and (max-width: 767px) {
+    /* Hide captions */
+    .carousel-caption {
+        display: none;
+    }
+}
+
+.container-fluid > .animated {
+    margin-top: 24px !important;
+}
+
+table.dataTable {
+    margin: 0 !important;
+}
+
+.Draft{
+    background:yellow;
+    color:black;
+    padding:5px;
+}
+
+.PublishRequest {
+    background: blue;
+    color: white;
+    padding: 5px;
+}
+
+.Published {
+    background: green;
+    color: white;
+    padding: 5px;
+}
+
+.Rejected {
+    background: red;
+    color: white;
+    padding: 5px;
+}
+
+.SoldOut {
+    background: orange;
+    color: black;
+    padding: 5px;
+}
+
+
+.sidebar .nav-dropdown.open > .nav-dropdown-items {
+    max-height: 1500px;
+    background: #606a75;
+    font-size: 13px;
+}
+
+.lblNotiData .dropdown-item {
+    font-size: 12px;
+    padding: 10px 5px;
+    white-space: pre-wrap; /* css-3 */
+    white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+    white-space: -pre-wrap; /* Opera 4-6 */
+    white-space: -o-pre-wrap; /* Opera 7 */
+    word-wrap: break-word; /* Internet Explorer 5.5+ */
+}
+
+    .lblNotiData .dropdown-item span {
+        float: right;
+        font-size: 20px;
+        cursor: pointer;
+        margin-top: -14px;
+    }
+
+.app-header .dropdown-item {
+    min-width: 226px;
+}
+
+.form-delete {
+    float: left;
+    margin-right: 10px;
+}
+
+.fstElement {
+    font-size: 9px !important;
+    width: 100% !important;
+}
+
+.fstMultipleMode .fstControls {
+    width: 100% !important;
+}
+
+.tags {
+    background-color: #43a2f3;
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 9px;
+    color: white;
+    font-size: 12px;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.validation-summary-errors {
+    display: block;
+}
+
+.validation-summary-valid {
+    display: none;
+}
+
+.alert ul {
+    list-style: none;
+    margin-bottom: 0 !important;
+    margin-left: 0;
+    padding-left: 0;
+}
+
+.tab-content .tab-pane {
+}
+
+.tab-content {
+    border: none;
+}
+
+.tabs-head {
+    background-color: #f0f3f5;
+}
+
+.lead-fields {
+    list-style: none;
+    padding: 0;
+}
+
+    .lead-fields li {
+        float: left;
+    }
+
+        .lead-fields li a {
+            margin: 0 2px 5px;
+        }
+
+.preview p {
+    margin-bottom: 0px;
+}
+
+table.dataTable thead .sorting_asc:after {
+    display: none !important;
+}
+
+
+.no-padding {
+    padding-left: 0px;
+}
+
+.no-margin {
+    margin-left: 0px;
+}
+
+
+.no-border-select {
+    border: none;
+    background: transparent;
+    padding: 5px 0px;
+    text-align: center;
+    margin: 0;
+}
+
+
+
+a.bg-brown:hover, a.bg-brown:focus,
+button.bg-brown:hover,
+button.bg-brown:focus {
+    background-color: #c40062 !important;
+}
+
+.bg-brown {
+    background-color: #c40062 !important;
+}
+
+a.bg-color1:hover, a.bg-color1:focus,
+button.bg-color1:hover,
+button.bg-color1:focus {
+    background-color: #0dd9d9 !important;
+}
+
+.bg-color1 {
+    background-color: #0dd9d9 !important;
+}
+
+a.bg-color2:hover, a.bg-color2:focus,
+button.bg-color2:hover,
+button.bg-color2:focus {
+    background-color: #09ff09 !important;
+}
+
+.bg-color2 {
+    background-color: #09ff09 !important;
+}
+
+
+#invoice-frame {
+    width: 100%;
+    border: none;
+    height: 450px;
+}
+
+
+
+/*tabs*/
+
+.tabbable-panel {
+    border: 1px solid #eee;
+    padding: 10px;
+}
+
+.tabbable-line > .nav-tabs {
+    border: none;
+    margin: 0px;
+}
+
+    .tabbable-line > .nav-tabs > li {
+        margin-right: 2px;
+    }
+
+        .tabbable-line > .nav-tabs > li > a {
+            border: 0;
+            margin-right: 0;
+            color: #737373;
+        }
+
+            .tabbable-line > .nav-tabs > li > a > i {
+                color: #a6a6a6;
+            }
+
+        .tabbable-line > .nav-tabs > li.open, .tabbable-line > .nav-tabs > li a:hover {
+            border-bottom: 4px solid rgb(80,144,247);
+        }
+
+            .tabbable-line > .nav-tabs > li.open > a, .tabbable-line > .nav-tabs > li a:hover > a {
+                border: 0;
+                background: none !important;
+                color: #333333;
+            }
+
+                .tabbable-line > .nav-tabs > li.open > a > i, .tabbable-line > .nav-tabs > li a:hover > a > i {
+                    color: #a6a6a6;
+                }
+
+            .tabbable-line > .nav-tabs > li.open .dropdown-menu, .tabbable-line > .nav-tabs > li:hover .dropdown-menu {
+                margin-top: 0px;
+            }
+
+
+        .tabbable-line > .nav-tabs > li a.active {
+            border-bottom: 4px solid #32465B;
+            position: relative;
+        }
+
+            .tabbable-line > .nav-tabs > li a.active > a {
+                border: 0;
+                color: #333333;
+            }
+
+                .tabbable-line > .nav-tabs > li a.active > a > i {
+                    color: #404040;
+                }
+
+
+.tabbable-line > .tab-content {
+    margin-top: -3px;
+    background-color: #fff;
+    border: 0;
+    border-top: 1px solid #eee;
+    padding: 15px 0;
+}
+
+.portlet .tabbable-line > .tab-content {
+    padding-bottom: 0;
+}
+
+ul.nav.nav-tabs li {
+    padding: 2px;
+}
+
+    ul.nav.nav-tabs li a {
+        text-decoration: none;
+        padding: 5px 10px;
+        line-height: 32px;
+    }
+
+    /*end tabs*/

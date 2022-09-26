@@ -1,0 +1,334 @@
+
+@{
+    ViewData["Title"] = "Index";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- DASHBOARD-BOXES-->
+
+<link href='~/vendors/fullcalendar-master/assets/css/fullcalendar.css' rel='stylesheet' />
+<style>
+    .card-columns-cols-1 {
+        column-count: 1;
+    }
+</style>
+
+<div class="row">
+
+    @if (!this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Account) && !this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Customer))
+    {
+
+        <div class="col-md-3 col-sm-6 col-lg-2 clickable" onclick="openLeadPage('NewLead')">
+            <div class="card text-white bg-orange">
+                <div class="card-body pb-0 ">
+
+                     <div class="img-box">
+                        <img src="~/images/dioc/newlead.png" width="70" height="70" />
+                    </div>
+
+                    <div class="text-value">@Model.NewLead</div>
+                    <div class="text-bottom"><b>New Leads</b></div>
+                </div>
+                <br />
+            </div>
+        </div>
+        <!--/.col-->
+        <div class="col-md-3 col-sm-6 col-lg-2 clickable" onclick="openLeadPage('FollowUp')">
+            <div class="card text-white bg-red">
+                <div class="card-body pb-0">
+
+                    <div class="img-box">
+                        <img src="~/images/dioc/Totalfolloup.png" width="70" height="70" />
+                    </div>
+
+                    <div class="text-value">@Model.FollowUp</div>
+                    <div class="text-bottom"><b>Today Follow Up</b></div>
+                </div>
+                <br />
+            </div>
+        </div>
+        <!--/.col-->
+        <div class="col-md-3 col-sm-6 col-lg-2 clickable" onclick="openLeadPage('MissedFollowUp')">
+            <div class="card text-white bg-purple">
+                <div class="card-body pb-0">
+                   <div class="img-box">
+                        <img src="~/images/dioc/Missedfolloup.png" width="70" height="70" />
+                   </div>
+                    <div class="text-value">@Model.MissedFollowUp</div>
+                    <div class="text-bottom"> <b>Missed Follow Up</b></div>
+                </div>
+                <br />
+            </div>
+        </div>
+        <!--/.col-->
+        <div class="col-md-3 col-sm-6 col-lg-2 clickable" onclick="openLeadPage('AllFollowUp')">
+            <div class="card text-white bg-primary">
+                <div class="card-body pb-0">
+                    <div class="img-box">
+                        <img src="~/images/dioc/Missedfolloup.png" width="70" height="70" />
+                  </div>
+                    <div class="text-value">@Model.AllFollowUp</div>
+                    <div class="text-bottom"> <b>My Follow Up</b></div>
+                </div>
+                <br />
+            </div>
+        </div>
+        <!--/.col-->
+        <div class="col-md-3 col-sm-6 col-lg-2 clickable" onclick="openLeadPage('Converted')">
+            <div class="card text-white bg-color1">
+                <div class="card-body pb-0">
+
+                    <div class="img-box">
+                        <img src="~/images/dioc/Converted.png" width="70" height="70" />
+                  </div>
+
+                    <div class="text-value">@Model.Converted</div>
+                    <div class="text-bottom"><b>Converted Leads</b></div>
+                </div>
+                <br />
+            </div>
+        </div>
+        <!--/.col-->
+        <div class="col-md-3 col-sm-6 col-lg-2 clickable" onclick="openLeadPage('Postpone')">
+            <div class="card text-white bg-brown">
+                <div class="card-body pb-0">
+                     <div class="img-box">
+                        <img src="~/images/dioc/Postpone.png" width="70" height="70" />
+                  </div>
+
+                    <div class="text-value">@Model.Postpone</div>
+                    <div class="text-bottom"><b>Postpone Leads</b></div>
+                </div>
+                <br />
+            </div>
+        </div>
+        <!--/.col-->
+        <div class="col-md-3 col-sm-6 col-lg-2 clickable" onclick="openLeadPage('Reopen')">
+            <div class="card text-white bg-primary">
+                <div class="card-body pb-0">
+                    <div class="img-box">
+                        <img src="~/images/dioc/reopen.png" width="70" height="70" />
+                  </div>
+                    <div class="text-value">@Model.Reopen</div>
+                    <div class="text-bottom"><b>Reopen Leads</b></div>
+                </div>
+                <br />
+            </div>
+        </div>
+
+        <!--/.col-->
+        <div class="col-md-3 col-sm-6 col-lg-2 clickable" onclick="openLeadPage('Closed')">
+            <div class="card text-white bg-gray-300">
+                <div class="card-body pb-0">
+                    <div class="img-box">
+                        <img src="~/images/dioc/Closed.png" width="70" height="70" />
+                  </div>
+                    <div class="text-value">@Model.Closed</div>
+                    <div class="text-bottom"><b>Cancel Leads</b></div>
+                </div>
+                <br />
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6 col-lg-2 clickable" onclick="openLeadPage('Surrender')">
+            <div class="card text-white bg-green">
+                <div class="card-body pb-0">
+                     <div class="img-box">
+                        <img src="~/images/dioc/surrenderleads.png" width="70" height="70" />
+                  </div>
+                    <div class="text-value">@Model.Surrender</div>
+                    <div class="text-bottom"><b>Surrender Leads</b></div>
+                </div>
+                <br />
+            </div>
+        </div>
+
+        <!--/.col-->
+        <div class="col-md-3 col-sm-6 col-lg-2 clickable" onclick="openLeadPage('AllLead')">
+            <div class="card text-white bg-teal">
+                <div class="card-body pb-0">
+                     <div class="img-box">
+                        <img src="~/images/dioc/allleads.png" width="70" height="70" />
+                  </div>
+                    <div class="text-value">@Model.AllLead</div>
+                    <div class="text-bottom"><b>All Leads</b></div>
+                </div>
+                <br />
+            </div>
+        </div>
+    }
+
+
+
+    
+</div>
+<div class="row">
+
+
+    <!--/.col-->
+    <div class="col-md-3 col-sm-6 col-lg-2 clickable" onclick="openProductPage('AllProduct')">
+        <div class="card text-white bg-facebook">
+            <div class="card-body pb-0">
+                <div class="img-box">
+                    <img src="~/images/dioc/AllProperty.png" width="70" height="70" />
+              </div>
+                <div class="text-value">@Model.TotalProducts</div>
+                <div class="text-bottom"><b>All Property</b></div>
+            </div>
+            <br />
+        </div>
+    </div>
+
+    @if (!this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Customer))
+    {
+        <div class="col-md-3 col-sm-6 col-lg-2 clickable" onclick="openProductPage('ProductFollowUp')">
+            <div class="card text-white bg-facebook">
+                <div class="card-body pb-0">
+                    <div class="img-box">
+                        <img src="~/images/dioc/todaypropertyfolloup.png" width="70" height="70" />
+                  </div>
+                    <div class="text-value">@Model.ProductFollowUp</div>
+                    <div class="text-bottom"><b>Today Follow Up</b></div>
+                </div>
+                <br />
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 col-lg-2 clickable" onclick="openProductPage('ProductMissedFollowUp')">
+            <div class="card text-white bg-facebook">
+                <div class="card-body pb-0">
+                    <div class="img-box">
+                        <img src="~/images/dioc/missedpropertyfolloup.png" width="70" height="70" />
+                  </div>
+                    <div class="text-value">@Model.ProductMissedFollowUp</div>
+                    <div class="text-bottom"><b>Missed Follow Up</b></div>
+                </div>
+                <br />
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 col-lg-2 clickable" onclick="openProductPage('ProductMyFollowUp')">
+            <div class="card text-white bg-facebook">
+                <div class="card-body pb-0">
+                    <div class="img-box">
+                        <img src="~/images/dioc/missedpropertyfolloup.png" width="70" height="70" />
+                  </div>
+                    <div class="text-value">@Model.ProductMyFollowUp</div>
+                    <div class="text-bottom"><b>My Follow Up</b></div>
+                </div>
+                <br />
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 col-lg-2 clickable" onclick="openProductPage('Soldout')">
+            <div class="card text-white bg-facebook">
+                <div class="card-body pb-0">
+                    <div class="img-box">
+                        <img src="~/images/dioc/Soldoutproperty.png" width="70" height="70" />
+                  </div>
+                    <div class="text-value">@Model.ProductSoldout</div>
+                    <div class="text-bottom"><b>Soldout Property</b></div>
+                </div>
+                <br />
+            </div>
+        </div>
+    }
+
+
+   
+</div>
+<!-- /DASHBOARD-BOXES-->
+<!-- DASHBOARD-CHART AREA-->
+@if (!this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Account) && !this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Customer))
+{
+    <div class="card-columns cols-2">
+
+        <div class="card">
+            <div class="card-header">
+                Follow Up
+            </div>
+            <div class="card-body  cols-2">
+                <div class="chart-wrapper">
+                    <div id='calendar'></div>
+                </div>
+            </div>
+        </div>
+        @*</div>
+
+            <div class="card-columns cols-2">*@
+
+        <div class="card">
+            <div class="card-header">
+                Postpone
+            </div>
+            <div class="card-body">
+                <div class="chart-wrapper">
+                    <div id='calendar-postpone'></div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="card-columns cols-2">
+
+
+
+        <div class="card">
+            <div class="card-header">
+                Last 30 Days Leads
+            </div>
+            <div class="card-body">
+                <div class="chart-wrapper">
+                    <canvas id="canvas-5"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                Property
+            </div>
+            <div class="card-body">
+                <div class="chart-wrapper">
+                    <canvas id="canvas-5-product"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+
+<!-- /DASHBOARD-CHART AREA-->
+
+
+@section Scripts {
+    <script src="~/lib/chart.js/dist/Chart.min.js"></script>
+    <script src="~/lib/@@coreui/coreui-plugin-chartjs-custom-tooltips/dist/js/custom-tooltips.min.js"></script>
+    <script src='~/vendors/fullcalendar-master/assets/js/jquery-1.10.2.js' type="text/javascript"></script>
+    <script src='~/vendors/fullcalendar-master/assets/js/jquery-ui.custom.min.js' type="text/javascript"></script>
+    <script src='~/vendors/fullcalendar-master/assets/js/fullcalendar.js' type="text/javascript"></script>
+
+    <script src="~/js/main.js"></script>
+    <script>
+    var canvas_label_2=@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.LeadsChart?.Label));
+        var canvas_data_2 =@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.LeadsChart?.Data));
+
+        var canvas_label_3=@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.ProductChart?.Label));
+    var canvas_data_3=@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.ProductChart?.Data));
+
+    var calender_data=@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.CalenderFollowUp));
+    var calender_data_postpone=@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.CalenderPostpone));
+    </script>
+    <script src="~/js/dashboard.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+            generateCalender(calender_data, "#calendar");
+            generateCalender(calender_data_postpone, "#calendar-postpone");
+
+        });
+
+    </script>
+
+}

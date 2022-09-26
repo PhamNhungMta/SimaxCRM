@@ -1,0 +1,439 @@
+@model SimaxCrm.Model.Entity.Project
+
+@{
+    ViewData["Title"] = "Create";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+    var uploadCategory = ViewBag.UploadCategory as List<SimaxCrm.Model.Entity.UploadCategory>;
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <strong>Create New</strong>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <form asp-action="Create" enctype="multipart/form-data">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                            <div class="tabbable-line">
+                                <ul class="nav nav-tabs">
+                                    <li class="active">
+                                        <a href="#divBasic" class="active" data-toggle="tab">Basic</a>
+                                    </li>
+                                    <li>
+                                        <a href="#divImages" data-toggle="tab">Images</a>
+                                    </li>
+                                </ul>
+
+                                <div class="tab-content ">
+                                    <div class="tab-pane active" id="divBasic">
+                                        <div class="row">
+
+                                            <div class="col-md-4">
+
+                                                <div class="form-group">
+                                                    <label asp-for="PropertyCategoryId" class="control-label"></label>
+                                                    <select onchange="getSubCategory()" asp-for="PropertyCategoryId" class="form-control" style="height:35px" asp-items="ViewBag.CategoryId">
+                                                        <option value="">Select</option>
+                                                    </select><span asp-validation-for="PropertyCategoryId" class="text-danger"></span>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label asp-for="PropertySubcategoryId" class="control-label"></label>
+                                                    <select asp-for="PropertySubcategoryId" class="form-control" style="height:35px">
+                                                        <option value="">Select</option>
+                                                    </select><span asp-validation-for="PropertySubcategoryId" class="text-danger"></span>
+                                                </div>
+
+                                                <div class="form-group"><label asp-for="Name" class="control-label"></label><input asp-for="Name" class="form-control" /><span asp-validation-for="Name" class="text-danger"></span></div>
+
+                                                <div class="form-group"><label asp-for="Description" class="control-label"></label><textarea asp-for="Description" class="form-control" rows="4"></textarea><span asp-validation-for="Description" class="text-danger"></span></div>
+
+                                                <div class="form-group"><label asp-for="MetaTag" class="control-label"></label><input asp-for="MetaTag" class="form-control" /><span asp-validation-for="MetaTag" class="text-danger"></span></div>
+
+                                                <div class="form-group"><label asp-for="MetaDescription" class="control-label"></label><input asp-for="MetaDescription" class="form-control" /><span asp-validation-for="MetaDescription" class="text-danger"></span></div>
+
+                                                <div class="form-group">
+                                                    <label asp-for="CityId" class="control-label"></label>
+                                                    <select onchange="getLocation(),getSociety()" asp-for="CityId" class="form-control" style="height:35px" asp-items="ViewBag.City">
+                                                        <option value="">Select</option>
+                                                    </select><span asp-validation-for="CityId" class="text-danger"></span>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label asp-for="LocationId" class="control-label"></label>
+                                                    <button type="button" class="btn btn-sm" onclick="helper.openMasterPopup('LocationId')">+</button>
+                                                    <select asp-for="LocationId" class="form-control">
+                                                        <option value="">Select</option>
+                                                    </select><span asp-validation-for="LocationId" class="text-danger"></span>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label asp-for="SocietyId" class="control-label"></label>
+                                                    <button type="button" class="btn btn-sm" onclick="helper.openMasterPopup('SocietyId')">+</button>
+                                                    <select asp-for="SocietyId" class="form-control">
+                                                        <option value="">Select</option>
+                                                    </select><span asp-validation-for="SocietyId" class="text-danger"></span>
+                                                </div>
+
+                                                <div class="form-group"><label asp-for="AddressPlain" class="control-label"></label><input asp-for="AddressPlain" class="form-control" /><span asp-validation-for="AddressPlain" class="text-danger"></span></div>
+
+                                                <div class="form-group">
+                                                    <label asp-for="Address" class="control-label"></label>
+                                                    <input type="text" asp-for="Address" class="form-control" />
+                                                    <input type="hidden" asp-for="AddressLat" />
+                                                    <input type="hidden" asp-for="AddressLng" />
+                                                    <span asp-validation-for="Address" class="text-danger"></span>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label asp-for="Type" class="control-label"></label>
+                                                    <select style="height:35px" asp-for="Type" class="form-control">
+                                                        <option value="">Select</option>
+                                                        <option value="Sell">Sell</option>
+                                                        <option value="Rent">Rent</option>
+                                                    </select><span asp-validation-for="Type" class="text-danger"></span>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label asp-for="PropertyDimType" class="control-label"></label><select style="height:35px" asp-for="PropertyDimType" class="form-control">
+                                                        <option value="Sq.Mt.">Sq.Mt.</option>
+                                                        <option value="Sq.Ft.">Sq.Ft.</option>
+                                                    </select><span asp-validation-for="PropertyDimType" class="text-danger"></span>
+                                                </div>
+
+                                                <div class="form-group"><label asp-for="TotalArea" class="control-label"></label><input onchange="calculation()" asp-for="TotalArea" class="form-control" /><span asp-validation-for="TotalArea" class="text-danger"></span></div>
+
+                                                <div class="form-group"><label asp-for="TotalBlocks" class="control-label"></label><input asp-for="TotalBlocks" class="form-control" /><span asp-validation-for="TotalBlocks" class="text-danger"></span></div>
+                                                <div class="form-group"><label asp-for="TotalFloors" class="control-label"></label><input asp-for="TotalFloors" class="form-control" /><span asp-validation-for="TotalFloors" class="text-danger"></span></div>
+                                                <div class="form-group"><label asp-for="TotalFlats" class="control-label"></label><input asp-for="TotalFlats" class="form-control" /><span asp-validation-for="TotalFlats" class="text-danger"></span></div>
+
+
+                                            </div>
+
+                                            <div class="col-md-4">
+
+                                                <div class="form-group"><label asp-for="PropertyPrice" class="control-label"></label><input onchange="calculation()" asp-for="PropertyPrice" class="form-control inwords" /><span asp-validation-for="PropertyPrice" class="text-danger"></span></div>
+
+                                                <div class="form-group"><label asp-for="TotalPropertyPrice" class="control-label"></label><input asp-for="TotalPropertyPrice" class="form-control inwords" /><span asp-validation-for="TotalPropertyPrice" class="text-danger"></span></div>
+
+
+
+                                                <div class="form-group">
+                                                    <label asp-for="ConstructionStatus" class="control-label"></label>
+                                                    <select style="height:35px" asp-for="ConstructionStatus" class="form-control">
+                                                        <option selected="selected" value="">Select</option>
+                                                        <option value="Ready to move">Ready to move</option>
+                                                        <option value="Under Construction">Under Construction</option>
+                                                    </select><span asp-validation-for="ConstructionStatus" class="text-danger"></span>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label asp-for="InventoryTags" class="control-label"></label>
+                                                    <input asp-for="InventoryTags" class="control-label" type="hidden" />
+                                                    <select class="multipleSelect form-control" multiple style="height:35px" id="InventoryTagMulti" name="InventoryTagMulti" asp-items="ViewBag.InventoryTagId">
+                                                    </select><span asp-validation-for="InventoryTags" class="text-danger"></span>
+                                                </div>
+
+
+                                                <div class="form-group"><label asp-for="MaxSaleRate" class="control-label"></label><input asp-for="MaxSaleRate" class="form-control inwords" /><span asp-validation-for="MaxSaleRate" class="text-danger"></span></div>
+                                                <div class="form-group"><label asp-for="OwnerName" class="control-label"></label><input asp-for="OwnerName" class="form-control" /><span asp-validation-for="OwnerName" class="text-danger"></span></div>
+                                                <div class="form-group"><label asp-for="OwnerPhoneNumber" class="control-label"></label><input asp-for="OwnerPhoneNumber" class="form-control" /><span asp-validation-for="OwnerPhoneNumber" class="text-danger"></span></div>
+                                                <div class="form-group"><label asp-for="OwnerEmailId" class="control-label"></label><input asp-for="OwnerEmailId" class="form-control" /><span asp-validation-for="OwnerEmailId" class="text-danger"></span></div>
+
+
+                                                <div class="form-group"><label asp-for="Source" class="control-label"></label><input asp-for="Source" class="form-control" /><span asp-validation-for="Source" class="text-danger"></span></div>
+
+
+
+                                                <div class="form-group"><label asp-for="ReferenceName" class="control-label"></label><input asp-for="ReferenceName" class="form-control" /><span asp-validation-for="ReferenceName" class="text-danger"></span></div>
+                                                <div class="form-group"><label asp-for="ReferenceNumber" class="control-label"></label><input asp-for="ReferenceNumber" class="form-control" /><span asp-validation-for="ReferenceNumber" class="text-danger"></span></div>
+
+
+                                                <div class="form-group"><label asp-for="MainImage" class="control-label"></label><input type="file" accept="image/*" id="MainImage" name="MainImage" /><span asp-validation-for="MainImage" class="text-danger"></span></div>
+                                            </div>
+
+
+                                            <div class="col-md-4">
+
+                                                <div class="form-group">
+                                                    <label asp-for="Bedroom" class="control-label"></label><select style="height:35px" asp-for="Bedroom" class="form-control">
+                                                        <option value="1">1</option>
+                                                        <option value="2">2</option>
+                                                        <option value="3">3</option>
+                                                        <option value="4">4</option>
+                                                        <option value="5">5</option>
+                                                        <option value="6">6</option>
+                                                        <option value="7">7</option>
+                                                        <option value="8">8</option>
+                                                        <option value="9">9</option>
+                                                        <option value="No">No</option>
+                                                    </select><span asp-validation-for="Bedroom" class="text-danger"></span>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label asp-for="Parking" class="control-label"></label><select style="height:35px" asp-for="Parking" class="form-control">
+                                                        <option value="Open">Open</option>
+                                                        <option value="Basement">Basement</option>
+                                                        <option value="Cover">Cover</option>
+                                                        <option value="No Parking">No Parking</option>
+                                                    </select><span asp-validation-for="Parking" class="text-danger"></span>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label asp-for="Bathrooms" class="control-label"></label><select style="height:35px" asp-for="Bathrooms" class="form-control">
+                                                        <option value="1">1</option>
+                                                        <option value="2">2</option>
+                                                        <option value="3">3</option>
+                                                        <option value="4">4</option>
+                                                        <option value="5">5</option>
+                                                        <option value="6">6</option>
+                                                        <option value="7">7</option>
+                                                        <option value="8">8</option>
+                                                        <option value="9">9</option>
+                                                        <option value="No">No</option>
+                                                        <option value="Shared">Shared</option>
+                                                    </select><span asp-validation-for="Bathrooms" class="text-danger"></span>
+                                                </div>
+
+                                                <div class="form-group"><label asp-for="MaintenanceCharges" class="control-label"></label><input onchange="calculation()" asp-for="MaintenanceCharges" class="form-control inwords" /><span asp-validation-for="MaintenanceCharges" class="text-danger"></span></div>
+
+                                                <div class="form-group"><label asp-for="TotalMaintenanceCharges" class="control-label"></label><input asp-for="TotalMaintenanceCharges" class="form-control inwords" /><span asp-validation-for="TotalMaintenanceCharges" class="text-danger"></span></div>
+
+                                                <div class="form-group">
+                                                    <label asp-for="CentralizedAc" class="control-label"></label>
+                                                    <input asp-for="CentralizedAc" />
+                                                    <span asp-validation-for="CentralizedAc" class="text-danger"></span>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label asp-for="SecurityGuard" class="control-label"></label>
+                                                    <input asp-for="SecurityGuard" />
+                                                    <span asp-validation-for="SecurityGuard" class="text-danger"></span>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label asp-for="FireSafety" class="control-label"></label>
+                                                    <input asp-for="FireSafety" />
+                                                    <span asp-validation-for="FireSafety" class="text-danger"></span>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label asp-for="CctvCamera" class="control-label"></label>
+                                                    <input asp-for="CctvCamera" />
+                                                    <span asp-validation-for="CctvCamera" class="text-danger"></span>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label asp-for="Lift" class="control-label"></label>
+                                                    <input asp-for="Lift" />
+                                                    <span asp-validation-for="Lift" class="text-danger"></span>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label asp-for="club" class="control-label"></label>
+                                                    <input asp-for="club" />
+                                                    <span asp-validation-for="club" class="text-danger"></span>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label asp-for="SwimmingPool" class="control-label"></label>
+                                                    <input asp-for="SwimmingPool" />
+                                                    <span asp-validation-for="SwimmingPool" class="text-danger"></span>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label asp-for="GardenArea" class="control-label"></label>
+                                                    <input asp-for="GardenArea" />
+                                                    <span asp-validation-for="GardenArea" class="text-danger"></span>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label asp-for="KidsPlayArea" class="control-label"></label>
+                                                    <input asp-for="KidsPlayArea" />
+                                                    <span asp-validation-for="KidsPlayArea" class="text-danger"></span>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label asp-for="Gym" class="control-label"></label>
+                                                    <input asp-for="Gym" />
+                                                    <span asp-validation-for="Gym" class="text-danger"></span>
+                                                </div>
+
+                                                <div class="form-group"><label asp-for="PropertyFloor" class="control-label"></label><input asp-for="PropertyFloor" class="form-control" /><span asp-validation-for="PropertyFloor" class="text-danger"></span></div>
+
+                                                <div class="form-group">
+                                                    <label asp-for="Furnished" class="control-label"></label><select style="height:35px" asp-for="Furnished" class="form-control">
+                                                        <option selected="selected" value="0">Select</option>
+                                                        <option value="Raw">Raw</option>
+                                                        <option value="Semi Furnished">Semi Furnished</option>
+                                                        <option value="Full Furnished">Full Furnished</option>
+                                                    </select><span asp-validation-for="Furnished" class="text-danger"></span>
+                                                </div>
+                                            </div>
+
+
+
+                                        </div>
+                                    </div>
+
+                                    <div class="tab-pane" id="divImages">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <input type="hidden" id="TempId" name="TempId" value="@ViewBag.TempId" />
+                                                <div class="tabbable-line">
+                                                    <ul class="nav nav-tabs">
+
+                                                        @{ var istClass = "active";}
+                                                        @foreach (var item in uploadCategory)
+                                                        {
+                                                            <li class="active">
+                                                                <a href="#divImg_@item.Id" class="@istClass" data-toggle="tab">@item.Name</a>
+                                                            </li>
+                                                            istClass = "";
+                                                        }
+                                                    </ul>
+
+                                                    <div class="tab-content ">
+                                                        @{ istClass = "active";}
+                                                        @foreach (var item in uploadCategory)
+                                                        {
+                                                            <div class="tab-pane @istClass" id="divImg_@item.Id">
+                                                                <div class="row">
+                                                                    @{ var folderType = (int)SimaxCrm.Model.Enum.FolderType.Project;}
+                                                                    <iframe src="~/admin/helper/UploadFile?folderType=@folderType&UploadCategory=@item.Id&tempId=@ViewBag.TempId&recId=0&isView=false" style="border:none;width:100%;height:400px;"></iframe>
+                                                                </div>
+                                                            </div>
+                                                            istClass = "";
+                                                        }
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <input type="submit" value="Create" onclick="return processData()" class="btn btn-primary" />
+                                <a asp-action="Index" class="btn btn-primary">Back to List</a>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+
+
+        $(document).ready(function () {
+            numberToText.enable();
+
+            googleApi.loadGoogleAddress();
+
+            setTimeout(function () {
+            $(".alert-success").hide();
+            }, 5000);
+
+                    dropdown.fillDropdown("buildingSociety", "#BuildingSociety", null);
+                    dropdown.fillDropdown("sectorLocation", "#LocalitySector", null);
+
+        @{ var tagIds = Model?.InventoryTags != null ? string.Join(',', Model?.InventoryTags?.Split(',').ToArray()) : ""; }
+                    fillTags('@tagIds', '#InventoryTagMulti');
+
+
+
+                });
+
+                function fillTags(ids, ddl) {
+        $.each(ids.split(','), function (i, v) {
+                        if (v) {
+                $(ddl + ' option[value="' + v + '"]').attr('selected', 'selected');
+                        }
+                    });
+        }
+
+        function getSubCategory() {
+            var param = { categoryId: $("#PropertyCategoryId").val() };
+            $("#PropertySubcategoryId").html('<option value="">Select</option>');
+            if (param.categoryId) {
+                ajaxCall("/Admin/SubCategory/List", "GET", param, function (data) {
+                    var html = "";
+                    html = '<option value="">Select</option>';
+                    $.each(data, function (index, value) {
+                        html += '<option value="' + value.id + '">' + value.name + '</option>';
+                    });
+                    $("#PropertySubcategoryId").html(html);
+                });
+            }
+        }
+
+        function getLocation() {
+            var param = { cityId: $("#CityId").val() };
+            $("#LocationId").html('<option value="">Select</option>');
+            if (param.cityId) {
+                ajaxCall("/Admin/Location/List", "GET", param, function (data) {
+                    var html = "";
+                    html = '<option value="">Select</option>';
+                    $.each(data, function (index, value) {
+                        html += '<option value="' + value.id + '">' + value.name + '</option>';
+                    });
+                    $("#LocationId").html(html);
+                });
+            }
+        }
+
+        function getSociety() {
+            var param = { cityId: $("#CityId").val() };
+            $("#SocietyId").html('<option value="">Select</option>');
+            if (param.cityId) {
+                ajaxCall("/Admin/Society/List", "GET", param, function (data) {
+                    var html = "";
+                    html = '<option value="">Select</option>';
+                    $.each(data, function (index, value) {
+                        html += '<option value="' + value.id + '">' + value.name + '</option>';
+                    });
+                    $("#SocietyId").html(html);
+                });
+            }
+        }
+
+            function fillSubCategory(callback) {
+                var type = $("#PropertyType").val();
+                dropdown.fillDropdown("propertySubcategoryId", "#PropertySubcategoryId", type);
+
+            }
+
+            function calculation() {
+                //var area = parseFloat($("#TotalArea").val() || "0");
+
+            }
+
+            function processData() {
+                var ids = helper.getFastSelectValue('InventoryTagMulti');
+        $("#InventoryTags").val(ids);
+
+                var minSaleRate = $("#MinSaleRate").val();
+                var maxSaleRate = $("#MaxSaleRate").val();
+                if (maxSaleRate < minSaleRate) {
+            alert("Max sale rate cannot be less then min rale rate");
+            return false;
+        }
+        return true;
+        }
+
+
+
+    </script>
+}

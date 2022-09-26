@@ -1,0 +1,115 @@
+@model SimaxCrm.Model.RequestModel.SendTextModel
+
+<form id="formTextRemarks" asp-action="SendText" asp-controller="UserLog">
+    <div class="row">
+        <div class="col-md-12">
+            <div id="divTextErrorSummary" class="alert" asp-validation-summary="All"></div>
+
+            <div class="form-group timmer">
+                <label asp-for="LogType" class="control-label"></label>
+                <select asp-for="LogType" class="form-control" onchange="logTypeChange()">
+                    <option value=""></option>
+                    <option value="1">SMS</option>
+                    <option value="2">Email</option>
+                </select>
+                <input asp-for="LeadId" class="leadIdSMS" type="hidden" />
+                <input asp-for="LogText" type="hidden" />
+                <input asp-for="LogSubject" type="hidden" />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="LogRecId" class="control-label"></label>
+                <select asp-for="LogRecId" class="form-control" onchange="logRecChange()">
+                </select>
+            </div>
+
+            <div class="form-group preview">
+                <label class="control-label">Preview</label>
+                <label class="form-control" id="textSubject" style="border:none"></label>
+                <label class="form-control" id="textPreview" style="border:none"></label>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group">
+                <input type="submit" value="Send" onclick="return processTextData()" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript">
+    var initFunSMS = function () {
+        $(document).ready(function () {
+            $("#formTextRemarks").submit(function (e) {
+                submitSMS(e);
+            });
+        });
+    };
+
+    var fnCheckJQuerySMS = function () {
+        if (window.jQuery) {
+            initFunSMS();
+        }
+        else {
+            setTimeout(function () {
+                fnCheckJQuerySMS();
+            }, 1000);
+        }
+    }
+
+    fnCheckJQuerySMS();
+
+
+    function logTypeChange() {
+        var type = $("#LogType").val();
+        helper.fillTextData(type, 'LogRecId');
+        logRecChange();
+    }
+
+    function logRecChange() {
+        var recId = $("#LogRecId").val();
+        var rec = helper.variable.templateData.filter(function (e) {
+            return e.id == recId;
+        });
+
+        $("#textPreview").html('');
+        $("#textSubject").html('');
+        if (rec && rec.length > 0) {
+            var previewText = helper.parseLeadText(rec[0].text);
+            $("#textPreview").html(previewText);
+            $("#textSubject").html("Subject: " + helper.parseLeadText(rec[0].subject));
+
+            $("#LogSubject").val(helper.parseLeadText(rec[0].subject));
+            $("#LogText").val(previewText);
+        }
+    }
+
+
+    function processTextData() {
+        $(".leadIdSMS").val(leadJson.Id);
+        return true;
+    }
+
+    function submitSMS(e) {
+        e.preventDefault();
+        if ($('#formTextRemarks').valid()) {
+            var formData = helper.getFormData($("#formTextRemarks"));
+            ajaxFormPost($("#formTextRemarks").attr('action'), formData, function (data) {
+                if (!data.success) {
+                    helper.addErrorInForm('divTextErrorSummary', [data.response]);
+                }
+                else {
+                    $("#textPreview").html('');
+                    $("#textSubject").html('');
+                    $('#formTextRemarks').trigger("reset");
+                    helper.addSuccessInForm('divTextErrorSummary', ["Text Sent Successfully"]);
+                }
+            });
+        }
+        else {
+            $("#divTextErrorSummary").addClass("alert-danger");
+            helper.clearMessage('divTextErrorSummary');
+        }
+    }
+
+</script>

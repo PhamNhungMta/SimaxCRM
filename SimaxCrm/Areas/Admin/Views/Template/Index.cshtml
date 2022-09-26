@@ -1,0 +1,69 @@
+@model IEnumerable<SimaxCrm.Model.Entity.Template>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="fa fa-align-justify"></i> Template
+            </div>
+            <div class="card-body">
+                <table class="table table-responsive-sm">
+                    <thead>
+                        <tr>
+                            <th>@Html.DisplayNameFor(model => model.Name)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.Type)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.Text)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.Status)</th>
+
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.Name)</td>
+
+                            <td>@Html.DisplayFor(modelItem => item.Type)</td>
+
+                            <td>
+                                @if (item.Type == SimaxCrm.Model.Enum.TemplateType.Email)
+                                {
+                                    @Html.Raw("[HTML]")
+                                }
+                                else
+                                {
+                                    @item.Text
+                                }
+                            </td>
+
+                            <td>@Html.DisplayFor(modelItem => item.Status)</td>
+
+                            <td>
+                                <form asp-action="Delete" class="form-delete">
+                                    <input type="hidden" name="Id" value="@item.Id" />
+                                    <button type="submit" onclick="return confirm('Do you want to delete this record')" class="btn btn-danger btn-sm">
+                                        Delete
+                                    </button>
+                                </form>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-success btn-sm">Edit</a>
+
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

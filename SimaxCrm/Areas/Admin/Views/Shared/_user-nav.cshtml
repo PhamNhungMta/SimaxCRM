@@ -1,0 +1,28 @@
+
+<li class="nav-item dropdown">
+    <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+        <i class="nav-icon icon-user"></i> @Html.LoggedInUserProperty(this.Context.Request, "Name")
+    </a>
+    <div class="dropdown-menu dropdown-menu-right">
+        <div class="dropdown-header text-center">
+            <strong>Account</strong>
+        </div>
+       
+
+        <a class="dropdown-item" asp-controller="user" asp-action="profile">
+            <i class="fa fa-user"></i> Profile
+        </a>
+
+        <form asp-controller="Account" asp-action="Logout" asp-area="" asp-route-returnUrl="@Url.Page("/Dashboard", new {area = ""})" method="post" id="logoutForm">
+            <script>
+                function logout() {
+                    $('#logoutForm').submit();
+                }
+            </script>
+            <a id="btnLogout" class="dropdown-item" href="javascript: void(0)" onclick="logout()">
+                <i class="fa fa-lock"></i> Logout
+            </a>
+        </form>
+
+    </div>
+</li>

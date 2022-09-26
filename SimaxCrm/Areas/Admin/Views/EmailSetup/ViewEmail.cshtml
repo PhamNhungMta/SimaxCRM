@@ -1,0 +1,13 @@
+﻿@model AE.Net.Mail.MailMessage
+@{
+    Layout = null;
+}
+
+@if (Model.AlternateViews.Count == 2)
+{
+    @Html.Raw(Model.AlternateViews[1].Body)
+}
+else
+{
+    @Html.Raw(Model.Body)
+}

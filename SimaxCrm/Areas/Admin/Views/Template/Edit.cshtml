@@ -1,0 +1,119 @@
+@model SimaxCrm.Model.Entity.Template
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <strong>Update</strong>
+            </div>
+            <div class="card-body">
+                <form asp-action="Edit">
+                    <div class="row">
+
+                        <div class="col-md-6">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <input type="hidden" asp-for="Id" />
+
+                            <div class="form-group"><label asp-for="Name" class="control-label"></label><input asp-for="Name" class="form-control" /><span asp-validation-for="Name" class="text-danger"></span></div>
+
+                            <div class="form-group">
+                                <label asp-for="Type" class="control-label"></label>
+                                <select asp-for="Type" class="form-control" onchange="changeType()">
+                                    <option value=""></option>
+                                    <option value="1">SMS</option>
+                                    <option value="2">Email</option>
+                                </select>
+                                <span asp-validation-for="Type" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group sms-text">
+                                <label asp-for="Text" class="control-label"></label>
+                                <textarea asp-for="Text" class="form-control" rows="5"></textarea>
+                                <span asp-validation-for="Text" class="text-danger"></span>
+                            </div>
+
+
+                            <div class="form-group email-text">
+                                <label asp-for="Subject" class="control-label"></label>
+                                <input asp-for="Subject" class="form-control" />
+                                <span asp-validation-for="Subject" class="text-danger"></span>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6 sms-text">
+                            <h3>Lead Fields</h3>
+                            <ul class="lead-fields">
+                                <li><a class="btn btn-primary" href="javascript:injectFields('@@Id@@')">Lead ID</a></li>
+                                <li><a class="btn btn-primary" href="javascript:injectFields('@@Name@@')">Name</a></li>
+                                <li><a class="btn btn-primary" href="javascript:injectFields('@@PhoneNumber@@')">PhoneNumber</a></li>
+                                <li><a class="btn btn-primary" href="javascript:injectFields('@@Email@@')">Email</a></li>
+                                <li><a class="btn btn-primary" href="javascript:injectFields('@@Address@@')">Address</a></li>
+                                <li><a class="btn btn-primary" href="javascript:injectFields('@@City@@')">City</a></li>
+                                <li><a class="btn btn-primary" href="javascript:injectFields('@@State@@')">State</a></li>
+                                <li><a class="btn btn-primary" href="javascript:injectFields('@@Country@@')">Country</a></li>
+                                <li><a class="btn btn-primary" href="javascript:injectFields('@@PostalCode@@')">PostalCode</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="clearfix"></div>
+                        <div class="col-md-12">
+                            <div class="form-group email-text" style="display:none">
+                                <label asp-for="Text" class="control-label"></label>
+                                @{ Model.TextHtml = Model.Type == SimaxCrm.Model.Enum.TemplateType.Email ? Model.Text : "";}
+                                <textarea asp-for="TextHtml"></textarea>
+                                <span asp-validation-for="Text" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group"><label asp-for="Status" class="control-label"></label><input asp-for="Status" /><span asp-validation-for="Status" class="text-danger"></span></div>
+
+                            <div class="form-group">
+                                <input type="submit" onclick="return processData()" value="Update" class="btn btn-primary" />
+                                <a asp-action="Index" class="btn btn-primary">Back to List</a>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+        CKEDITOR.replace('TextHtml');
+
+        $(document).ready(function () {
+            changeType();
+        });
+
+        function injectFields(key) {
+            $("#Text").val($("#Text").val() + key);
+        }
+
+        function changeType() {
+            $(".sms-text").hide();
+            $(".email-text").hide();
+            if ($("#Type").val() == 2) {
+                $(".email-text").show();
+            }
+            else {
+                $(".sms-text").show();
+            }
+        }
+
+        function processData() {
+            if ($("#Type").val() == 2) {
+                $("#Text").val("Html");
+            }
+            return true;
+        }
+
+    </script>
+}

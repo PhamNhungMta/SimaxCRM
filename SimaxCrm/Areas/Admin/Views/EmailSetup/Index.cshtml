@@ -1,0 +1,71 @@
+@model IEnumerable<SimaxCrm.Model.Entity.EmailSetup>
+
+@{
+    ViewData["Title"] = "Index";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p>
+    <a asp-action="Create">Create New Email Setup</a>
+</p>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="fa fa-align-justify"></i> Email Setup List
+            </div>
+            <div class="card-body">
+                <table class="table table-responsive-sm">
+                    <thead>
+                        <tr>
+                            <th>@Html.DisplayNameFor(model => model.Email)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.SmtpServer)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.SmtpPort)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.UseSsl)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.Username)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.Status)</th>
+
+                            @*HtmlTableHeader*@
+
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.Email)</td>
+
+                            <td>@Html.DisplayFor(modelItem => item.SmtpServer)</td>
+
+                            <td>@Html.DisplayFor(modelItem => item.SmtpPort)</td>
+
+                            <td>@Html.DisplayFor(modelItem => item.UseSsl)</td>
+
+                            <td>@Html.DisplayFor(modelItem => item.Username)</td>
+
+                            <td>@Html.DisplayFor(modelItem => item.Status)</td>
+
+                            <td>
+                                <form asp-action="Delete" class="form-delete">
+                                    <input type="hidden" name="Id" value="@item.Id" />
+                                    <button type="submit" onclick="return confirm('Do you want to delete this record')" class="btn btn-danger btn-sm">
+                                        Delete
+                                    </button>
+                                </form>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-success btn-sm">Edit</a>
+
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,86 @@
+@model IEnumerable<SimaxCrm.Model.Entity.SystemSetup>
+
+@{
+    ViewData["Title"] = "Index";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (Model.Count() == 0)
+{
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="fa fa-align-justify"></i> SystemSetup
+            </div>
+            <div class="card-body">
+                <table class="table table-responsive-sm">
+                    <thead>
+                        <tr>
+                            <th>@Html.DisplayNameFor(model => model.CompanyName)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.AddressPlain)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.CompanyContact)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.CompanyGstNumber)</th>
+                            <th>@Html.DisplayNameFor(model => model.TaxPercent)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.Currency)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.CurrencySymbol)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.CompanyLogo)</th>
+
+                            <th>@Html.DisplayNameFor(model => model.Status)</th>
+
+                            @*HtmlTableHeader*@
+
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@Html.DisplayFor(modelItem => item.CompanyName)</td>
+
+                                <td>@Html.DisplayFor(modelItem => item.AddressPlain)</td>
+
+                                <td>@Html.DisplayFor(modelItem => item.CompanyContact)</td>
+
+                                <td>@Html.DisplayFor(modelItem => item.CompanyGstNumber)</td>
+                                <td>@Html.DisplayFor(modelItem => item.TaxPercent)</td>
+
+                                <td>@Html.DisplayFor(modelItem => item.Currency)</td>
+
+                                <td>@Html.DisplayFor(modelItem => item.CurrencySymbol)</td>
+
+                                <td>
+                                    <img style="height:50px;" src="/@item.CompanyLogo" />
+                                </td>
+
+                                <td>@Html.DisplayFor(modelItem => item.Status)</td>
+
+                                <td>
+                                    <form asp-action="Delete" class="form-delete">
+                                        <input type="hidden" name="Id" value="@item.Id" />
+                                        <button type="submit" onclick="return confirm('Do you want to delete this record')" class="btn btn-danger btn-sm">
+                                            Delete
+                                        </button>
+                                    </form>
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-success btn-sm">Edit</a>
+
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

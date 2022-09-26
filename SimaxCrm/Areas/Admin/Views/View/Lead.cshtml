@@ -1,0 +1,468 @@
+@model SimaxCrm.Model.Entity.Lead
+
+@{
+    ViewData["Title"] = "Lead View";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-sm-4">
+        <div class="card">
+
+            <div class="card-header">
+                <strong>Update Remarks</strong>
+            </div>
+
+            <div class="card-body">
+                <partial name="_remarks" model="new SimaxCrm.Model.Entity.CallLog()" />
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-8">
+        <div class="card" style="margin-bottom:0">
+            <div>
+                <ul class="nav nav-tabs tabs-head" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#lead" role="tab" aria-controls="lead">Lead Info</a>
+                    </li>
+                    <li class="nav-item">
+                        @{
+                            var callLogCount = Model.CallLog == null ? 0 : Model.CallLog.Count;
+                        }
+                        <a class="nav-link" data-toggle="tab" href="#calllog" role="tab" aria-controls="calllog">History (@callLogCount)</a>
+                    </li>
+                    <li class="nav-item">
+                        @{
+                            var phoneLogCount = Model.PhoneCallLeadLog == null ? 0 : Model.PhoneCallLeadLog.Count;
+                        }
+                        <a class="nav-link" data-toggle="tab" href="#calllogphone" role="tab" aria-controls="calllogphone">Call Log (@phoneLogCount)</a>
+                    </li>
+                    @*<li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#message" role="tab" aria-controls="messages">Send Messages or Email</a>
+                        </li>*@
+                </ul>
+
+                <div class="tab-content">
+                    <div class="tab-pane active" id="lead" role="tabpanel">
+                        <form id="formLeadUpdate" asp-controller="Lead" asp-action="Edit">
+                            <div id="divLeadErrorSummary" class="alert" asp-validation-summary="All"></div>
+                            <div class="row">
+                                <input type="hidden" id="Id" name="Id" value="@ViewBag.LeadId" />
+                                <div class="col-md-4">
+
+                                    <div class="form-group"><label asp-for="Name" class="control-label"></label><input readonly="readonly" asp-for="Name" class="form-control" /><span asp-validation-for="Name" class="text-danger"></span></div>
+
+                                    <div class="form-group"><label asp-for="PhoneNumber" class="control-label"></label><input readonly="readonly" asp-for="PhoneNumber" class="form-control" /><span asp-validation-for="PhoneNumber" class="text-danger"></span></div>
+
+                                    <div class="form-group"><label asp-for="AlternatePhoneNumber" class="control-label"></label><input asp-for="AlternatePhoneNumber" class="form-control" /><span asp-validation-for="AlternatePhoneNumber" class="text-danger"></span></div>
+
+                                    <div class="form-group"><label asp-for="Email" class="control-label"></label><input asp-for="Email" class="form-control" /><span asp-validation-for="Email" class="text-danger"></span></div>
+
+                                    <div class="form-group">
+                                        <label asp-for="LeadSourceId" class="control-label"></label>
+                                        <select style="height:35px" asp-for="LeadSourceId" class="form-control" asp-items="ViewBag.LeadSourceId">
+                                            <option value=""></option>
+                                        </select><span asp-validation-for="LeadSourceId" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="form-group"><label asp-for="ReferName" class="control-label"></label><input asp-for="ReferName" class="form-control" /><span asp-validation-for="ReferName" class="text-danger"></span></div>
+                                    <div class="form-group"><label asp-for="ReferPhoneNumber" class="control-label"></label><input asp-for="ReferPhoneNumber" class="form-control" /><span asp-validation-for="ReferPhoneNumber" class="text-danger"></span></div>
+
+
+                                    <div class="form-group">
+                                        <label asp-for="UserId" class="control-label"></label>
+                                        <select style="height:35px" asp-for="UserId" class="form-control" asp-items="ViewBag.UserId">
+                                            <option value=""></option>
+                                            @*<option value="Auto">Auto</option>*@
+                                        </select>
+                                        <span asp-validation-for="UserId" class="text-danger"></span>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label asp-for="LeadType" class="control-label"></label>
+                                        <select style="height:35px" asp-for="LeadType" class="form-control" asp-items="ViewBag.LeadType">
+                                            <option value="">Select</option>
+                                        </select><span asp-validation-for="LeadType" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="PropertyCategoryId" class="control-label"></label>
+                                        <select onchange="getSubCategory()" asp-for="PropertyCategoryId" class="form-control" style="height:35px" asp-items="ViewBag.CategoryId">
+                                            <option value="">Select</option>
+                                        </select><span asp-validation-for="PropertyCategoryId" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label asp-for="PropertySubcategoryId" class="control-label"></label>
+                                        <select asp-for="PropertySubcategoryId" class="form-control" style="height:35px">
+                                            <option value="">Select</option>
+                                        </select><span asp-validation-for="PropertySubcategoryId" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label asp-for="CityId" class="control-label"></label>
+                                        <select onchange="getLocation(),getSociety()" asp-for="CityId" class="form-control" style="height:35px" asp-items="ViewBag.CityId">
+                                            <option value="">Select</option>
+                                        </select><span asp-validation-for="CityId" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label asp-for="LocationId" class="control-label"></label>
+                                        <button type="button" class="btn btn-sm" onclick="helper.openMasterPopup('LocationId', true)">+</button>
+                                        <select asp-for="LocationId" class="form-control" style="height:35px">
+                                        </select><span asp-validation-for="LocationId" class="text-danger"></span>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label asp-for="SocietyId" class="control-label"></label>
+                                        <button type="button" class="btn btn-sm" onclick="helper.openMasterPopup('SocietyId', true)">+</button>
+                                        <select asp-for="SocietyId" class="form-control" style="height:35px">
+                                        </select><span asp-validation-for="SocietyId" class="text-danger"></span>
+                                    </div>
+
+                                    @*<div class="form-group">
+                                        <label asp-for="Type" class="control-label"></label>
+                                        <select style="height:35px" asp-for="Type" class="form-control">
+                                        <option value="">Select</option>
+                                        <option value="Sell">Sell</option>
+                                        <option value="Rent">Rent</option>
+                                        </select><span asp-validation-for="Type" class="text-danger"></span>
+                                        </div>*@
+
+
+                                    <div class="form-group"><label asp-for="BudgetMin" class="control-label"></label><input asp-for="BudgetMin" class="form-control inwords" /><span asp-validation-for="BudgetMin" class="text-danger"></span></div>
+                                    <div class="form-group"><label asp-for="BudgetMax" class="control-label"></label><input asp-for="BudgetMax" class="form-control inwords" /><span asp-validation-for="BudgetMax" class="text-danger"></span></div>
+
+                                    <div class="form-group">
+                                        <label asp-for="ProductIds" class="control-label"></label>
+                                        <input asp-for="ProductIds" class="control-label" type="hidden" />
+                                        <select style="height:35px" id="ProductIdMulti" name="ProductIdMulti" asp-items="ViewBag.ProductId" multiple class="multipleSelect form-control">
+                                            <option value="0"></option>
+                                        </select><span asp-validation-for="ProductIds" class="text-danger"></span>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-4">
+
+
+                                    <div class="form-group">
+                                        <label asp-for="LeadTags" class="control-label"></label>
+                                        <input asp-for="LeadTags" class="control-label" type="hidden" />
+                                        <select class="multipleSelect form-control" multiple style="height:35px" id="LeadTagMulti" name="LeadTagMulti" asp-items="ViewBag.LeadTagId">
+                                        </select><span asp-validation-for="LeadTags" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="form-group"><label asp-for="Address" class="control-label"></label><input asp-for="Address" class="form-control" /><span asp-validation-for="Address" class="text-danger"></span></div>
+
+                                    <div class="form-group"><label asp-for="Country" class="control-label"></label><input asp-for="Country" class="form-control" /><span asp-validation-for="Country" class="text-danger"></span></div>
+                                    <div class="form-group"><label asp-for="State" class="control-label"></label><input asp-for="State" class="form-control" /><span asp-validation-for="State" class="text-danger"></span></div>
+                                    <div class="form-group"><label asp-for="City" class="control-label"></label><input asp-for="City" class="form-control" /><span asp-validation-for="City" class="text-danger"></span></div>
+                                    <div class="form-group"><label asp-for="PostalCode" class="control-label"></label><input asp-for="PostalCode" class="form-control" /><span asp-validation-for="PostalCode" class="text-danger"></span></div>
+
+
+
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <input type="submit" value="Update Lead Data" onclick="return processData()" class="btn btn-primary" />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="tab-pane" id="calllog" role="tabpanel">
+
+                        @if (Model.CallLog != null)
+                        {
+
+                            <table class="table table-responsive-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Dated</th>
+                                        <th>Status</th>
+                                        <th>Remarks</th>
+                                        <th>Message</th>
+                                        <th>Start Time</th>
+                                        <th>End Time</th>
+                                        <th>Follow Up Time</th>
+                                        <th>User</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.CallLog.OrderByDescending(m => m.Id))
+                                    {
+                                        <tr>
+                                            <td>@item.CreatedDate.ToString("dd/MM/yyyy")</td>
+                                            <td>@item.Status</td>
+                                            <td>@item.Remarks</td>
+                                            <td>@item.Message</td>
+                                            <td>@item.StartTime.ToFormat("hh:mm tt")</td>
+                                            <td>@item.EndTime.ToFormat("hh:mm tt")</td>
+                                            <td>@item.AlertDate</td>
+                                            <td>@item.User?.Name</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+
+                    </div>
+                    <div class="tab-pane" id="calllogphone" role="tabpanel">
+
+                        @if (Model.PhoneCallLeadLog != null)
+                        {
+
+                            <table class="table table-responsive-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Dated</th>
+                                        <th>Time</th>
+                                        <th>Duration</th>
+                                        <th>Type</th>
+                                        <th>User</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.PhoneCallLeadLog.OrderByDescending(m => m.Id))
+                                    {
+                                        <tr>
+                                            <td>@item.CallTime.ToString("dd/MM/yyyy")</td>
+                                            <td>@item.CallTime.ToString("hh:mm tt")</td>
+                                            <td>@item.DurationMin</td>
+                                            <td>@item.Type</td>
+                                            <td>@item.User?.Name</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+
+                    </div>
+                    @*<div class="tab-pane" id="message" role="tabpanel">
+                        <partial name="_send-sms-email" model="new SimaxCrm.Model.RequestModel.SendTextModel()" />
+                        </div>*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+<script type="text/javascript">
+        var leadJson = null;
+        $(document).ready(function () {
+            numberToText.enable();
+            $("#formLeadUpdate").submit(function (e) {
+                updateLead(e);
+            });
+
+
+            @{
+        var leadObj = new { Model.Id, Model.Name, Model.PhoneNumber, Model.Email, Model.Address, Model.City, Model.State, Model.Country, Model.PostalCode, Model.LeadStatus };
+ }
+
+
+            leadJson = JSON.parse('@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(leadObj, Newtonsoft.Json.Formatting.None,
+                        new Newtonsoft.Json.JsonSerializerSettings()
+                        {
+                            ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                        }))');
+
+            //dropdown.fillDropdown("propertyType", "#PropertyType", null);
+            //dropdown.fillDropdown("leadType", "#LeadType", null);
+            //dropdown.fillDropdown("propertyCity", "#PropertyCities", null);
+            //dropdown.fillDropdown("sectorLocation", "#SectorLocations", null);
+            //dropdown.fillDropdown("buildingSociety", "#BuildingSocieties", null);
+
+            var tagIds = '@string.Join(',', Model.LeadTagMapping.Select(m=>m.LeadTagId).Distinct().ToArray())';
+            fillTags(tagIds, '#LeadTagMulti');
+
+            @{
+            var propertyCityIds = Model?.CityId != null ? string.Join(',', Model?.CityId.ToString().Split(',').ToArray()) : "";
+             }
+            fillTags('@propertyCityIds', '#PropertyCities');
+
+            var productIds = '@string.Join(',', Model.LeadProductMapping.Select(m=>m.ProductId).Distinct().ToArray())';
+            fillTags(productIds, '#ProductIdMulti');
+
+             $("#LeadType").val('@Model?.LeadType');
+          //  $("#PropertyCategoryId").val('@Model?.PropertyCategoryId');
+            fillSubCategory();
+             getSubCategory(function () {
+                $("#PropertySubcategory").val(@Model.PropertySubcategoryId);
+             });
+
+             getLocation(function () {
+                $("#LocationId").val(@Model.LocationId);
+             });
+
+            getSociety(function () {
+                $("#SocietyId").val(@Model.SocietyId);
+            });
+            @{
+            var propertySubcategoryIds = Model?.PropertySubcategoryId != null ? string.Join(',', Model?.PropertySubcategoryId.ToString().Split(',').ToArray()) : "";
+            }
+            fillTags('@propertySubcategoryIds', '#PropertySubcategories');
+
+
+            $("#LeadType").val('@Model?.LeadType');
+            $("#BudgetMax").val('@Model?.BudgetMax'||0);
+            $("#BudgetMin").val('@Model?.BudgetMin'||0);
+
+
+
+            @*@{ var sectorLocationIds = Model?.SectorLocation != null ? string.Join(',', Model?.SectorLocation?.Split(',').ToArray()) : ""; }
+            fillTags('@sectorLocationIds', '#SectorLocations');
+
+            @{ var buildingSocietyIds = Model?.BuildingSociety != null ? string.Join(',', Model?.BuildingSociety?.Split(',').ToArray()) : ""; }
+            fillTags('@buildingSocietyIds', '#BuildingSocieties');*@
+
+
+            @*  var locIds = '@string.Join(',', Model.LeadLocationMapping.Select(m=>m.LocationId).Distinct().ToArray())';
+            fillTags(locIds, '#LeadLocationMulti');
+
+            var socIds = '@string.Join(',', Model.LeadSocietyMapping.Select(m=>m.SocietyId).Distinct().ToArray())';
+            fillTags(socIds, '#LeadSocietyMulti');*@
+
+
+
+        });
+
+    function fillTags(ids, ddl) {
+        $.each(ids.split(','), function (i, v) {
+            if (v) {
+                $(ddl + ' option[value="' + v + '"]').attr('selected', 'selected');
+            }
+        });
+    }
+
+    function getSubCategory(callback) {
+         var param = { categoryId: $("#PropertyCategoryId").val() };
+         $("#PropertySubcategoryId").html('<option value="">Select</option>');
+        if (param.categoryId) {
+            ajaxCall("/Admin/SubCategory/List", "GET", param, function (data) {
+                var html = "";
+                html = '<option value="">Select</option>';
+                $.each(data, function (index, value) {
+                    html += '<option value="' + value.id + '">' + value.name + '</option>';
+                });
+                $("#PropertySubcategoryId").html(html);
+                  $("#PropertySubcategoryId").val(@Model.PropertySubcategoryId);
+                 if (callback) {
+                    callback();
+                }
+            });
+        }
+    }
+
+    function getLocation(callback) {
+        var param = { cityId: $("#CityId").val() };
+        $("#LocationId").html('<option value="">Select</option>');
+        debugger;
+        if (param.cityId) {
+            ajaxCall("/Admin/Location/List", "GET", param, function (data) {
+                var html = "";
+                html = '<option value="">Select</option>';
+                $.each(data, function (index, value) {
+                    html += '<option value="' + value.id + '">' + value.name + '</option>';
+                });
+                $("#LocationId").html(html);
+                 $("#LocationId").val(@Model.LocationId);
+                 if (callback) {
+                    callback();
+                }
+            });
+        }
+    }
+
+    function getSociety(callback) {
+        var param = { cityId: $("#CityId").val() };
+        $("#SocietyId").html('<option value="">Select</option>');
+        if (param.cityId) {
+            ajaxCall("/Admin/Society/List", "GET", param, function (data) {
+                var html = "";
+                html = '<option value="">Select</option>';
+                $.each(data, function (index, value) {
+                    html += '<option value="' + value.id + '">' + value.name + '</option>';
+                });
+                $("#SocietyId").html(html);
+                 if (callback) {
+                    callback();
+                }
+            });
+        }
+    }
+
+    function fillSubCategory(callback) {
+        var type = $("#PropertyType").val();
+        dropdown.fillDropdown("propertySubcategory", "#PropertySubcategories", type);
+        setTimeout(function () {
+            $('#PropertySubcategories').data('fastselect').destroy();
+            $('#PropertySubcategories').fastselect();
+            if (callback) {
+                callback();
+            }
+        }, 500);
+    }
+
+
+    function processData() {
+            var ids = helper.getFastSelectValue('LeadTagMulti');
+        $("#LeadTags").val(ids);
+
+        ids = helper.getFastSelectValue('LeadLocationMulti');
+        $("#Locations").val(ids);
+
+        ids = helper.getFastSelectValue('LeadSocietyMulti');
+        $("#Societys").val(ids);
+
+            ids = helper.getFastSelectValue('PropertySubcategories');
+            $("#PropertySubcategory").val(ids);
+
+            ids = helper.getFastSelectValue('PropertyCities');
+            $("#PropertyCity").val(ids);
+
+            ids = helper.getFastSelectValue('SectorLocations');
+            $("#SectorLocation").val(ids);
+
+            ids = helper.getFastSelectValue('BuildingSocieties');
+            $("#BuildingSociety").val(ids);
+
+            ids = helper.getFastSelectValue('ProductIdMulti');
+            $("#ProductIds").val(ids);
+
+            return true;
+        }
+
+        function updateLead(e) {
+            e.preventDefault();
+            if ($('#formLeadUpdate').valid()) {
+                var formData = helper.getFormData($("#formLeadUpdate"));
+                ajaxFormPost($("#formLeadUpdate").attr('action'), formData, function (data) {
+                    if (!data.success) {
+                        helper.addErrorInForm('divLeadErrorSummary', data.response.split(','));
+                    }
+                    else {
+                        helper.addSuccessInForm('divLeadErrorSummary', ["Lead Updated Successfully"]);
+                    }
+                });
+            }
+            else {
+                $("#divLeadErrorSummary").addClass("alert-danger");
+                helper.clearMessage('divLeadErrorSummary');
+            }
+        }
+
+
+</script>
+
+}

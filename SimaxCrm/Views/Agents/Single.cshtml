@@ -1,0 +1,158 @@
+﻿@model SimaxCrm.Model.Entity.ApplicationUser
+@{
+    var objProducts = ViewBag.Products as List<SimaxCrm.Model.Entity.Product>;
+    var objCustomerQueries = ViewBag.CustomerQueries as List<SimaxCrm.Model.Entity.CustomerQuery>;
+    var objRatings = ViewBag.Ratings as List<SimaxCrm.Model.Entity.UserRating>;
+     var systemSetup = ViewBag.SystemSetup as SimaxCrm.Model.Entity.SystemSetup;
+}
+<style>
+    p {
+        margin-bottom: 5px !important;
+    }
+</style>
+<main id="main">
+
+    <!-- ======= Intro Single ======= -->
+    <section class="intro-single">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12 col-lg-8">
+            <div class="title-single-box">
+              <h1 class="title-single">@Model.Name</h1>             
+            </div>
+          </div>
+          <div class="col-md-12 col-lg-4">
+            <nav aria-label="breadcrumb" class="breadcrumb-box d-flex justify-content-lg-end">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                  <a href="/">Home</a>
+                </li>
+                <li class="breadcrumb-item">
+                  <a href="#">Agents</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                  @Model.Name
+                </li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </section><!-- End Intro Single -->
+
+    <!-- ======= Agent Single ======= -->
+    <section class="agent-single">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="agent-avatar-box">
+                  <img src="/@Model.ImagePath" alt="@Model.Name" class="agent-avatar img-fluid">
+                </div>
+              </div>
+              <div class="col-md-5 section-md-t3">
+                <div class="agent-info-box">
+                  <div class="agent-title">
+                    <div class="title-box-d">
+                      <h3 class="title-d">@Model.Name                        
+                      </h3>
+                    </div>
+                  </div>
+                  <div class="agent-content mb-3">
+                    
+                    <div class="info-agents color-a">
+                      <p>
+                        <strong>Phone: </strong>
+                        <span class="color-text-a"> @systemSetup.CompanyContact</span>
+                      </p>                     
+                      <p>
+                        <strong>Email: </strong>
+                        <span class="color-text-a"> @systemSetup.CompanyEmail</span>
+                      </p>                     
+                      <p>
+                        <strong>Experience: </strong>
+                        <span class="color-text-a"> @Model.Experience Years of Experience</span>
+                      </p>
+                      <p>
+                        <strong>Working: </strong>
+                        <span class="color-text-a"> Has @Model.WorkingEmployees Employee working with him</span>
+                      </p>
+                      <p>
+                        <strong>Office: </strong>
+                        <span class="color-text-a"> Has Office in @Model.Address</span>
+                      </p>
+                      <p>
+                        <strong>Hobby: </strong>
+                        <span class="color-text-a">  @Model.News</span>
+                      </p>
+                      <p>
+                        <strong>Language: </strong>
+                        <span class="color-text-a">   @Model.LanguageSpeak</span>
+                      </p>
+                      <p>
+                        <strong>Skills: </strong>
+                        <span class="color-text-a">  Specializations in @Model.Specializations</span>
+                      </p>
+                    </div>
+                  </div>                 
+                </div>
+              </div>
+            </div>
+          </div>
+         
+          <div class="col-md-8 section-t8">
+         
+          <div class="title-box-d">
+              <h3 class="title-d">Ratings & Reviews </h3>
+            </div>
+                    <div>
+                       <partial name="_review" model="objRatings" />
+                    </div>
+        </div>
+
+        <div class="col-md-4">
+                <div class="Agent-contact">
+                 <partial name="_contactSingle" model="new SimaxCrm.Model.Entity.CustomerQuery()" />
+                </div>
+              </div>
+
+         <div class="col-md-12 section-t8">
+            <div class="title-box-d">
+              <h3 class="title-d">Properties By This Agent </h3>
+            </div>
+          </div>
+          <div class="row property-grid grid">
+            
+             @foreach (var item in objProducts.Where(m => m.ActiveStatus == SimaxCrm.Model.Enum.ItemActiveStatusType.Published).OrderByDescending(m => m.CreatedDate).Take(18).ToList())
+                            {
+                                <div class="col-sm-6 col-md-4 colm10">
+                                    <partial name="_Property" model="@item" />
+                                </div>
+                            }
+           
+          </div>
+      </div>
+      </div>
+    </section><!-- End Agent Single -->
+
+  </main><!-- End #main -->
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script type="text/javascript">
+        $("#RatingUserId").val('@Model.Id');
+
+
+            $("#ProjectId").val('0');
+            $("#ProductId").val('0');
+            $("#UserId").val('@Model.Id');
+
+            $("#contact-form-single").submit(function (e) {
+                e.preventDefault();
+                saveFrom.trigger('#contact-form-single', 'divContactSingleErrorSummary', function () {
+                });
+            });
+
+</script>
+}

@@ -1,0 +1,68 @@
+﻿@{
+    var systemSetup = ViewBag.SystemSetup as SimaxCrm.Model.Entity.SystemSetup;
+}
+<!-- ======= Header/Navbar ======= -->
+<nav class="navbar navbar-default navbar-trans navbar-expand-lg fixed-top">
+    <div class="container">
+        <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarDefault" aria-controls="navbarDefault" aria-expanded="false" aria-label="Toggle navigation">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <a class="navbar-brand" href="/">
+                            <img src="/@systemSetup.CompanyLogo" class="logo" height="40" alt="">
+                        </a>
+
+        <div class="navbar-collapse collapse justify-content-center" id="navbarDefault">
+            <ul class="navbar-nav">
+
+                <li class="nav-item">
+                    <a class="nav-link active" href="/">Home</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link " asp-controller="properties" asp-action="list">Property</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="projects" asp-action="list">Projects</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link " asp-controller="agents" asp-action="list">Agents</a>
+                </li>
+
+            </ul>
+        </div>
+        <a class="btn btn-default btn-head" asp-area="admin" asp-controller="product" asp-action="create">
+            <i class="bi bi-plus-circle"></i> Add Property
+        </a>
+        <a class="btn btn-default btn-head" asp-controller="wishlist" asp-action="list"><i class="bi bi-heart"></i></a>
+        
+
+        @if (this.Context.Request.MainIsSignedIn())
+        {
+            @*<a class="menu-item" href="/admin/dashboard"><i class="fas fa-user"></i> @Html.MainLoggedInUserProperty(this.Context.Request, "Name")</a>*@
+
+            <form asp-controller="Account" asp-action="Logout" asp-route-returnUrl="@Url.Page("/Dashboard", new {area = ""})" method="POST" id="logoutForm">
+                <script>
+                    function logout() {
+                        $('#logoutForm').submit();
+                    }
+                </script>
+                <a class="btn btn-default btn-head" href="javascript: void(0)" onclick="logout()">
+                    Logout
+                </a>
+            </form>
+        }
+        else
+        {
+            <a class="btn btn-default btn-head" asp-controller="account" asp-action="login" id="btn-login">Login</a>
+        }
+
+        <button type="button" class="btn btn-b-n navbar-toggle-box navbar-toggle-box-collapse" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01">
+            <i class="bi bi-search"></i>
+        </button>
+
+    </div>
+</nav><!-- End Header/Navbar -->

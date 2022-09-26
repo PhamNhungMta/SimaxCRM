@@ -1,0 +1,31 @@
+﻿
+<div class="bgheadproject hidden-xs" style="background: url('/Main/storage/general/breadcrumb-background.jpg')">
+    <div class="description">
+        <div class="container-fluid w90">
+            <h1 class="text-center">Properties in @ViewBag.CityName</h1>
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item active">@ViewBag.CityName</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<partial name="_CategoryThumb" />
+
+<partial name="_Projects" />
+
+<partial name="_Sale" />
+
+<partial name="_Rent" />
+
+<partial name="_Agents" />
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            dropdown.fillDropdown("propertyCity", "#propertyCitySearch", null);
+        });
+    </script>
+}
