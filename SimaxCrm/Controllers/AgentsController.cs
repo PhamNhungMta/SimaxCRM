@@ -22,13 +22,15 @@ namespace SimaxCrm.Controllers
         private readonly IProductService _productService;
         private readonly ICustomerQueryService _customerQueryService;
         private readonly IUserRatingService _userRatingService;
+        private readonly IContentHomepageService _contentHomepageService;
 
         public AgentsController(UserManager<ApplicationUser> userManager,
             IProductService productService,
             IUserRatingService userRatingService,
             ICustomerQueryService customerQueryService,
             ISystemSetupService systemSetupService,
-            ISeoService seoService
+            ISeoService seoService,
+            IContentHomepageService contentHomepageService
             )
         {
             _systemSetupService = systemSetupService;
@@ -37,6 +39,7 @@ namespace SimaxCrm.Controllers
             _productService = productService;
             _customerQueryService = customerQueryService;
             _userRatingService = userRatingService;
+            _contentHomepageService = contentHomepageService;
         }
 
         public IActionResult List()
@@ -119,6 +122,15 @@ namespace SimaxCrm.Controllers
             ViewData["MetaDescription"] = user.Name;
 
             return View(user);
+        }
+
+        [MainCustomAuthorize]
+        public IActionResult Agent(string id)
+        {
+            var agent = _userManager.Users.Where(m => m.Name == id).FirstOrDefault();
+            base.LoadViewBagDefaultData(_systemSetupService);
+            var homepage = _contentHomepageService.GetHomepageByAgentId (agent.Id);
+            return View(homepage);
         }
     }
 }

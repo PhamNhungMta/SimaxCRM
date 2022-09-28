@@ -1,0 +1,25 @@
+@model SimaxCrm.Model.Entity.ContentHomepage
+
+<main id="main">
+
+    <!-- ======= Intro Single ======= -->
+    <section class="intro-single">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12 col-lg-8">
+            <div class="title-single-box">
+              <h1 class="title-single">@Model?.Title</h1>             
+            </div>
+          </div>
+        </div>
+      </div>
+    </section><!-- End Intro Single -->
+
+    <!-- ======= Agent Single ======= -->
+    <div>@Model?.Body</div>
+
+  </main><!-- End #main -->
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

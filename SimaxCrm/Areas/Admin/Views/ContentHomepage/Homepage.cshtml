@@ -1,0 +1,59 @@
+@model SimaxCrm.Model.Entity.ContentHomepage
+
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <strong>Update Home page</strong>
+            </div>
+            <div class="card-body">
+                @if (!string.IsNullOrEmpty(ViewBag.Result))
+                {
+                    <div class="alert alert-success">@ViewBag.Result</div>
+                }
+                @if (!string.IsNullOrEmpty(ViewBag.ResultError))
+                {
+                    <div class="alert alert-danger">@ViewBag.ResultError</div>
+                }
+                <div class="row">
+                    <div class="col-md-12">
+                        <form asp-action="Homepage">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                            <input type="hidden" asp-for="Id" />
+                            <div class="form-group"><label asp-for="Title" class="control-label"></label><input asp-for="Title" class="form-control" /><span asp-validation-for="Title" class="text-danger"></span></div>
+
+                            <div class="form-group">
+                                <label asp-for="Body" class="control-label"></label>
+                                <textarea name="Body" id="editor1" asp-for="Body"></textarea>
+                                <span asp-validation-for="Body" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <input type="submit" onclick="return processData()" value="Update" class="btn btn-primary" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script src="~/lib/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
+    <script type="text/javascript">
+        function processData() {
+            return true;
+        }
+        tinymce.init({
+            selector: '#editor1'
+        });
+    </script>
+}

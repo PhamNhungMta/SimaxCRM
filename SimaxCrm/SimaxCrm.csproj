@@ -92,6 +92,7 @@
     <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
     <PackageReference Include="OptimizedConnection" Version="1.2.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.11.0" />
+    <PackageReference Include="TinyMCE" Version="6.2.0" />
   </ItemGroup>
 
 

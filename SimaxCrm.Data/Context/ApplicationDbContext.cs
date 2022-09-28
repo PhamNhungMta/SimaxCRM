@@ -69,6 +69,7 @@ namespace SimaxCrm.Data.Context
         public DbSet<UploadCategory> UploadCategory { get; set; }
         public DbSet<Seo> Seo { get; set; }
         public DbSet<Slider> Slider { get; set; }
+        public DbSet<ContentHomepage> ContentHomepage { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
