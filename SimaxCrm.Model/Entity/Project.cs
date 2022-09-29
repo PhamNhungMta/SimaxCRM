@@ -36,5 +36,9 @@ namespace SimaxCrm.Model.Entity
         public virtual ICollection<CustomerQuery> CustomerQuery { get; set; }
         public virtual ICollection<Wishlist> Wishlist { get; set; }
         public virtual List<UserRating> UserRating { get; set; }
+
+        public string? CompanyId { get; set; }
+
+        public string? BranchId { get; set; }
     }
 }

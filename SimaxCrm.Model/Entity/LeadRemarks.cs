@@ -25,7 +25,10 @@ namespace SimaxCrm.Model.Entity
         public DateTime CreatedDate { get; set; }
 
         public DateTime? UpdatedDate { get; set; }
+        
+        public string? CompanyId { get; set; }
 
+        public string? BranchId { get; set; }
         //TableProperties
 
 

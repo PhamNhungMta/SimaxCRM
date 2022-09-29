@@ -7,7 +7,11 @@
         </li>
 
 
-      
+        @{
+            var checkAdmin = this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Admin) || 
+                    this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.CompanyAdmin) ||
+                    this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.BranchAdmin);
+        }
 
         @if (!this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Account))
         {
@@ -299,7 +303,7 @@
         }
 
 
-        @if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.QA))
+        @if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.QA) || checkAdmin)
         {
             <li class="nav-item">
                 <a class="nav-link" asp-area="Admin" asp-controller="LeadAutoAssign" asp-action="Index">
@@ -310,11 +314,11 @@
            
             <li class="nav-item">
                 <a class="nav-link" asp-area="Admin" asp-controller="User" asp-action="Index">
-                    <i class="nav-icon icon-user"></i> Create User
+                    <i class="nav-icon icon-user"></i> Manage User
                 </a>
             </li>
         }
-         @if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Agent))
+         @if (checkAdmin)
         {
             <li class="nav-item">
                 <a class="nav-link" asp-area="Admin" asp-controller="ContentHomepage" asp-action="Homepage">

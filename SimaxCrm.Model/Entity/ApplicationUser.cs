@@ -125,5 +125,9 @@ namespace SimaxCrm.Model.Entity
         }
 
         public bool ShowInHomePage { get; set; }
+
+        public string? CompanyId { get; set; }
+
+        public string? BranchId { get; set; }
     }
 }

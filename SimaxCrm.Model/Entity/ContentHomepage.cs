@@ -11,9 +11,9 @@ namespace SimaxCrm.Model.Entity
         [Key]
         public int Id { get; set; }
         public int Tid { get; set; }
-        public string AgentId { get; set; }
-        public string CompanyId { get; set; }
-        public string BranchId { get; set; }
+        public string? AgentId { get; set; }
+        public string? CompanyId { get; set; }
+        public string? BranchId { get; set; }
         [Required]
         public string Title { get; set; }
         [Required]

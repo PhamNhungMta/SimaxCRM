@@ -38,6 +38,9 @@ namespace SimaxCrm.Model.Entity
         [Display(Name = "Lead Sources")]
         public string LeadSources { get; set; }
 
+        public string? CompanyId { get; set; }
+
+        public string? BranchId { get; set; }
 
     }
 }

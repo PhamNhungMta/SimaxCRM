@@ -84,7 +84,9 @@ namespace SimaxCrm.Model.Entity
         public virtual Society Society { get; set; }
         public virtual ICollection<CustomerQuery> CustomerQuery { get; set; }
         public virtual ICollection<Wishlist> Wishlist { get; set; }
+        public string? CompanyId { get; set; }
 
+        public string? BranchId { get; set; }
         
     }
 }

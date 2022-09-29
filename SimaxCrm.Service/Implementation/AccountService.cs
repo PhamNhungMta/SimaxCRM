@@ -6,6 +6,7 @@ using SimaxCrm.Model.Entity;
 using SimaxCrm.Model.Enum;
 using SimaxCrm.Model.RequestModel;
 using SimaxCrm.Model.ResponseModel;
+using SimaxCrm.Service.Interface;
 using SimaxShop.Service.Interface;
 using System;
 using System.Collections.Generic;
@@ -23,17 +24,22 @@ namespace SimaxShop.Service.Implementation
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ICompanyService _companyService;
+        private readonly IBranchService _branchService;
 
         public AccountService(
          UserManager<ApplicationUser> userManager,
          RoleManager<ApplicationRole> roleManager,
-         SignInManager<ApplicationUser> signInManager
+         SignInManager<ApplicationUser> signInManager,
+         ICompanyService companyService,
+         IBranchService branchService
          )
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
-
+            _companyService = companyService;
+            _branchService = branchService;
         }
 
         public async Task<IList<AuthenticationScheme>> ExternalLoginList()
@@ -43,12 +49,6 @@ namespace SimaxShop.Service.Implementation
 
         public async Task<BaseResponse<string>> Login(UserLoginModel userLoginModel)
         {
-
-           
-
-
-
-
             var result = await _signInManager.PasswordSignInAsync(userLoginModel.Email, userLoginModel.Password, true, lockoutOnFailure: false);
             if (result.Succeeded)
             {
@@ -84,6 +84,57 @@ namespace SimaxShop.Service.Implementation
                 CreatedDate = DateTime.Now,
                 IsActive = true,
             };
+            var checkCompanyAdmin = userRegisterModel.UserType.ToString() == UserType.CompanyAdmin.ToString();
+            var checkBranchAdmin = userRegisterModel.UserType.ToString() == UserType.BranchAdmin.ToString();
+
+            if (checkCompanyAdmin)
+            {
+                if (_companyService.ByName(userRegisterModel.CompanyName) != null)
+                {
+                    return new BaseResponse<string>() { Success = false, Response = "Company already exists" };
+                }
+                var companyId = Guid.NewGuid().ToString();
+                var company = new Company
+                {
+                    Id = companyId,
+                    Name = userRegisterModel.CompanyName,
+                    Status = true,
+                    CreatedDate = DateTime.Now
+                };
+                _companyService.Create(company);
+
+                user.CompanyId = companyId;
+                
+            }
+
+            if (checkBranchAdmin)
+            {
+                var company = _companyService.ByName(userRegisterModel.CompanyName);
+                if (company == null)
+                {
+                    return new BaseResponse<string>() { Success = false, Response = "Company is not exists" };
+                }
+                if (_branchService.ByNameAndCompanyId(userRegisterModel.BranchName, company.Id) != null)
+                {
+                    return new BaseResponse<string>() { Success = false, Response = "Branch already exists" };
+                }
+                var branchId = Guid.NewGuid().ToString();
+                var branch = new Branch
+                {
+                    Id = branchId,
+                    Name = userRegisterModel.BranchName,
+                    CompanyId = company.Id,
+                    Country = userRegisterModel.Country,
+                    Region = userRegisterModel.Region,
+                    Status = true,
+                    CreatedDate = DateTime.Now
+                };
+                _branchService.Create(branch);
+
+                user.CompanyId = company.Id;
+                user.BranchId = branchId;
+            }
+
             var result = await _userManager.CreateAsync(user, userRegisterModel.Password);
             if (result.Succeeded)
             {

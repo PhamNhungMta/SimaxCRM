@@ -25,6 +25,9 @@ namespace SimaxCrm.Model.Entity
 
         public DateTime? UpdatedDate { get; set; }
 
+        public string? CompanyId { get; set; }
+
+        public string? BranchId { get; set; }
 
         //public virtual List<LeadLeadTypeMapping> LeadLeadTypeMapping { get; set; }
         //public virtual List<Product> Product { get; set; }

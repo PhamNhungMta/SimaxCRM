@@ -1,5 +1,7 @@
 using SimaxCrm.Model.Enum;
 using System.ComponentModel.DataAnnotations;
+using System;
+using System.Linq;
 
 namespace SimaxCrm.Model.RequestModel
 {
@@ -27,5 +29,14 @@ namespace SimaxCrm.Model.RequestModel
         public string ConfirmPassword { get; set; }
         public string ReturnUrl { get; set; }
         public int Tid { get; set; }
+
+        public string? CompanyName{ get; set; }
+
+        public string? CompanyId { get; set; }
+        public string? BranchName { get; set; }
+        public string? Country { get; set; }
+        public string? Region { get; set; }
+        
     }
+   
 }

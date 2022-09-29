@@ -29,7 +29,9 @@ namespace SimaxCrm.Model.Entity
 
         //public virtual List<Lead> Lead { get; set; }
 
+        public string? CompanyId { get; set; }
 
+        public string? BranchId { get; set; }
 
 
     }

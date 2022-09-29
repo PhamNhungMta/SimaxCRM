@@ -30,5 +30,8 @@ namespace SimaxCrm.Model.Entity
         public virtual ApplicationUser User { get; set; }
         public virtual PaymentLog PaymentLog { get; set; }
         public virtual List<LeadOrderDetail> LeadOrderDetail { get; set; }
+        public string? CompanyId { get; set; }
+
+        public string? BranchId { get; set; }
     }
 }

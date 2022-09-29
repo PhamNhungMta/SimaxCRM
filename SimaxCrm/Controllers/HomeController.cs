@@ -24,6 +24,7 @@ namespace SimaxCrm.Controllers
         private readonly ISeoService _seoService;
         private readonly ICityService _cityService;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IContentHomepageService _contentHomepageService;
 
         public HomeController(IProductService productService,
             IProjectService projectService,
@@ -31,7 +32,8 @@ namespace SimaxCrm.Controllers
             ISeoService seoService,
             ISliderService sliderService,
             ICityService cityService,
-            ISystemSetupService systemSetupService)
+            ISystemSetupService systemSetupService,
+            IContentHomepageService contentHomepageService)
         {
             _sliderService = sliderService;
             _seoService = seoService;
@@ -40,6 +42,7 @@ namespace SimaxCrm.Controllers
             _projectService = projectService;
             _systemSetupService = systemSetupService;
             _cityService = cityService;
+            _contentHomepageService = contentHomepageService;
         }
 
         public IActionResult Index()
@@ -103,6 +106,24 @@ namespace SimaxCrm.Controllers
             {               
                 return RedirectToAction("List", "Properties", new { searchModel.Keyword, searchModel.Location, searchModel.TagName });
             }
+        }
+
+        public IActionResult Homepage(string id)
+        {
+            base.LoadViewBagDefaultData(_systemSetupService);
+            var uid = base.getUidFromClaim().ToString();
+            var user = _userManager.Users.Include(u => u.UserRoles).ThenInclude(ur => ur.Role)
+                .Where(m => m.Id == uid).FirstOrDefault();
+            var role = user.UserRoles.FirstOrDefault()?.Role?.Name;
+            var homepage = _contentHomepageService.GetHomepageByAgentId(uid);
+            if (role.Equals(UserType.CompanyAdmin.ToString()))
+            {
+                homepage = _contentHomepageService.GetHomepageByCompanyId(user.CompanyId);
+            } else if (role.Equals(UserType.BranchAdmin.ToString()))
+            {
+                homepage = _contentHomepageService.GetHomepageByBranchId(user.BranchId);
+            }
+            return View(homepage);
         }
     }
 

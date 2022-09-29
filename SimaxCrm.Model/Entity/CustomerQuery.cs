@@ -39,5 +39,7 @@ namespace SimaxCrm.Model.Entity
         public bool Status { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
+        public string? CompanyId { get; set; }
+        public string? BranchId { get; set; }
     }
 }

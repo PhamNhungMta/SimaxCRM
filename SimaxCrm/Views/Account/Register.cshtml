@@ -38,15 +38,36 @@
                             <div class="form-group">
                                 <select asp-for="UserType" class="form-control" >
                                     <option value="">Select</option>
-                                    @if (((SimaxCrm.Model.Enum.UserType)ViewBag.UserLoginType) == SimaxCrm.Model.Enum.UserType.Admin)
+                                    @if (ViewBag.UserLoginType != null && ((SimaxCrm.Model.Enum.UserType)ViewBag.UserLoginType) == SimaxCrm.Model.Enum.UserType.Admin)
                                     {
                                         <option value="0" >Admin</option>
                                     }
                                     <option value="4">User</option>
                                     <option value="1">Agent</option>
+                                    <option value="5">Company Admin</option>
+                                    <option value="6">Branch Admin</option>
                                 </select>
                                 <span asp-validation-for="UserType" class="text-danger"></span>
                             </div>
+                            <div class="form-group company-block" style="display: none;">
+                                <input asp-for="CompanyName" type="text" class="form-control" placeholder="Company Name">
+                                <span asp-validation-for="CompanyName" class="text-danger"></span>
+                            </div>
+                            <div class="branch-block"  style="display: none;">
+                                <div class="form-group">
+                                    <input asp-for="BranchName" type="text" class="form-control" placeholder="Branch Name">
+                                    <span asp-validation-for="BranchName" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <input asp-for="Country" type="text" class="form-control" placeholder="Branch Country">
+                                    <span asp-validation-for="Country" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <input asp-for="Region" type="text" class="form-control" placeholder="Branch Region">
+                                    <span asp-validation-for="Region" class="text-danger"></span>
+                                </div>
+                            </div>
+                            
                             <div class="form-group">
                                 <button type="submit" class="btn btn-blue btn-full fw6">
                                     Register
@@ -70,6 +91,56 @@
 <script type="text/javascript">
          $(document).ready(function () {
              $('#UserType').val(@(Convert.ToInt32(ViewBag.UserLoginType)));
+             $(document).on('change', '#UserType', function() {
+                if ($(this).val() == '@Array.IndexOf(Enum.GetValues(typeof(SimaxCrm.Model.Enum.UserType )), SimaxCrm.Model.Enum.UserType.CompanyAdmin)') {
+                    $('.company-block').show();
+                    $('.branch-block').hide();
+                } else if ($(this).val() == '@Array.IndexOf(Enum.GetValues(typeof(SimaxCrm.Model.Enum.UserType )), SimaxCrm.Model.Enum.UserType.BranchAdmin)') {
+                    $('.company-block').show();
+                    $('.branch-block').show();
+                } else {
+                    $('.company-block').hide();
+                    $('.branch-block').hide();
+                }
+             });
+             $(document).on('click', 'button', function(event) {
+                if ($('#CompanyName').val() == '' && 
+                    $('#UserType').val() == '@Array.IndexOf(Enum.GetValues(typeof(SimaxCrm.Model.Enum.UserType )), SimaxCrm.Model.Enum.UserType.CompanyAdmin)') {
+                        event.preventDefault();
+                        $('span[data-valmsg-for="CompanyName"]').html('Company Name is required');
+                } else if ($('#UserType').val() == '@Array.IndexOf(Enum.GetValues(typeof(SimaxCrm.Model.Enum.UserType )), SimaxCrm.Model.Enum.UserType.BranchAdmin)') {
+                    if($('#CompanyName').val() == '') {
+                         event.preventDefault();
+                        $('span[data-valmsg-for="CompanyName"]').html('Company Name is required');
+                    }
+                    if($('#BranchName').val() == '') {
+                         event.preventDefault();
+                        $('span[data-valmsg-for="BranchName"]').html('Branch Name is required');
+                    }
+                    if($('#Country').val() == '') {
+                         event.preventDefault();
+                        $('span[data-valmsg-for="Country"]').html('Country is required');
+                    }
+                    if($('#Region').val() == '') {
+                         event.preventDefault();
+                        $('span[data-valmsg-for="Region"]').html('Region is required');
+                    }
+                }
+             });
+            $("input").on('keyup', function () {
+                if ($(this).prop('id')=='CompanyName' && $(this.val() !== '')) {
+                    $('span[data-valmsg-for="CompanyName"]').html('');
+                }
+                if ($(this).prop('id')=='BranchName' && $(this.val() !== '')) {
+                    $('span[data-valmsg-for="BranchName"]').html('');
+                }
+                if ($(this).prop('id')=='Country' && $(this.val() !== '')) {
+                    $('span[data-valmsg-for="Country"]').html('');
+                }
+                if ($(this).prop('id')=='Region' && $(this.val() !== '')) {
+                    $('span[data-valmsg-for="Region"]').html('');
+                }
+            });
         });
 </script>
 }

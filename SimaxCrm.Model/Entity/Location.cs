@@ -36,5 +36,9 @@ namespace SimaxCrm.Model.Entity
         public virtual List<Product> Product { get; set; }
         public virtual List<Project> Project { get; set; }
 
+        public string? CompanyId { get; set; }
+
+        public string? BranchId { get; set; }
+
     }
 }

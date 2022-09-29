@@ -42,6 +42,8 @@ namespace SimaxCrm.Areas.Admin.Controllers
         private readonly ICityService _cityService;
         private readonly ILeadTypeService _leadTypeService;
         private readonly ICategoryService _categoryService;
+        private readonly ICompanyService _companyService;
+        
 
         public LeadController(
             ILeadService leadService,

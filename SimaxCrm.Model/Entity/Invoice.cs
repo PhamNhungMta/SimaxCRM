@@ -67,5 +67,9 @@ namespace SimaxCrm.Model.Entity
         public string CompanyAddress { get; set; }
         [NotMapped]
         public byte[] Logo { get; set; }
+
+        public string? CompanyId { get; set; }
+
+        public string? BranchId { get; set; }
     }
 }

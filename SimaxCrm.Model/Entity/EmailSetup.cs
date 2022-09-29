@@ -51,6 +51,10 @@ namespace SimaxCrm.Model.Entity
         [Required]
         public int IncommingMailPort { get; set; }
 
+        public string? CompanyId { get; set; }
+
+        public string? BranchId { get; set; }
+
         //TableProperties
 
 

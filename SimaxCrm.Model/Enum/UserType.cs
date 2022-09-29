@@ -6,6 +6,8 @@ namespace SimaxCrm.Model.Enum
         Agent,
         QA,
         Account,
-        Customer
+        Customer,
+        CompanyAdmin,
+        BranchAdmin
     }
 }

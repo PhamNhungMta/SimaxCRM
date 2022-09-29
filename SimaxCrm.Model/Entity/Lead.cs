@@ -201,6 +201,10 @@ namespace SimaxCrm.Model.Entity
 
         [NotMapped]
         public string TeamEmailId { get; set; }
+
+        public string? CompanyId { get; set; }
+
+        public string? BranchId { get; set; }
         
     }
 

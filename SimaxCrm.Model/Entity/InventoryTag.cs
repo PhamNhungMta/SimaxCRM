@@ -28,5 +28,9 @@ namespace SimaxCrm.Model.Entity
 
         public virtual List<InventoryTagMapping> InventoryTagMapping { get; set; }
 
+        public string? CompanyId { get; set; }
+
+        public string? BranchId { get; set; }
+
     }
 }

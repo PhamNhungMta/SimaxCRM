@@ -70,6 +70,8 @@ namespace SimaxCrm.Data.Context
         public DbSet<Seo> Seo { get; set; }
         public DbSet<Slider> Slider { get; set; }
         public DbSet<ContentHomepage> ContentHomepage { get; set; }
+        public DbSet<Company> Company { get; set; }
+        public DbSet<Branch> Branch { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

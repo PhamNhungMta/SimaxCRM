@@ -31,6 +31,9 @@ namespace SimaxCrm.Model.Entity
         [NotMapped]
         public string Users { get; set; }
 
+        public string? CompanyId { get; set; }
+
+        public string? BranchId { get; set; }
 
     }
 }
