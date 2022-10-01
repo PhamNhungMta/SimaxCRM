@@ -3,6 +3,9 @@
 @{
     ViewData["Title"] = "Edit";
     //Layout = "~/Views/Shared/_Layout.cshtml";
+    var checkAdmin = this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Admin) || 
+                    this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.CompanyAdmin) ||
+                    this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.BranchAdmin);
 }
 
 <div class="row">
@@ -17,6 +20,8 @@
                         <form asp-action="Edit">
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <input type="hidden" asp-for="Id" />
+                            <input type="hidden" asp-for="CompanyId" />
+                            <input type="hidden" asp-for="BranchId" />
 
                             <div class="form-group"><label asp-for="Name" class="control-label"></label><input asp-for="Name" class="form-control" /><span asp-validation-for="Name" class="text-danger"></span></div>
 
@@ -26,18 +31,23 @@
                             <div class="form-group">
                                 <label asp-for="Role" class="control-label"></label>
                                 <select asp-for="Role" class="form-control" onchange="roleChange()">
-                                    <option value=""></option>
+                                    @* <option value=""></option> *@
                                     @if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Admin))
                                     {
-                                        <option value="Agent">Agent</option>
+                                        @* <option value="Agent">Agent</option> *@
                                         <option value="Admin">Admin</option>
-                                        <option value="QA">Team Leader</option>
-                                        <option value="Account">Inventory Manager</option>
                                     }
-                                    else if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.QA))
+                                    @if (checkAdmin)
+                                    {
+                                        @* <option value="Customer">User</option> *@
+                                        <option value="Employee">Employee</option>
+                                        @* <option value="QA">Team Leader</option>
+                                        <option value="Account">Inventory Manager</option> *@
+                                    }
+                                    @* else if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.QA))
                                     {
                                         <option value="Agent">Agent</option>
-                                    }
+                                    } *@
 
                                 </select>
                                 <span asp-validation-for="Role" class="text-danger"></span>
@@ -45,7 +55,10 @@
 
                             <div class="form-group"><label asp-for="ShowInHomePage" class="control-label"></label><input asp-for="ShowInHomePage" /><span asp-validation-for="ShowInHomePage" class="text-danger"></span></div>
                             <div class="form-group"><label asp-for="IsActive" class="control-label"></label><input asp-for="IsActive" /><span asp-validation-for="IsActive" class="text-danger"></span></div>
-
+                            @if (Model.Role == SimaxCrm.Model.Enum.UserType.Employee.ToString() )
+                            {
+                                <div class="form-group"><label asp-for="IsApproved" class="control-label"></label><input asp-for="IsApproved" /><span asp-validation-for="IsApproved" class="text-danger"></span></div>
+                            }
                             <div class="form-group">
                                 <input type="submit" value="Save" class="btn btn-primary" />
                             </div>

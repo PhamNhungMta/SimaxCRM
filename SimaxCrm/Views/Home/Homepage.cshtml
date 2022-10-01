@@ -2,7 +2,6 @@
 
 <main id="main">
 
-    <!-- ======= Intro Single ======= -->
     <section class="intro-single">
       <div class="container">
         <div class="row">
@@ -13,12 +12,11 @@
           </div>
         </div>
       </div>
-    </section><!-- End Intro Single -->
+    </section>
 
-    <!-- ======= Agent Single ======= -->
-    <div>@Model?.Body</div>
+    <div class="container">@Html.Raw(Model?.Body)</div>
 
-  </main><!-- End #main -->
+  </main>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

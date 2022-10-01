@@ -8,6 +8,8 @@ namespace SimaxCrm.Service.Interface
         ContentHomepage GetHomepageByAgentId(string AgentId);
         ContentHomepage GetHomepageByCompanyId(string CompanyId);
         ContentHomepage GetHomepageByBranchId(string BranchId);
+        ContentHomepage GetHomepageByCompanyName(string CompanyName);
+        ContentHomepage GetHomepageByBranchName(string BranchName);
         void Create(ContentHomepage homepage);
         void Update(ContentHomepage homepage);
     }

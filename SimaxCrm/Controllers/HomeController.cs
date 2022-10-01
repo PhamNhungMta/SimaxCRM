@@ -125,6 +125,22 @@ namespace SimaxCrm.Controllers
             }
             return View(homepage);
         }
+
+        public IActionResult Company(string id)
+        {
+            base.LoadViewBagDefaultData(_systemSetupService);
+            
+            var homepage = _contentHomepageService.GetHomepageByCompanyName(id);
+            return View("/Views/Home/Homepage.cshtml", homepage);
+        }
+
+        public IActionResult GetHomepageByBranchName(string id)
+        {
+            base.LoadViewBagDefaultData(_systemSetupService);
+            
+            var homepage = _contentHomepageService.GetHomepageByBranchName(id);
+            return View("/Views/Home/Homepage.cshtml", homepage);
+        }
     }
 
 

@@ -104,12 +104,11 @@ namespace SimaxShop.Service.Implementation
                 _companyService.Create(company);
 
                 user.CompanyId = companyId;
-                
             }
 
             if (checkBranchAdmin)
             {
-                var company = _companyService.ByName(userRegisterModel.CompanyName);
+                var company = _companyService.ByIdAndName(userRegisterModel.CompanyId, userRegisterModel.CompanyName);
                 if (company == null)
                 {
                     return new BaseResponse<string>() { Success = false, Response = "Company is not exists" };
@@ -134,7 +133,17 @@ namespace SimaxShop.Service.Implementation
                 user.CompanyId = company.Id;
                 user.BranchId = branchId;
             }
+            if (userRegisterModel.UserType.ToString() == UserType.Employee.ToString())
+            {
+                var company = _companyService.ByIdAndName(userRegisterModel.CompanyId, userRegisterModel.CompanyName);
+                if (company == null)
+                {
+                    return new BaseResponse<string>() { Success = false, Response = "Company is not exists" };
+                }
 
+                user.CompanyId = company.Id;
+                user.IsApproved = false;
+            }
             var result = await _userManager.CreateAsync(user, userRegisterModel.Password);
             if (result.Succeeded)
             {

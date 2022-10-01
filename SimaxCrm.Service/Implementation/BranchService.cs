@@ -22,7 +22,7 @@ namespace SimaxShop.Service.Implementation
 
         public Branch ByNameAndCompanyId(string Name, string CompanyId)
         {
-            return _branchRepository.SearchFor(x => x.Name == Name && x.CompanyId == CompanyId).FirstOrDefault();
+            return _branchRepository.SearchFor(x => x.Name.ToLower() == Name.ToLower() && x.CompanyId == CompanyId).FirstOrDefault();
         }
         public void Create(Branch branch)
         {

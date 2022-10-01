@@ -197,6 +197,9 @@ namespace SimaxCrm.Data.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("bit");
+
                     b.Property<string>("LanguageSpeak")
                         .HasColumnType("nvarchar(max)");
 
@@ -428,10 +431,6 @@ namespace SimaxCrm.Data.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("BranchName")
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
-
                     b.Property<string>("CompanyId")
                         .HasColumnType("nvarchar(450)");
 
@@ -441,6 +440,10 @@ namespace SimaxCrm.Data.Migrations
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(200)")
+                        .HasMaxLength(200);
 
                     b.Property<string>("Region")
                         .HasColumnType("nvarchar(200)")
@@ -656,13 +659,13 @@ namespace SimaxCrm.Data.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("CompanyName")
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(200)")
                         .HasMaxLength(200);
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<bool>("Status")
                         .HasColumnType("bit");

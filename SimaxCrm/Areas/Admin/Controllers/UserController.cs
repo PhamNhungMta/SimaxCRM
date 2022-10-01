@@ -168,14 +168,32 @@ namespace SimaxCrm.Controllers
         {
             //var tid = base.getTidFromClaim();
             var uid = base.getUidFromClaim().ToString();
+
             var users = _userManager.Users.Include(u => u.UserRoles).ThenInclude(ur => ur.Role).ToList();
+
+            var currentUser = _userManager.Users.Include(u => u.UserRoles).ThenInclude(ur => ur.Role)
+                .Where(m => m.Id == uid).FirstOrDefault();
+            var currentUserRole = currentUser.UserRoles.FirstOrDefault()?.Role?.Name;
+
+            if (currentUserRole.Equals(UserType.CompanyAdmin.ToString()))
+            {
+                users = users.Where(m => m.CompanyId == currentUser.CompanyId).ToList();
+            }
+            if (currentUserRole.Equals(UserType.BranchAdmin.ToString()))
+            {
+                users = users.Where(m => m.BranchId == currentUser.BranchId).ToList();
+            }
+
+            var isAdmin = this.Request.UserIsRole(UserType.Admin) || 
+                            currentUserRole.Equals(UserType.CompanyAdmin.ToString()) ||
+                            currentUserRole.Equals(UserType.BranchAdmin.ToString());
 
             if (this.Request.UserIsRole(UserType.QA))
             {
                 string[] roles = { UserType.Agent.ToString() };
                 users = users.Where(m => m.UserRoles.Any(m => roles.Contains(m.Role.Name)) && m.CreatedBy == uid).ToList();
             }
-            else if (this.Request.UserIsRole(UserType.Admin))
+            else if (isAdmin)
             {
                 users = users.ToList();
             }
@@ -254,7 +272,7 @@ namespace SimaxCrm.Controllers
                                   EndDate = u.EndDate,
                                   IsActive = u.IsActive,
                                   CreatedDate = u.CreatedDate,
-                                  UserRoles = u.UserRoles
+                                  UserRoles = u.UserRoles,
                                   
                               };
 
@@ -295,6 +313,18 @@ namespace SimaxCrm.Controllers
             {
                 //var tid = getTidFromClaim();
                 var uid = getUidFromClaim();
+                var createBy = _userManager.Users.Include(u => u.UserRoles).ThenInclude(ur => ur.Role)
+                                    .Where(m => m.Id == uid.ToString()).FirstOrDefault();
+                var createByRole = createBy.UserRoles.FirstOrDefault()?.Role?.Name;
+
+                if (createByRole.Equals(UserType.CompanyAdmin.ToString()))
+                {
+                    obj.CompanyId = createBy.CompanyId;
+                } else if (createByRole.Equals(UserType.BranchAdmin.ToString()))
+                {
+                    obj.CompanyId = createBy.CompanyId;
+                    obj.BranchId = createBy.BranchId;
+                }
 
                 var finUser = _userManager.Users.Include(u => u.UserRoles).ThenInclude(ur => ur.Role)
                                 .FirstOrDefault();
@@ -356,7 +386,9 @@ namespace SimaxCrm.Controllers
                     IsActive = obj.IsActive,
                     City = obj.City,
                     UserRank = obj.UserRank,
-                    ShowInHomePage = obj.ShowInHomePage
+                    ShowInHomePage = obj.ShowInHomePage,
+                    CompanyId = obj.CompanyId ?? null,
+                    BranchId = obj.BranchId ?? null
                 };
                 var result = await _userManager.CreateAsync(user, obj.Password);
                 if (result.Succeeded)
@@ -400,7 +432,10 @@ namespace SimaxCrm.Controllers
                 PhoneNumber = obj.PhoneNumber,
                 Role = obj.UserRoles.FirstOrDefault()?.Role?.Name,
                 IsActive = obj.IsActive,
-                ShowInHomePage = obj.ShowInHomePage
+                ShowInHomePage = obj.ShowInHomePage,
+                IsApproved = obj.IsApproved,
+                CompanyId = obj.CompanyId,
+                BranchId = obj.BranchId
             };
             return View(model);
         }
@@ -430,13 +465,16 @@ namespace SimaxCrm.Controllers
                 }
 
                 var exObj = _userManager.Users.Include(u => u.UserRoles).ThenInclude(ur => ur.Role)
-                .Where(m => m.Id == id).FirstOrDefault();
+                            .Where(m => m.Id == id).FirstOrDefault();
                 exObj.UserName = obj.Email;
                 exObj.Email = obj.Email;
                 exObj.Name = obj.Name;
                 exObj.PhoneNumber = obj.PhoneNumber;
                 exObj.IsActive = obj.IsActive;
                 exObj.ShowInHomePage = obj.ShowInHomePage;
+                exObj.IsApproved = obj.IsApproved;
+                exObj.CompanyId = obj.CompanyId;
+                exObj.BranchId = obj.BranchId;
                 await _userManager.UpdateAsync(exObj);
 
                 var role = await _roleManager.FindByNameAsync(obj.Role);

@@ -46,6 +46,11 @@ namespace SimaxCrm.Model.RequestModel
         public bool ShowInHomePage { get; set; }
 
         public bool IsActive { get; set; }
+
+        public string? CompanyId { get; set; }
+
+        public string? BranchId { get; set; }
+
     }
 
     public class RegistrationUpdateModel
@@ -94,5 +99,11 @@ namespace SimaxCrm.Model.RequestModel
 
         [Display(Name = "Specializations")]
         public string Specializations { get; set; }
+
+        public bool IsApproved { get; set; }
+
+        public string? CompanyId { get; set; }
+
+        public string? BranchId { get; set; }
     }
 }

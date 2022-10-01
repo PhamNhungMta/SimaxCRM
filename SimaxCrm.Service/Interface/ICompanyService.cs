@@ -7,6 +7,7 @@ namespace SimaxCrm.Service.Interface
     {
         Company ById(string Id);
         Company ByName(string Name);
+        Company ByIdAndName(string Id, string Name);
         void Create(Company company);
         void Update(Company company);
     }

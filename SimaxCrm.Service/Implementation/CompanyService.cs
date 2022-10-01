@@ -22,7 +22,12 @@ namespace SimaxShop.Service.Implementation
 
         public Company ByName(string Name)
         {
-            return _companyRepository.SearchFor(x => x.Name == Name).FirstOrDefault();
+            return _companyRepository.SearchFor(x => x.Name.ToLower() == Name.ToLower()).FirstOrDefault();
+        }
+
+        public Company ByIdAndName(string Id, string Name)
+        {
+            return _companyRepository.SearchFor(x => x.Id == Id && x.Name.ToLower() == Name.ToLower()).FirstOrDefault();
         }
 
         public void Create(Company company)

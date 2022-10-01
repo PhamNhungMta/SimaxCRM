@@ -129,5 +129,7 @@ namespace SimaxCrm.Model.Entity
         public string? CompanyId { get; set; }
 
         public string? BranchId { get; set; }
+
+        public bool IsApproved { get; set; } = true;
     }
 }

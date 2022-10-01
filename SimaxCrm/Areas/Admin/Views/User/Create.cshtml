@@ -3,6 +3,9 @@
 @{
     ViewData["Title"] = "Create";
     //Layout = "~/Views/Shared/_Layout.cshtml";
+    var checkAdmin = this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Admin) || 
+                    this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.CompanyAdmin) ||
+                    this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.BranchAdmin);
 }
 
 <div class="row">
@@ -43,17 +46,22 @@
                             <div class="form-group">
                                 <label asp-for="Role" class="control-label"></label>
                                 <select asp-for="Role" class="form-control" onchange="roleChange()">
-                                    <option value=""></option>
+                                    @* <option value=""></option> *@
                                     @if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Admin))
                                     {
-                                        <option value="Agent">Agent</option>
+                                        @* <option value="Agent">Agent</option> *@
                                         <option value="Admin">Admin</option>
-                                        <option value="QA">Team Leader</option>
-                                        <option value="Account">Inventory Manager</option>
                                     }
-                                    else if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.QA))
+                                    @if (checkAdmin)
                                     {
-                                        <option value="Agent">Agent</option>
+                                        @* <option value="Customer">User</option> *@
+                                        <option value="Employee">Employee</option>
+                                        @* <option value="QA">Team Leader</option>
+                                        <option value="Account">Inventory Manager</option> *@
+                                    }
+                                    @if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.QA))
+                                    {
+                                        @* <option value="Agent">Agent</option> *@
                                     }
                                     
                                 </select>

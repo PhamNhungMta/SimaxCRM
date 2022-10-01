@@ -10,7 +10,7 @@ using SimaxCrm.Data.Context;
 namespace SimaxCrm.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220929071534_createTableCompanyBranch")]
+    [Migration("20221001043702_createTableCompanyBranch")]
     partial class createTableCompanyBranch
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -197,6 +197,9 @@ namespace SimaxCrm.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsApproved")
                         .HasColumnType("bit");
 
                     b.Property<string>("LanguageSpeak")
@@ -430,10 +433,6 @@ namespace SimaxCrm.Data.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("BranchName")
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
-
                     b.Property<string>("CompanyId")
                         .HasColumnType("nvarchar(450)");
 
@@ -443,6 +442,10 @@ namespace SimaxCrm.Data.Migrations
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(200)")
+                        .HasMaxLength(200);
 
                     b.Property<string>("Region")
                         .HasColumnType("nvarchar(200)")
@@ -658,13 +661,13 @@ namespace SimaxCrm.Data.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("CompanyName")
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(200)")
                         .HasMaxLength(200);
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<bool>("Status")
                         .HasColumnType("bit");

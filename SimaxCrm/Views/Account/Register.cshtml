@@ -43,17 +43,24 @@
                                         <option value="0" >Admin</option>
                                     }
                                     <option value="4">User</option>
-                                    <option value="1">Agent</option>
+                                    @* <option value="1">Agent</option> *@
                                     <option value="5">Company Admin</option>
                                     <option value="6">Branch Admin</option>
+                                    <option value="7">Employee</option>
                                 </select>
                                 <span asp-validation-for="UserType" class="text-danger"></span>
                             </div>
-                            <div class="form-group company-block" style="display: none;">
-                                <input asp-for="CompanyName" type="text" class="form-control" placeholder="Company Name">
-                                <span asp-validation-for="CompanyName" class="text-danger"></span>
+                            <div class="company-info" style="display: none;">
+                                <div class="form-group company-id">
+                                    <input asp-for="CompanyId" type="text" class="form-control" placeholder="Company ID">
+                                    <span asp-validation-for="CompanyId" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <input asp-for="CompanyName" type="text" class="form-control" placeholder="Company Name">
+                                    <span asp-validation-for="CompanyName" class="text-danger"></span>
+                                </div>
                             </div>
-                            <div class="branch-block"  style="display: none;">
+                            <div class="branch-info" style="display: none;">
                                 <div class="form-group">
                                     <input asp-for="BranchName" type="text" class="form-control" placeholder="Branch Name">
                                     <span asp-validation-for="BranchName" class="text-danger"></span>
@@ -67,6 +74,7 @@
                                     <span asp-validation-for="Region" class="text-danger"></span>
                                 </div>
                             </div>
+                            
                             
                             <div class="form-group">
                                 <button type="submit" class="btn btn-blue btn-full fw6">
@@ -92,15 +100,27 @@
          $(document).ready(function () {
              $('#UserType').val(@(Convert.ToInt32(ViewBag.UserLoginType)));
              $(document).on('change', '#UserType', function() {
+                $('span[data-valmsg-for="CompanyId"]').html('');
+                $('span[data-valmsg-for="CompanyName"]').html('');
+                $('span[data-valmsg-for="BranchName"]').html('');
+                $('span[data-valmsg-for="Country"]').html('');
+                $('span[data-valmsg-for="Region"]').html('');
+
                 if ($(this).val() == '@Array.IndexOf(Enum.GetValues(typeof(SimaxCrm.Model.Enum.UserType )), SimaxCrm.Model.Enum.UserType.CompanyAdmin)') {
-                    $('.company-block').show();
-                    $('.branch-block').hide();
+                    $('.company-info').show();
+                    $('.company-id').hide();
+                    $('.branch-info').hide();
                 } else if ($(this).val() == '@Array.IndexOf(Enum.GetValues(typeof(SimaxCrm.Model.Enum.UserType )), SimaxCrm.Model.Enum.UserType.BranchAdmin)') {
-                    $('.company-block').show();
-                    $('.branch-block').show();
+                    $('.company-info').show();
+                    $('.company-id').show();
+                    $('.branch-info').show();
+                } else if ($(this).val() == '@Array.IndexOf(Enum.GetValues(typeof(SimaxCrm.Model.Enum.UserType )), SimaxCrm.Model.Enum.UserType.Employee)') {
+                    $('.company-info').show();
+                    $('.company-id').show();
+                    $('.branch-info').hide();
                 } else {
-                    $('.company-block').hide();
-                    $('.branch-block').hide();
+                    $('.company-info').hide();
+                    $('.branch-info').hide();
                 }
              });
              $(document).on('click', 'button', function(event) {
@@ -109,8 +129,12 @@
                         event.preventDefault();
                         $('span[data-valmsg-for="CompanyName"]').html('Company Name is required');
                 } else if ($('#UserType').val() == '@Array.IndexOf(Enum.GetValues(typeof(SimaxCrm.Model.Enum.UserType )), SimaxCrm.Model.Enum.UserType.BranchAdmin)') {
+                    if($('#CompanyId').val() == '') {
+                        event.preventDefault();
+                        $('span[data-valmsg-for="CompanyId"]').html('Company ID is required');
+                    }
                     if($('#CompanyName').val() == '') {
-                         event.preventDefault();
+                        event.preventDefault();
                         $('span[data-valmsg-for="CompanyName"]').html('Company Name is required');
                     }
                     if($('#BranchName').val() == '') {
@@ -125,9 +149,21 @@
                          event.preventDefault();
                         $('span[data-valmsg-for="Region"]').html('Region is required');
                     }
+                } else if ($('#UserType').val() == '@Array.IndexOf(Enum.GetValues(typeof(SimaxCrm.Model.Enum.UserType )), SimaxCrm.Model.Enum.UserType.Employee)') {
+                    if($('#CompanyId').val() == '') {
+                        event.preventDefault();
+                        $('span[data-valmsg-for="CompanyId"]').html('Company ID is required');
+                    }
+                    if($('#CompanyName').val() == '') {
+                        event.preventDefault();
+                        $('span[data-valmsg-for="CompanyName"]').html('Company Name is required');
+                    }
                 }
              });
             $("input").on('keyup', function () {
+                if ($(this).prop('id')=='CompanyId' && $(this.val() !== '')) {
+                    $('span[data-valmsg-for="CompanyId"]').html('');
+                }
                 if ($(this).prop('id')=='CompanyName' && $(this.val() !== '')) {
                     $('span[data-valmsg-for="CompanyName"]').html('');
                 }

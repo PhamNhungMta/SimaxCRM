@@ -8,6 +8,7 @@ namespace SimaxCrm.Model.Enum
         Account,
         Customer,
         CompanyAdmin,
-        BranchAdmin
+        BranchAdmin,
+        Employee
     }
 }
