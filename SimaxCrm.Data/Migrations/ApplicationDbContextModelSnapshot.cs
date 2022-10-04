@@ -3077,7 +3077,7 @@ namespace SimaxCrm.Data.Migrations
             modelBuilder.Entity("SimaxCrm.Model.Entity.Branch", b =>
                 {
                     b.HasOne("SimaxCrm.Model.Entity.Company", "Company")
-                        .WithMany()
+                        .WithMany("Branches")
                         .HasForeignKey("CompanyId");
                 });
 

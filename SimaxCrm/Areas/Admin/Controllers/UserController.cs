@@ -169,7 +169,8 @@ namespace SimaxCrm.Controllers
             //var tid = base.getTidFromClaim();
             var uid = base.getUidFromClaim().ToString();
 
-            var users = _userManager.Users.Include(u => u.UserRoles).ThenInclude(ur => ur.Role).ToList();
+            var users = _userManager.Users.Include(u => u.UserRoles).ThenInclude(ur => ur.Role).
+                    Where(u => u.Id != uid).ToList();
 
             var currentUser = _userManager.Users.Include(u => u.UserRoles).ThenInclude(ur => ur.Role)
                 .Where(m => m.Id == uid).FirstOrDefault();

@@ -21,6 +21,11 @@ namespace SimaxShop.Service.Implementation
             _branchRepository = branchRepository;
         }
 
+        public ContentHomepage ById(int Id)
+        {
+            return _contentHomepageRepository.SearchFor(x => x.Id == Id).FirstOrDefault();
+        }
+
         public ContentHomepage GetHomepageByAgentId(string AgentId)
         {
             return _contentHomepageRepository.SearchFor(x => x.AgentId == AgentId).FirstOrDefault();

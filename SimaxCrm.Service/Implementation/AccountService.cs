@@ -54,8 +54,12 @@ namespace SimaxShop.Service.Implementation
             {
                 var user = _userManager.Users.Where(m => m.Email == userLoginModel.Email).Include(u => u.UserRoles).ThenInclude(ur => ur.Role).FirstOrDefault();
                 var roles = await _userManager.GetRolesAsync(user);
-                
 
+                if (roles[0].Equals(UserType.Employee.ToString()) && !user.IsApproved)
+                {
+                    return new BaseResponse<string>() { Success = false, Response = "User is not approved by Company admin." };
+                }
+                
                 var token = GenerateSecurityToken(user);
                 return new BaseResponse<string>() { Success = true, Response = token };
             }

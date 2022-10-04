@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,7 +11,8 @@ namespace SimaxCrm.Model.Entity
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public string Id { get; set; }
-
+        
+        public ICollection<Branch> Branches { get; set; }
         [Required(ErrorMessage = "Enter Company Name")]
         [MaxLength(200)]
         [Display(Name = "Company Name")]

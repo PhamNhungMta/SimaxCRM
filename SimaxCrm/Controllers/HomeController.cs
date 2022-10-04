@@ -134,7 +134,7 @@ namespace SimaxCrm.Controllers
             return View("/Views/Home/Homepage.cshtml", homepage);
         }
 
-        public IActionResult GetHomepageByBranchName(string id)
+        public IActionResult Branch(string id)
         {
             base.LoadViewBagDefaultData(_systemSetupService);
             

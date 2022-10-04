@@ -15,9 +15,14 @@ namespace SimaxShop.Service.Implementation
             _companyRepository = companyRepository;
         }
 
+        public List<Company> List()
+        {
+            return _companyRepository.SearchFor().OrderByDescending(x => x.Id).ToList();
+        }
+
         public Company ById(string Id)
         {
-            return _companyRepository.SearchFor(x => x.Id == Id).FirstOrDefault();
+            return _companyRepository.SearchFor(x => x.Id == Id, "Branches").FirstOrDefault();
         }
 
         public Company ByName(string Name)

@@ -5,6 +5,7 @@ namespace SimaxCrm.Service.Interface
 {
     public interface ICompanyService
     {
+        List<Company> List();
         Company ById(string Id);
         Company ByName(string Name);
         Company ByIdAndName(string Id, string Name);
