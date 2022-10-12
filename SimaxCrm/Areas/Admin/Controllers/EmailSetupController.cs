@@ -8,6 +8,10 @@ using SimaxCrm.Model.Enum;
 using System.Linq;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using SimaxCrm.Model.RequestModel;
 
 namespace SimaxCrm.Areas.Admin.Controllers
 {
@@ -18,23 +22,47 @@ namespace SimaxCrm.Areas.Admin.Controllers
         private readonly IHelperService _helperService;
         private readonly IEmailService _emailService;
         private readonly IEmailSentService _emailSentService;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public EmailSetupController(IEmailSetupService emailSetupService,
             IHelperService helperService,
             IEmailService emailService,
-            IEmailSentService emailSentService)
+            IEmailSentService emailSentService,
+            UserManager<ApplicationUser> userManager)
         {
             _emailSetupService = emailSetupService;
             _helperService = helperService;
             _emailService = emailService;
             _emailSentService = emailSentService;
+            _userManager = userManager;
         }
 
         // GET: ServiceType
         public IActionResult Index()
         {
             var uid = base.getUidFromClaim().ToString();
-            return View(_emailSetupService.List().Where(m => m.CreatedBy == uid).ToList());
+            var user = _userManager.Users.Include(u => u.UserRoles).ThenInclude(ur => ur.Role)
+                            .Where(u => u.Id == uid).FirstOrDefault();
+            var role = user.UserRoles.FirstOrDefault()?.Role?.Name;
+
+            List<EmailSetup> emailSetups = _emailSetupService.List();
+            if (user.Permissions != null)
+            {
+                var permissions = JsonConvert.DeserializeObject<Permissions>(user.Permissions);
+                if (permissions.InventoryPermissions.Contains("view-own") && !permissions.InventoryPermissions.Contains("all"))
+                {
+                    emailSetups = emailSetups.Where(m => m.CreatedBy == uid).ToList();
+                }
+            }
+            if (role.Equals(UserType.CompanyAdmin.ToString()))
+            {
+                emailSetups = emailSetups.Where(p => p.CompanyId == user.CompanyId).ToList();
+            }
+            if (role.Equals(UserType.BranchAdmin.ToString()) || role.Equals(UserType.Employee.ToString()))
+            {
+                emailSetups = emailSetups.Where(p => p.BranchId == user.BranchId).ToList();
+            }
+            return View(emailSetups);
         }
 
         public IActionResult New()
@@ -135,6 +163,9 @@ namespace SimaxCrm.Areas.Admin.Controllers
                     //obj.Status = true;
                     obj.CreatedBy = base.getUidFromClaim().ToString();
                     obj.CreatedDate = DateTime.Now;
+                    var user = _userManager.Users.Where(u => u.Id == obj.CreatedBy).FirstOrDefault();
+                    obj.CompanyId = user.CompanyId;
+                    obj.BranchId = user.BranchId;
                     _emailSetupService.Create(obj);
                     return RedirectToAction(nameof(Index));
                 }

@@ -25,6 +25,7 @@ namespace SimaxCrm.Controllers
         private readonly ICityService _cityService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IContentHomepageService _contentHomepageService;
+        private readonly ICompanyService _companyService;
 
         public HomeController(IProductService productService,
             IProjectService projectService,
@@ -33,7 +34,9 @@ namespace SimaxCrm.Controllers
             ISliderService sliderService,
             ICityService cityService,
             ISystemSetupService systemSetupService,
-            IContentHomepageService contentHomepageService)
+            IContentHomepageService contentHomepageService,
+            ICompanyService companyService
+            )
         {
             _sliderService = sliderService;
             _seoService = seoService;
@@ -43,6 +46,7 @@ namespace SimaxCrm.Controllers
             _systemSetupService = systemSetupService;
             _cityService = cityService;
             _contentHomepageService = contentHomepageService;
+            _companyService = companyService;
         }
 
         public IActionResult Index()
@@ -140,6 +144,36 @@ namespace SimaxCrm.Controllers
             
             var homepage = _contentHomepageService.GetHomepageByBranchName(id);
             return View("/Views/Home/Homepage.cshtml", homepage);
+        }
+
+        public async Task<IActionResult> Dossiers()
+        {
+            base.LoadViewBagDefaultData(_systemSetupService);
+            
+            var uid = base.getUidFromClaim().ToString();
+            var user = _userManager.Users.Include(u => u.UserRoles).ThenInclude(ur => ur.Role)
+                        .Where(m => m.Id == uid).FirstOrDefault();
+            var role = user?.UserRoles.FirstOrDefault()?.Role?.Name;
+
+            if (user == null || ((role == UserType.BranchAdmin.ToString() || role == UserType.Employee.ToString()) && !user.IsConnectPriceHubble))
+            {
+                ViewBag.Message = "You do not permission to access data.";
+                return View();
+            }
+            var dossiers = await _companyService.GetDossierList();
+            if (dossiers != null)
+            {
+                if (user.CompanyId != null)
+                {
+                    var company = _companyService.ById(user.CompanyId);
+                    if (company != null)
+                    {
+                        company.CurrentApiCount = company.CurrentApiCount + 1;
+                        _companyService.Update(company);
+                    }
+                }
+            }
+            return View(dossiers);
         }
     }
 

@@ -40,6 +40,24 @@ namespace SimaxCrm.Areas.Admin.Controllers
             return View(obj);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(string id, Company obj)
+        {
+            if (id != obj.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                obj.UpdatedDate = DateTime.Now;
+                _companyService.Update(obj);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(obj);
+        }
+
         public IActionResult Branch(string id)
         {
             var obj = _branchService.ById(id);

@@ -24,5 +24,8 @@ namespace SimaxCrm.Model.Entity
         public DateTime CreatedDate { get; set; }
 
         public DateTime? UpdatedDate { get; set; }
+
+        public int CurrentApiCount { get; set; } = 0;
+
     }
 }

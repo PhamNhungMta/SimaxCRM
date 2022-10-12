@@ -1,3 +1,9 @@
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<SimaxCrm.Model.Entity.ApplicationUser> UserManager
+@using Newtonsoft.Json;
+@using SimaxCrm.Model.Entity;
+@using SimaxCrm.Model.RequestModel;
+
 <nav class="sidebar-nav">
     <ul class="nav">
         <li class="nav-item">
@@ -6,14 +12,16 @@
             </a>
         </li>
 
-
         @{
             var checkAdmin = this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Admin) || 
                     this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.CompanyAdmin) ||
                     this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.BranchAdmin);
+            var userId = this.Context.Request.GetUserId();
+            ApplicationUser user = UserManager.Users.Where(u => u.Id == userId).FirstOrDefault();
+            var permissions = user.Permissions != null ? JsonConvert.DeserializeObject<Permissions>(user.Permissions) : null;
         }
-
-        @if (!this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Account))
+        
+        @if (!this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Admin))
         {
             <li class="nav-item nav-dropdown">
                 <a class="nav-link nav-dropdown-toggle" href="#">
@@ -21,125 +29,166 @@
                     Manage Lead
                 </a>
                 <ul class="nav-dropdown-items">
-                    <li class="nav-item ">
-                        <a class="nav-link" asp-area="Admin" asp-controller="Lead" asp-action="Create">
-                            <i class="fa fa-arrow-right" aria-hidden="true"></i> Create Lead
-                        </a>
-                    </li>
-                    <li class="nav-item ">
-                        <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Leads" asp-route-id="FollowUp">
-                            <i class="fa fa-arrow-right" aria-hidden="true"></i> Today Follow Up
-                        </a>
-                    </li>
-                    <li class="nav-item ">
-                        <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Leads" asp-route-id="MissedFollowUp">
-                            <i class="fa fa-arrow-right" aria-hidden="true"></i> Missed Follow Up
-                        </a>
-                    </li>
-                    <li class="nav-item ">
-                        <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Leads" asp-route-id="AllFollowUp">
-                            <i class="fa fa-arrow-right" aria-hidden="true"></i> My Follow Up
-                        </a>
-                    </li>
-                    <li class="nav-item ">
-                        <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Leads" asp-route-id="Converted">
-                            <i class="fa fa-arrow-right" aria-hidden="true"></i> Converted
-                        </a>
-                    </li>
-                    <li class="nav-item ">
-                        <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Leads" asp-route-id="Postpone">
-                            <i class="fa fa-arrow-right" aria-hidden="true"></i> Postpone
-                        </a>
-                    </li>
-                    <li class="nav-item ">
-                        <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Leads" asp-route-id="Reopen">
-                            <i class="fa fa-arrow-right" aria-hidden="true"></i> Reopen
-                        </a>
-                    </li>
-                    <li class="nav-item ">
-                        <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Leads" asp-route-id="Closed">
-                            <i class="fa fa-arrow-right" aria-hidden="true"></i> Closed
-                        </a>
-                    </li>
-                    <li class="nav-item ">
-                        <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Leads" asp-route-id="Surrender">
-                            <i class="fa fa-arrow-right" aria-hidden="true"></i> Surrender
-                        </a>
-                    </li>
-                    <li class="nav-item ">
-                        <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Leads" asp-route-id="AllLead">
-                            <i class="fa fa-arrow-right" aria-hidden="true"></i> All Leads
-                        </a>
-                    </li>
+                    @if (permissions != null && permissions.LeadPermissions != null)
+                    {
+                        @if (permissions.LeadPermissions.Contains("create") || permissions.LeadPermissions.Contains("all"))
+                        {
+                            <li class="nav-item ">
+                                <a class="nav-link" asp-area="Admin" asp-controller="Lead" asp-action="Create">
+                                    <i class="fa fa-arrow-right" aria-hidden="true"></i> Create Lead
+                                </a>
+                            </li>
+                        }
+                        @if (permissions.LeadPermissions.Contains("followup-global") || permissions.LeadPermissions.Contains("followup-own") 
+                            || permissions.LeadPermissions.Contains("all"))
+                        {
+                            <li class="nav-item ">
+                                <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Leads" asp-route-id="FollowUp">
+                                    <i class="fa fa-arrow-right" aria-hidden="true"></i> Today Follow Up
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Leads" asp-route-id="MissedFollowUp">
+                                    <i class="fa fa-arrow-right" aria-hidden="true"></i> Missed Follow Up
+                                </a>
+                            </li>
+                        }
+                        @if (permissions.LeadPermissions.Contains("followup-own") || permissions.LeadPermissions.Contains("all"))
+                        {
+                            <li class="nav-item ">
+                                <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Leads" asp-route-id="AllFollowUp">
+                                    <i class="fa fa-arrow-right" aria-hidden="true"></i> My Follow Up
+                                </a>
+                            </li>
+                        }
+                        @if (permissions.LeadPermissions.Contains("view-global") || permissions.LeadPermissions.Contains("view-own") ||
+                                permissions.LeadPermissions.Contains("all"))
+                        {
+                            <li class="nav-item ">
+                                <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Leads" asp-route-id="Converted">
+                                    <i class="fa fa-arrow-right" aria-hidden="true"></i> Converted
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Leads" asp-route-id="Postpone">
+                                    <i class="fa fa-arrow-right" aria-hidden="true"></i> Postpone
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Leads" asp-route-id="Reopen">
+                                    <i class="fa fa-arrow-right" aria-hidden="true"></i> Reopen
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Leads" asp-route-id="Closed">
+                                    <i class="fa fa-arrow-right" aria-hidden="true"></i> Closed
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Leads" asp-route-id="Surrender">
+                                    <i class="fa fa-arrow-right" aria-hidden="true"></i> Surrender
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Leads" asp-route-id="AllLead">
+                                    <i class="fa fa-arrow-right" aria-hidden="true"></i> All Leads
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Leads" asp-route-id="Deleted">
+                                    <i class="fa fa-arrow-right"></i> Deleted Leads
+                                </a>
+                            </li>
+                        }
+                    }
+                    
 
                 </ul>
             </li>
 
+            <li class="nav-item nav-dropdown">
+                <a class="nav-link nav-dropdown-toggle" href="#">
+                    <i class="nav-icon icon-call-in"></i>
+                    Manage Inventory
+                </a>
+                <ul class="nav-dropdown-items">
+                    @if (permissions != null && permissions.InventoryPermissions != null)
+                    {
+                       @if (permissions.InventoryPermissions.Contains("create") || permissions.InventoryPermissions.Contains("all"))
+                        {
+                            <li class="nav-item ">
+                                <a class="nav-link" asp-area="Admin" asp-controller="Project" asp-action="Create">
+                                    <i class="fa fa-arrow-right" aria-hidden="true"></i> Project Create
+                                </a>
+                            </li>
+                        }
+                        @if (permissions.InventoryPermissions.Contains("view-global") || permissions.InventoryPermissions.Contains("view-own") 
+                                || permissions.LeadPermissions.Contains("all"))
+                        {
+                            <li class="nav-item ">
+                                <a class="nav-link" asp-area="Admin" asp-controller="Project" asp-action="Index">
+                                    <i class="fa fa-arrow-right" aria-hidden="true"></i> All Projects
+                                </a>
+                            </li>
+                        }
+                        @if (permissions.InventoryPermissions.Contains("create") || permissions.InventoryPermissions.Contains("all"))
+                        {
+                            <li class="nav-item ">
+                                <a class="nav-link" asp-area="Admin" asp-controller="Product" asp-action="Create">
+                                    <i class="fa fa-arrow-right" aria-hidden="true"></i> Inventory Create
+                                </a>
+                            </li>
+                        }
+                        @if (permissions.InventoryPermissions.Contains("view-global") || permissions.InventoryPermissions.Contains("view-own") 
+                                || permissions.InventoryPermissions.Contains("all"))
+                        {
+                            <li class="nav-item ">
+                                <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Products" asp-route-id="AllProduct">
+                                    <i class="fa fa-arrow-right" aria-hidden="true"></i> All Inventory
+                                </a>
+                            </li>
+                        }
+                        @if (permissions.InventoryPermissions.Contains("followup-global") || permissions.InventoryPermissions.Contains("followup-own") 
+                                || permissions.InventoryPermissions.Contains("all"))
+                        {
+                            <li class="nav-item ">
+                                <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Products" asp-route-id="ProductFollowUp">
+                                    <i class="fa fa-arrow-right" aria-hidden="true"></i> Today Follow Up
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Products" asp-route-id="ProductMissedFollowUp">
+                                    <i class="fa fa-arrow-right" aria-hidden="true"></i> Missed Follow Up
+                                </a>
+                            </li>
+                        }
+                        @if (permissions.InventoryPermissions.Contains("followup-own") || permissions.InventoryPermissions.Contains("all"))
+                        {
+                            <li class="nav-item ">
+                                <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Products" asp-route-id="ProductMyFollowUp">
+                                    <i class="fa fa-arrow-right" aria-hidden="true"></i> My Follow Up
+                                </a>
+                            </li>
+                        }
+                        @if (permissions.InventoryPermissions.Contains("view-global") || permissions.InventoryPermissions.Contains("view-own") 
+                                || permissions.InventoryPermissions.Contains("all"))
+                        {
+                            <li class="nav-item ">
+                                <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Products" asp-route-id="Soldout">
+                                    <i class="fa fa-arrow-right" aria-hidden="true"></i> Soldout Property
+                                </a>
+                            </li> 
+                        }
+                        
+                    }
+                    
+                </ul>
+            </li>
         }
-
-        <li class="nav-item nav-dropdown">
-            <a class="nav-link nav-dropdown-toggle" href="#">
-                <i class="nav-icon icon-call-in"></i>
-                Manage Inventory
-            </a>
-            <ul class="nav-dropdown-items">
-                <li class="nav-item ">
-                    <a class="nav-link" asp-area="Admin" asp-controller="Project" asp-action="Create">
-                        <i class="fa fa-arrow-right" aria-hidden="true"></i> Project Create
-                    </a>
-                </li>
-                <li class="nav-item ">
-                    <a class="nav-link" asp-area="Admin" asp-controller="Project" asp-action="Index">
-                        <i class="fa fa-arrow-right" aria-hidden="true"></i> All Projects
-                    </a>
-                </li>
-                <li class="nav-item ">
-                    <a class="nav-link" asp-area="Admin" asp-controller="Product" asp-action="Create">
-                        <i class="fa fa-arrow-right" aria-hidden="true"></i> Inventory Create
-                    </a>
-                </li>
-                <li class="nav-item ">
-                    <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Products" asp-route-id="AllProduct">
-                        <i class="fa fa-arrow-right" aria-hidden="true"></i> All Inventory
-                    </a>
-                </li>
-                <li class="nav-item ">
-                    <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Products" asp-route-id="ProductFollowUp">
-                        <i class="fa fa-arrow-right" aria-hidden="true"></i> Today Follow Up
-                    </a>
-                </li>
-                <li class="nav-item ">
-                    <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Products" asp-route-id="ProductMissedFollowUp">
-                        <i class="fa fa-arrow-right" aria-hidden="true"></i> Missed Follow Up
-                    </a>
-                </li>
-                <li class="nav-item ">
-                    <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Products" asp-route-id="ProductMyFollowUp">
-                        <i class="fa fa-arrow-right" aria-hidden="true"></i> My Follow Up
-                    </a>
-                </li>
-                <li class="nav-item ">
-                    <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Products" asp-route-id="Soldout">
-                        <i class="fa fa-arrow-right" aria-hidden="true"></i> Soldout Property
-                    </a>
-                </li>
-            </ul>
-        </li>
+        
 
         @if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Admin))
         {
-            <li class="nav-item">
-                <a class="nav-link" asp-area="Admin" asp-controller="Company" asp-action="Index">
-                    <i class="nav-icon icon-puzzle"></i> Manage Company
-                </a>
-            </li>
-           
-
-            <li class="nav-item">
-                <a class="nav-link" asp-area="Admin" asp-controller="View" asp-action="Leads" asp-route-id="Deleted">
-                    <i class="nav-icon icon-home"></i> Deleted Leads
-                </a>
-            </li>
 
             <li class="nav-item">
                 <a class="nav-link" asp-area="Admin" asp-controller="UploadCategory" asp-action="Index">
@@ -225,18 +274,7 @@
                     </li>
                 </ul>
             </li>
-       
-            <li class="nav-item">
-                <a class="nav-link" asp-area="Admin" asp-controller="Seo" asp-action="Index">
-                    <i class="nav-icon icon-layers"></i> Seo
-                </a>
-            </li>
 
-            <li class="nav-item">
-                <a class="nav-link" asp-area="Admin" asp-controller="User" asp-action="Index">
-                    <i class="nav-icon icon-user"></i> Create User
-                </a>
-            </li>
 
             @if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Admin))
             {
@@ -296,47 +334,87 @@
                 </ul>
             </li>
 
-            @if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Admin))
-            {
-                <li class="nav-item">
-                    <a class="nav-link" asp-area="Admin" asp-controller="SystemSetup" asp-action="Index">
-                        <i class="nav-icon icon-puzzle"></i> System Setup
-                    </a>
-                </li>
-            }
            
         }
-
+        <li class="nav-item nav-dropdown">
+            <a class="nav-link nav-dropdown-toggle" href="#">
+                <i class="nav-icon icon-tag"></i>
+                Setup
+            </a>
+            <ul class="nav-dropdown-items">
+                @if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Admin) )
+                {
+                    <li class="nav-item ">
+                        <a class="nav-link" asp-area="Admin" asp-controller="Company" asp-action="Index">
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i> Manage Company
+                        </a>
+                    </li>
+                } 
+                @if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.CompanyAdmin) || 
+                    this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.BranchAdmin))
+                {
+                    <li class="nav-item ">  
+                        <a class="nav-link" asp-area="Admin" asp-controller="ContentHomepage" asp-action="Homepage">
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i> Manage Home Page
+                        </a>
+                    </li>
+                }
+                @if (permissions != null && permissions.SetupPermissions != null && (permissions.SetupPermissions.Contains("view-global")
+                        || permissions.SetupPermissions.Contains("view-own") || permissions.SetupPermissions.Contains("all")))
+                {
+                    <li class="nav-item ">
+                        <a class="nav-link" asp-area="Admin" asp-controller="Seo" asp-action="Index">
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i> SEO
+                        </a>
+                    </li>
+                }
+                @if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Admin) || (permissions != null && permissions.SetupPermissions != null))
+                {
+                    @if (!this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Admin) && 
+                        (permissions.SetupPermissions.Contains("create") || permissions.SetupPermissions.Contains("all")))
+                    {
+                        <li class="nav-item ">
+                            <a class="nav-link" asp-area="Admin" asp-controller="User" asp-action="Create">
+                                <i class="fa fa-arrow-right" aria-hidden="true"></i> Create User
+                            </a>
+                        </li>
+                    } 
+                    @if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Admin) || (permissions.SetupPermissions.Contains("view-global")
+                        || permissions.SetupPermissions.Contains("view-own") || permissions.SetupPermissions.Contains("all")))
+                    {
+                        <li class="nav-item ">
+                            <a class="nav-link" asp-area="Admin" asp-controller="User" asp-action="Index">
+                                <i class="fa fa-arrow-right" aria-hidden="true"></i> Manage Users
+                            </a>
+                        </li>
+                        @if(!this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Admin))
+                        {
+                            <li class="nav-item ">
+                                <a class="nav-link" asp-area="Admin" asp-controller="EmailSetup" asp-action="Index">
+                                    <i class="fa fa-arrow-right" aria-hidden="true"></i> Email Setup
+                                </a>
+                            </li>
+                        }
+                    }
+                }
+                
+                <li class="nav-item ">
+                    <a class="nav-link" asp-area="Admin" asp-controller="User" asp-action="ResetInit">
+                        <i class="fa fa-arrow-right" aria-hidden="true"></i> Password Reset
+                    </a>
+                </li>
+            </ul>
+        </li>
 
         @if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.QA) || checkAdmin)
         {
-            <li class="nav-item">
+            @* <li class="nav-item">
                 <a class="nav-link" asp-area="Admin" asp-controller="LeadAutoAssign" asp-action="Index">
                     <i class="nav-icon icon-layers"></i> Lead Auto Assign
                 </a>
-            </li>
+            </li> *@
 
-           
-            <li class="nav-item">
-                <a class="nav-link" asp-area="Admin" asp-controller="User" asp-action="Index">
-                    <i class="nav-icon icon-user"></i> Manage User
-                </a>
-            </li>
         }
-         @if (checkAdmin)
-        {
-            <li class="nav-item">
-                <a class="nav-link" asp-area="Admin" asp-controller="ContentHomepage" asp-action="Homepage">
-                    <i class="nav-icon icon-home"></i> Home page
-                </a>
-            </li>
-        }
-
-        <li class="nav-item">
-            <a class="nav-link" asp-area="Admin" asp-controller="User" asp-action="ResetInit">
-                <i class="nav-icon icon-login"></i> Password Reset
-            </a>
-        </li>
 
     </ul>
 </nav>

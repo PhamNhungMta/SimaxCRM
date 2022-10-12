@@ -11,65 +11,179 @@
 <div class="row">
     <div class="col-sm-6">
         <div class="card">
-            <div class="card-header">
-                <strong>Update</strong>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        <form asp-action="Edit">
-                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                            <input type="hidden" asp-for="Id" />
-                            <input type="hidden" asp-for="CompanyId" />
-                            <input type="hidden" asp-for="BranchId" />
+            @if(!string.IsNullOrEmpty(ViewBag.Message))
+            {
+                <div class="alert alert-danger">@ViewBag.Message</div>
+            }
+            else
+            {
+                <div class="card-header">
+                    <strong>@Model.Name</strong>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form asp-action="Edit">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <input type="hidden" asp-for="Id" />
+                                <input type="hidden" asp-for="CompanyId" />
+                                <input type="hidden" asp-for="BranchId" />
 
-                            <div class="form-group"><label asp-for="Name" class="control-label"></label><input asp-for="Name" class="form-control" /><span asp-validation-for="Name" class="text-danger"></span></div>
+                                @if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.CompanyAdmin))
+                                {
+                                    <div class="tabbable-line">
+                                        <ul class="nav nav-tabs">
+                                            <li class="active">
+                                                <a href="#divProfile" class="active" data-toggle="tab">Profile</a>
+                                            </li>
+                                            <li>
+                                                <a href="#divPermissions" data-toggle="tab">Permissions</a>
+                                            </li>
+                                        </ul>
 
-                            <div class="form-group"><label asp-for="Email" class="control-label"></label><input asp-for="Email" class="form-control" /><span asp-validation-for="Email" class="text-danger"></span></div>
-                            <div class="form-group"><label asp-for="PhoneNumber" class="control-label"></label><input asp-for="PhoneNumber" class="form-control" /><span asp-validation-for="PhoneNumber" class="text-danger"></span></div>
+                                        <div class="tab-content ">
+                                            <div class="tab-pane active" id="divProfile">
+                                                <div class="form-group"><label asp-for="Name" class="control-label"></label><input asp-for="Name" class="form-control" /><span asp-validation-for="Name" class="text-danger"></span></div>
 
-                            <div class="form-group">
-                                <label asp-for="Role" class="control-label"></label>
-                                <select asp-for="Role" class="form-control" onchange="roleChange()">
-                                    @* <option value=""></option> *@
-                                    @if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Admin))
+                                                <div class="form-group"><label asp-for="Email" class="control-label"></label><input asp-for="Email" class="form-control" /><span asp-validation-for="Email" class="text-danger"></span></div>
+                                                <div class="form-group"><label asp-for="PhoneNumber" class="control-label"></label><input asp-for="PhoneNumber" class="form-control" /><span asp-validation-for="PhoneNumber" class="text-danger"></span></div>
+
+                                                <div class="form-group"><label asp-for="ShowInHomePage" class="control-label"></label><input asp-for="ShowInHomePage" /><span asp-validation-for="ShowInHomePage" class="text-danger"></span></div>
+                                                <div class="form-group"><label asp-for="IsActive" class="control-label"></label><input asp-for="IsActive" /><span asp-validation-for="IsActive" class="text-danger"></span></div>
+                                                <div class="form-group"><label asp-for="IsConnectPriceHubble" class="control-label"></label><input asp-for="IsConnectPriceHubble" /><span asp-validation-for="IsConnectPriceHubble" class="text-danger"></span></div>
+                                                
+                                                @if (Model.Role == SimaxCrm.Model.Enum.UserType.Employee.ToString() && this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.CompanyAdmin))
+                                                {
+                                                    <div class="form-group"><label asp-for="IsApproved" class="control-label"></label><input asp-for="IsApproved" /><span asp-validation-for="IsApproved" class="text-danger"></span></div>
+                                                }
+                                            </div>
+
+                                            <div class="tab-pane" id="divPermissions">
+                                                <div class="form-group border-bottom pb-4">
+                                                    <label asp-for="Role" class="control-label"></label>
+                                                    <select asp-for="Role" class="form-control" onchange="roleChange()">
+                                                        @if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Admin))
+                                                        {
+                                                            <option value="Admin">Admin</option>
+                                                        }
+                                                        @if (checkAdmin)
+                                                        {
+                                                            <option value="BranchAdmin">BranchAdmin</option>
+                                                            <option value="Employee">Employee</option>
+                                                        }
+
+                                                    </select>
+                                                    <span asp-validation-for="Role" class="text-danger"></span>
+                                                </div>
+                                                <h5>Permissions</h5>
+                                                <table class="table table-responsive-sm border-left border-right">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="border-right">Modules & Features</th>
+                                                            <th>Capabilites</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="border-bottom">
+                                                        <tr>
+                                                            <td class="border-right">Manage Leads</td>
+                                                            <td>
+                                                                <input type="hidden" asp-for="LeadPermissions" />
+                                                                <div><input class="select-all" type="checkbox" name="Lead" value="all"><label class="ml-2">Select All</label></div>
+                                                                <div><input type="checkbox" name="Lead" value="view-global"><label class="ml-2">View (Global)</label></div>
+                                                                <div><input type="checkbox" name="Lead" value="view-own"><label class="ml-2">View (Own)</label></div>
+                                                                <div><input type="checkbox" name="Lead" value="create"><label class="ml-2">Create</label></div>
+                                                                <div><input type="checkbox" name="Lead" value="edit"><label class="ml-2">Edit</label></div>
+                                                                <div><input type="checkbox" name="Lead" value="followup-global"><label class="ml-2">Follow Up (Global)</label></div>
+                                                                <div><input type="checkbox" name="Lead" value="followup-own"><label class="ml-2">Follow Up (Own)</label></div>
+                                                                <div><input type="checkbox" name="Lead" value="delete"><label class="ml-2">Delete</label></div>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="border-right">Manage Inventory</td>
+                                                            <td>
+                                                                <input type="hidden" asp-for="InventoryPermissions" />
+                                                                <div><input class="select-all" type="checkbox" name="Inventory" value="all"><label class="ml-2">Select All</label></div>
+                                                                <div><input type="checkbox" name="Inventory" value="view-global"><label class="ml-2">View (Global)</label></div>
+                                                                <div><input type="checkbox" name="Inventory" value="view-own"><label class="ml-2">View (Own)</label></div>
+                                                                <div><input type="checkbox" name="Inventory" value="create"><label class="ml-2">Create</label></div>
+                                                                <div><input type="checkbox" name="Inventory" value="edit"><label class="ml-2">Edit</label></div>
+                                                                <div><input type="checkbox" name="Inventory" value="followup-global"><label class="ml-2">Follow Up (Global)</label></div>
+                                                                <div><input type="checkbox" name="Inventory" value="followup-own"><label class="ml-2">Follow Up (Own)</label></div>
+                                                                <div><input type="checkbox" name="Inventory" value="delete"><label class="ml-2">Delete</label></div>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="border-right">Setup</td>
+                                                            <td>
+                                                                <input type="hidden" asp-for="SetupPermissions" />
+                                                                <div><input class="select-all" type="checkbox" name="Setup" value="all"><label class="ml-2">Select All</label></div>
+                                                                <div><input type="checkbox" name="Setup" value="view-global"><label class="ml-2">View (Global)</label></div>
+                                                                <div><input type="checkbox" name="Setup" value="view-own"><label class="ml-2">View (Own)</label></div>
+                                                                <div><input type="checkbox" name="Setup" value="create"><label class="ml-2">Create</label></div>
+                                                                <div><input type="checkbox" name="Setup" value="edit"><label class="ml-2">Edit</label></div>
+                                                                <div><input type="checkbox" name="Setup" value="followup-global"><label class="ml-2">Follow Up (Global)</label></div>
+                                                                <div><input type="checkbox" name="Setup" value="followup-own"><label class="ml-2">Follow Up (Own)</label></div>
+                                                                <div><input type="checkbox" name="Setup" value="delete"><label class="ml-2">Delete</label></div>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="form-group"><label asp-for="Name" class="control-label"></label><input asp-for="Name" class="form-control" /><span asp-validation-for="Name" class="text-danger"></span></div>
+
+                                    <div class="form-group"><label asp-for="Email" class="control-label"></label><input asp-for="Email" class="form-control" /><span asp-validation-for="Email" class="text-danger"></span></div>
+                                    <div class="form-group"><label asp-for="PhoneNumber" class="control-label"></label><input asp-for="PhoneNumber" class="form-control" /><span asp-validation-for="PhoneNumber" class="text-danger"></span></div>
+
+                                    <div class="form-group">
+                                        <label asp-for="Role" class="control-label"></label>
+                                        <select asp-for="Role" class="form-control" onchange="roleChange()">
+                                            @* <option value=""></option> *@
+                                            @if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.Admin))
+                                            {
+                                                @* <option value="Agent">Agent</option> *@
+                                                <option value="Admin">Admin</option>
+                                            }
+                                            @if (checkAdmin)
+                                            {
+                                                @* <option value="Customer">User</option> *@
+                                                <option value="Employee">Employee</option>
+                                                @* <option value="QA">Team Leader</option>
+                                                <option value="Account">Inventory Manager</option> *@
+                                            }
+                                            @* else if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.QA))
+                                            {
+                                                <option value="Agent">Agent</option>
+                                            } *@
+
+                                        </select>
+                                        <span asp-validation-for="Role" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="form-group"><label asp-for="ShowInHomePage" class="control-label"></label><input asp-for="ShowInHomePage" /><span asp-validation-for="ShowInHomePage" class="text-danger"></span></div>
+                                    <div class="form-group"><label asp-for="IsActive" class="control-label"></label><input asp-for="IsActive" /><span asp-validation-for="IsActive" class="text-danger"></span></div>
+                                    @if (Model.Role == SimaxCrm.Model.Enum.UserType.Employee.ToString() && this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.CompanyAdmin))
                                     {
-                                        @* <option value="Agent">Agent</option> *@
-                                        <option value="Admin">Admin</option>
+                                        <div class="form-group"><label asp-for="IsApproved" class="control-label"></label><input asp-for="IsApproved" /><span asp-validation-for="IsApproved" class="text-danger"></span></div>
                                     }
-                                    @if (checkAdmin)
-                                    {
-                                        @* <option value="Customer">User</option> *@
-                                        <option value="Employee">Employee</option>
-                                        @* <option value="QA">Team Leader</option>
-                                        <option value="Account">Inventory Manager</option> *@
-                                    }
-                                    @* else if (this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.QA))
-                                    {
-                                        <option value="Agent">Agent</option>
-                                    } *@
+                                }
+                                
+                                <div class="form-group">
+                                    <input type="submit" value="Save" class="btn btn-primary" />
+                                </div>
+                            </form>
+                        </div>
+                    </div>
 
-                                </select>
-                                <span asp-validation-for="Role" class="text-danger"></span>
-                            </div>
-
-                            <div class="form-group"><label asp-for="ShowInHomePage" class="control-label"></label><input asp-for="ShowInHomePage" /><span asp-validation-for="ShowInHomePage" class="text-danger"></span></div>
-                            <div class="form-group"><label asp-for="IsActive" class="control-label"></label><input asp-for="IsActive" /><span asp-validation-for="IsActive" class="text-danger"></span></div>
-                            @if (Model.Role == SimaxCrm.Model.Enum.UserType.Employee.ToString() && this.Context.Request.UserIsRole(SimaxCrm.Model.Enum.UserType.CompanyAdmin))
-                            {
-                                <div class="form-group"><label asp-for="IsApproved" class="control-label"></label><input asp-for="IsApproved" /><span asp-validation-for="IsApproved" class="text-danger"></span></div>
-                            }
-                            <div class="form-group">
-                                <input type="submit" value="Save" class="btn btn-primary" />
-                            </div>
-                        </form>
+                    <div>
+                        <a asp-action="Index">Back to List</a>
                     </div>
                 </div>
-
-                <div>
-                    <a asp-action="Index">Back to List</a>
-                </div>
-            </div>
+            }
         </div>
     </div>
 </div>
@@ -79,6 +193,42 @@
     <script type="text/javascript">
         $(document).ready(function () {
             roleChange();
+           
+            $(document).on('change', '.select-all', function() {
+                var value = $(this).is(':checked');
+                $(this).parent().parent().find("input[type='checkbox']").prop("checked", value);
+            });
+
+             $(document).on('change', 'input[type="checkbox"]', function() {
+                if (!$(this).hasClass("select-all")) {
+                    var count = 0;
+                    var checked = 0;
+                    $(this).parent().parent().find("input[type='checkbox']").each(function (i) {
+                        count ++;
+                        if ($(this).is(":checked")) {
+                            checked ++;
+                        }
+                    });
+                    if (checked == count - 1 && $(this).is(":checked")) {
+                        $(this).parent().parent().find(".select-all").prop("checked", true);
+                    } else {
+                        $(this).parent().parent().find(".select-all").prop("checked", false);
+                    }
+                }
+
+            });
+
+            setPermissionValue("Lead");
+            setPermissionValue("Inventory");
+            setPermissionValue("Setup");
+            $('form').on('submit', function(event) {
+                event.preventDefault();
+                getPermissionValue("Lead");
+                getPermissionValue("Inventory");
+                getPermissionValue("Setup");
+                this.submit();
+            });
+
         });
         function roleChange() {
             $("#divFin").hide();
@@ -86,5 +236,36 @@
                 $("#divFin").show();
             }
         }
+        function getPermissionValue (feature) {
+            var result = '';
+            var checkAll = false;
+            $("input[name='" + feature + "']").each(function( i ) {
+                if ($(this).is(":checked")) {
+                    if ( i == 0 ) {
+                        $("#" + feature + "Permissions").val('all');
+                        checkAll = true;
+                        return false;
+                    } else {
+                        var item = $(this).val();
+                        result = result == '' ? item : (result + ',' + item);
+                    }
+                }
+                $(this).prop('disabled', true);
+            });
+            if (!checkAll) $("#" + feature + "Permissions").val(result);
+        }
+
+        function setPermissionValue(feature) {
+            var permissions =  $("#" + feature + "Permissions").val();
+            if (permissions != "") {
+                var permissionsArray = permissions.split(',');
+                $("input[name='" + feature + "']").each(function( i ) {
+                    if (jQuery.inArray( $(this).val(), permissionsArray ) > -1 || permissions == 'all') {
+                        $(this).prop('checked', true);
+                    }
+                });
+            }
+        }
+        
     </script>
 }

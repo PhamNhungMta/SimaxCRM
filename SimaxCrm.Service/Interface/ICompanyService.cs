@@ -1,5 +1,7 @@
-using SimaxCrm.Model.Entity;
+using System.Threading.Tasks;
 using System.Collections.Generic;
+using SimaxCrm.Model.Entity;
+using SimaxCrm.Model.ResponseModel;
 
 namespace SimaxCrm.Service.Interface
 {
@@ -11,5 +13,6 @@ namespace SimaxCrm.Service.Interface
         Company ByIdAndName(string Id, string Name);
         void Create(Company company);
         void Update(Company company);
+        Task<List<Dossier>> GetDossierList ();
     }
 }

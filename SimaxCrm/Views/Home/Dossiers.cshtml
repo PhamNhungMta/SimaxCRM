@@ -1,0 +1,88 @@
+@model IEnumerable<SimaxCrm.Model.ResponseModel.Dossier>
+
+
+<section class="intro-single">
+    <div class="container">
+        @if (!string.IsNullOrEmpty(ViewBag.Message))
+        {
+            <h4 class="text-danger">@ViewBag.Message</h4>
+        }
+        else
+        {
+            <div class="row">
+                <div class="col-md-12 col-lg-8">
+                    <div class="title-single-box">
+                        <h1 class="title-single">Dossier List</h1>
+                    </div>
+                </div>
+                <div class="col-md-12 col-lg-4">
+                    <nav aria-label="breadcrumb" class="breadcrumb-box d-flex justify-content-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="/">Home</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">
+                                Dossiers
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        }
+        <br />
+
+    </div>
+</section>
+@if (string.IsNullOrEmpty(ViewBag.Message))
+{
+    <main id="main">
+        <section class="property-grid grid">
+            <div class="container">
+            
+                @* <table class="table table-responsive-sm">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+
+                            <th>Description</th>
+
+                            <th>Address</th>
+
+                            <th>Property type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@Html.DisplayFor(modelItem => item.Title)</td>
+
+                                <td>@Html.DisplayFor(modelItem => item.Description)</td>
+
+                                <td>@Html.DisplayFor(modelItem => item.Location.Address.City)</td>
+
+                                <td>@Html.DisplayFor(modelItem => item.PropertyType)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table> *@
+                @foreach (var item in Model)
+                {
+                    var address = item.Location.Address.Street != null ? item.Location.Address.Street + " " +
+                                    item.Location.Address.HouseNumber + ", " +
+                                    item.Location.Address.City + " " +
+                                    item.Location.Address.PostCode :
+                                    item.Location.Address.City + " " +
+                                    item.Location.Address.PostCode;
+                                    
+                    <div class="col-3 border p-3">
+                        <div style="font-size: 20px;">@Html.DisplayFor(modelItem => item.Title)</div>
+                        <div>@Html.DisplayFor(modelItem => item.Description)</div>
+                        <div>@address</div>
+                        <div>Property type: @Html.DisplayFor(modelItem => item.PropertyType)</div>
+                    </div>
+                }
+            </div>
+        </section>
+    </main>
+}

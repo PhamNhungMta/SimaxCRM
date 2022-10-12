@@ -19,6 +19,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace SimaxCrm.Controllers
 {
@@ -74,6 +75,24 @@ namespace SimaxCrm.Controllers
         {
             var model = new UserFilterModel();
             ViewBag.Filter = model;
+            var user = _userManager.Users.Where(u => u.Id == getUidFromClaim().ToString()).FirstOrDefault();
+            if (user.Permissions != null)
+            {
+                var permissions = JsonConvert.DeserializeObject<Permissions>(user.Permissions);
+                
+                if (permissions.InventoryPermissions.Contains("create") || permissions.InventoryPermissions.Contains("all"))
+                {
+                    ViewBag.CreatePermission = true;
+                }
+                if (permissions.InventoryPermissions.Contains("edit") || permissions.InventoryPermissions.Contains("all"))
+                {
+                    ViewBag.EditPermission = true;
+                }
+                if (permissions.InventoryPermissions.Contains("delete") || permissions.InventoryPermissions.Contains("all"))
+                {
+                    ViewBag.DeletePermission = true;
+                }
+            }
             return GetUsersForIndex(model);
         }
 
@@ -81,6 +100,24 @@ namespace SimaxCrm.Controllers
         public IActionResult Index(UserFilterModel model)
         {
             ViewBag.Filter = model;
+            var user = _userManager.Users.Where(u => u.Id == getUidFromClaim().ToString()).FirstOrDefault();
+            if (user.Permissions != null)
+            {
+                var permissions = JsonConvert.DeserializeObject<Permissions>(user.Permissions);
+                
+                if (permissions.InventoryPermissions.Contains("create") || permissions.InventoryPermissions.Contains("all"))
+                {
+                    ViewBag.CreatePermission = true;
+                }
+                if (permissions.InventoryPermissions.Contains("edit") || permissions.InventoryPermissions.Contains("all"))
+                {
+                    ViewBag.EditPermission = true;
+                }
+                if (permissions.InventoryPermissions.Contains("delete") || permissions.InventoryPermissions.Contains("all"))
+                {
+                    ViewBag.DeletePermission = true;
+                }
+            }
             return GetUsersForIndex(model);
         }
 
@@ -303,6 +340,16 @@ namespace SimaxCrm.Controllers
         // GET: ServiceType/Create
         public IActionResult Create()
         {
+            var user = _userManager.Users.Where(u => u.Id == getUidFromClaim().ToString()).FirstOrDefault();
+            if (user.Permissions != null)
+            {
+                var permissions = JsonConvert.DeserializeObject<Permissions>(user.Permissions);
+                if (permissions.LeadPermissions == null || (permissions.LeadPermissions != null && 
+                    !permissions.LeadPermissions.Contains("create") && !permissions.LeadPermissions.Contains("all")))
+                {
+                    ViewBag.Message = "You do not permission to access data.";
+                }
+            }
             return View();
         }
 
@@ -421,6 +468,16 @@ namespace SimaxCrm.Controllers
             var obj = _userManager.Users.Include(u => u.UserRoles).ThenInclude(ur => ur.Role)
                 .Where(m => m.Id == id).FirstOrDefault();
 
+            var user = _userManager.Users.Where(u => u.Id == getUidFromClaim().ToString()).FirstOrDefault();
+            if (user.Permissions != null)
+            {
+                var permissions = JsonConvert.DeserializeObject<Permissions>(user.Permissions);
+                if (permissions.LeadPermissions == null || (permissions.LeadPermissions != null && 
+                    !permissions.LeadPermissions.Contains("edit") && !permissions.LeadPermissions.Contains("all")))
+                {
+                    ViewBag.Message = "You do not permission to access data.";
+                }
+            }
             if (obj == null)
             {
                 return NotFound();
@@ -434,10 +491,18 @@ namespace SimaxCrm.Controllers
                 Role = obj.UserRoles.FirstOrDefault()?.Role?.Name,
                 IsActive = obj.IsActive,
                 ShowInHomePage = obj.ShowInHomePage,
+                IsConnectPriceHubble = obj.IsConnectPriceHubble,
                 IsApproved = obj.IsApproved,
                 CompanyId = obj.CompanyId,
                 BranchId = obj.BranchId
             };
+            if (obj.Permissions != null)
+            {
+                var permissions = JsonConvert.DeserializeObject<Permissions>(obj.Permissions);
+                model.LeadPermissions = permissions.LeadPermissions;
+                model.InventoryPermissions = permissions.InventoryPermissions;
+                model.SetupPermissions = permissions.SetupPermissions;
+            }
             return View(model);
         }
 
@@ -476,6 +541,14 @@ namespace SimaxCrm.Controllers
                 exObj.IsApproved = obj.IsApproved;
                 exObj.CompanyId = obj.CompanyId;
                 exObj.BranchId = obj.BranchId;
+                exObj.IsConnectPriceHubble = obj.IsConnectPriceHubble;
+                var permissions = new Permissions{
+                    LeadPermissions = obj.LeadPermissions,
+                    InventoryPermissions = obj.InventoryPermissions,
+                    SetupPermissions = obj.SetupPermissions
+                };
+                exObj.Permissions = JsonConvert.SerializeObject(permissions);
+
                 await _userManager.UpdateAsync(exObj);
 
                 var role = await _roleManager.FindByNameAsync(obj.Role);

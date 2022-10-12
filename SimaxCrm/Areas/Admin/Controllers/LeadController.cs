@@ -17,6 +17,8 @@ using System.Linq;
 using SimaxCrm.Helper;
 using System.Reflection;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using SimaxCrm.Model.RequestModel;
 
 namespace SimaxCrm.Areas.Admin.Controllers
 {
@@ -102,6 +104,18 @@ namespace SimaxCrm.Areas.Admin.Controllers
             var systemSetup = _systemSetupService.List(hasTid: false).FirstOrDefault();
             setDefaultData();
             ViewBag.UserIdAgent = getUidFromClaim().ToString();
+            var user = _userManager.Users.Where(u => u.Id == getUidFromClaim().ToString()).FirstOrDefault();
+            if (user.Permissions != null)
+            {
+                var permissions = JsonConvert.DeserializeObject<Permissions>(user.Permissions);
+                if (permissions.LeadPermissions == null || (permissions.LeadPermissions != null && 
+                    !permissions.LeadPermissions.Contains("create") && !permissions.LeadPermissions.Contains("all")))
+                {
+                    ViewBag.Message = "You do not permission to access data.";
+                    return View();
+                }
+            }
+            
             if (templeadidInt > 0)
             {
                 var tempLead = _tempLeadService.ById(templeadidInt);
@@ -137,6 +151,9 @@ namespace SimaxCrm.Areas.Admin.Controllers
                         obj.UserId = getUidFromClaim().ToString();
                     }
                 }
+                var user = _userManager.Users.Where(u => u.Id == obj.UserId).FirstOrDefault();
+                obj.CompanyId = user.CompanyId;
+                obj.BranchId = user.BranchId;
 
                 var systemSetup = _systemSetupService.List(hasTid: false).FirstOrDefault();
 

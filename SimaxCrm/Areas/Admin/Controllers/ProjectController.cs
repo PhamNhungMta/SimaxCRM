@@ -18,6 +18,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace SimaxCrm.Areas.Admin.Controllers
 {
@@ -86,7 +87,7 @@ namespace SimaxCrm.Areas.Admin.Controllers
 
             var filteredUsers = base.getAgentList(_userManager);
             var uids = filteredUsers.Select(m => m.Id).ToList();
-            uids.Add(uid.ToString());
+            
 
             if (this.Request.UserIsRole(UserType.Admin) )
             {
@@ -99,10 +100,34 @@ namespace SimaxCrm.Areas.Admin.Controllers
             }
             else
             {
+                var user = _userManager.Users.Include(u => u.UserRoles).ThenInclude(ur => ur.Role)
+                            .Where(u => u.Id == uid.ToString()).FirstOrDefault();
+                var role = user.UserRoles.FirstOrDefault()?.Role?.Name;
+                if (user.Permissions != null)
+                {
+                    var permissions = JsonConvert.DeserializeObject<Permissions>(user.Permissions);
+                    if (permissions.InventoryPermissions.Contains("view-own") && !permissions.InventoryPermissions.Contains("all"))
+                    {
+                        uids.Add(uid.ToString());
+                    }
+                    if (permissions.InventoryPermissions.Contains("view-global") || permissions.InventoryPermissions.Contains("all"))
+                    {
+                        uids = null;
+                    }
+                }
                 var data = _projectService.ByLeadStatusAndUserId(null, uids, null);
                 if (model.ActiveStatus != -1)
                 {
                     data = data.Where(m => m.ActiveStatus == (ItemActiveStatusType)model.ActiveStatus).ToList();
+                }
+                
+                if (role.Equals(UserType.CompanyAdmin.ToString()))
+                {
+                    data = data.Where(p => p.CompanyId == user.CompanyId).ToList();
+                }
+                if (role.Equals(UserType.BranchAdmin.ToString()) || role.Equals(UserType.Employee.ToString()))
+                {
+                    data = data.Where(p => p.BranchId == user.BranchId).ToList();
                 }
                 return View(data);
             }
@@ -115,7 +140,6 @@ namespace SimaxCrm.Areas.Admin.Controllers
 
             var filteredUsers = base.getAgentList(_userManager);
             var uids = filteredUsers.Select(m => m.Id).ToList();
-            uids.Add(uid.ToString());
 
             if (this.Request.UserIsRole(UserType.Admin))
             {
@@ -128,11 +152,37 @@ namespace SimaxCrm.Areas.Admin.Controllers
             }
             else
             {
+                var user = _userManager.Users.Where(u => u.Id == uid.ToString()).FirstOrDefault();
+                if (user.Permissions != null)
+                {
+                    var permissions = JsonConvert.DeserializeObject<Permissions>(user.Permissions);
+                    if (permissions.InventoryPermissions.Contains("view-own") && !permissions.InventoryPermissions.Contains("all"))
+                    {
+                        uids.Add(uid.ToString());
+                    }
+                    if (permissions.InventoryPermissions.Contains("view-global") || permissions.InventoryPermissions.Contains("all"))
+                    {
+                        uids = null;
+                    }
+                    if (permissions.InventoryPermissions.Contains("create") || permissions.InventoryPermissions.Contains("all"))
+                    {
+                        ViewBag.CreatePermission = true;
+                    }
+                    if (permissions.InventoryPermissions.Contains("edit") || permissions.InventoryPermissions.Contains("all"))
+                    {
+                        ViewBag.EditPermission = true;
+                    }
+                    if (permissions.InventoryPermissions.Contains("delete") || permissions.InventoryPermissions.Contains("all"))
+                    {
+                        ViewBag.DeletePermission = true;
+                    }
+                }
                 var data = _projectService.ByLeadStatusAndUserId(null, uids, null);
                 if (model.ActiveStatus != -1)
                 {
                     data = data.Where(m => m.ActiveStatus == (ItemActiveStatusType)model.ActiveStatus).ToList();
                 }
+                
                 return View(data);
             }
         }
@@ -146,6 +196,17 @@ namespace SimaxCrm.Areas.Admin.Controllers
             ViewBag.City = new SelectList(_cityService.List().Where(m => m.Status).ToList(), "Id", "Name");
 
             ViewBag.TempId = Guid.NewGuid().ToString();
+            var user = _userManager.Users.Where(u => u.Id == getUidFromClaim().ToString()).FirstOrDefault();
+            if (user.Permissions != null)
+            {
+                var permissions = JsonConvert.DeserializeObject<Permissions>(user.Permissions);
+                if (permissions.InventoryPermissions == null || (permissions.InventoryPermissions != null && 
+                    !permissions.InventoryPermissions.Contains("create") && !permissions.InventoryPermissions.Contains("all")))
+                {
+                    ViewBag.Message = "You do not permission to access data.";
+                    return View();
+                }
+            }
             return View(new Project()
             {
                 OwnerPhoneNumber = contact
@@ -171,6 +232,9 @@ namespace SimaxCrm.Areas.Admin.Controllers
             obj.CreatedBy = base.getUidFromClaim().ToString();
             obj.ActiveStatus = ItemActiveStatusType.Draft;
             obj.Status = ProjectStatusType.Active.ToString();
+            var user = _userManager.Users.Where(u => u.Id == obj.CreatedBy).FirstOrDefault();
+            obj.CompanyId = user.CompanyId;
+            obj.BranchId = user.BranchId;
             _projectService.Create(obj);
 
             var attachmentList = _attachmentService.ListByTempId(tempId);
@@ -223,6 +287,18 @@ namespace SimaxCrm.Areas.Admin.Controllers
             ViewBag.CategoryId = new SelectList(_categoryService.List().Where(m => m.Status).ToList(), "Id", "Name");
             ViewBag.City = new SelectList(_cityService.List().Where(m => m.Status).ToList(), "Id", "Name");
             ViewBag.IsView = isView;
+
+            var user = _userManager.Users.Where(u => u.Id == getUidFromClaim().ToString()).FirstOrDefault();
+            if (user.Permissions != null)
+            {
+                var permissions = JsonConvert.DeserializeObject<Permissions>(user.Permissions);
+                if (permissions.InventoryPermissions == null || (permissions.InventoryPermissions != null && 
+                    !permissions.InventoryPermissions.Contains("edit") && !permissions.InventoryPermissions.Contains("all")))
+                {
+                    ViewBag.Message = "You do not permission to access data.";
+                    return View();
+                }
+            }
             return View(obj);
         }
 
@@ -294,6 +370,8 @@ namespace SimaxCrm.Areas.Admin.Controllers
             obj.CreatedDate = existingProject.CreatedDate;
             obj.UpdatedDate = DateTime.Now;
             obj.ActiveStatus = ItemActiveStatusType.Draft;
+            obj.CompanyId = existingProject.CompanyId;
+            obj.BranchId = existingProject.BranchId;
             _projectService.Update(obj);
 
             var existingInventoryTagMapping = _projectTagMappingService.ByProjectId(id);

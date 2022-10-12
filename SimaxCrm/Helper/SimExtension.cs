@@ -6,11 +6,13 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.EntityFrameworkCore;
 
 namespace SimaxCrm.Helper
 {
     public static class SimExtension
     {
+
         public static string ToFormat(this TimeSpan timeSpan, string format = "hh:mm tt")
         {
             DateTime time = DateTime.Today.Add(timeSpan);
@@ -34,6 +36,23 @@ namespace SimaxCrm.Helper
                 }
             }
             return false;
+        }
+
+        public static string GetUserId (this HttpRequest request)
+        {
+            var token = request.Cookies["UserToken"];
+            if (token != null)
+            {
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token);
+                var tokenS = jsonToken as JwtSecurityToken;
+                var objTid = tokenS.Payload.Claims.Where(c => c.Type == "UserId").FirstOrDefault();
+                if (objTid != null)
+                {
+                    return objTid.Value;
+                }
+            }
+            return null;
         }
 
         public static string UserRoleName(this HttpRequest request)

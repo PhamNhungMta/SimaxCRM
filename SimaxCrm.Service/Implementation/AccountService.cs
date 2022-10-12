@@ -15,6 +15,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace SimaxShop.Service.Implementation
 {
@@ -90,7 +91,16 @@ namespace SimaxShop.Service.Implementation
             };
             var checkCompanyAdmin = userRegisterModel.UserType.ToString() == UserType.CompanyAdmin.ToString();
             var checkBranchAdmin = userRegisterModel.UserType.ToString() == UserType.BranchAdmin.ToString();
+            var permissions = new Permissions{
+                    LeadPermissions = "",
+                    InventoryPermissions = "",
+                    SetupPermissions = ""
+                };;
 
+            if (userRegisterModel.UserType.ToString() == UserType.Admin.ToString())
+            {
+                permissions.SetupPermissions = "view-global";
+            }
             if (checkCompanyAdmin)
             {
                 if (_companyService.ByName(userRegisterModel.CompanyName) != null)
@@ -137,6 +147,13 @@ namespace SimaxShop.Service.Implementation
                 user.CompanyId = company.Id;
                 user.BranchId = branchId;
             }
+
+            if (checkCompanyAdmin || checkBranchAdmin)
+            {
+                permissions.LeadPermissions = "all";
+                permissions.InventoryPermissions = "all";
+                permissions.SetupPermissions = "all";;
+            }
             if (userRegisterModel.UserType.ToString() == UserType.Employee.ToString())
             {
                 var company = _companyService.ByIdAndName(userRegisterModel.CompanyId, userRegisterModel.CompanyName);
@@ -148,6 +165,7 @@ namespace SimaxShop.Service.Implementation
                 user.CompanyId = company.Id;
                 user.IsApproved = false;
             }
+            user.Permissions = JsonConvert.SerializeObject(permissions);
             var result = await _userManager.CreateAsync(user, userRegisterModel.Password);
             if (result.Succeeded)
             {
@@ -187,6 +205,7 @@ namespace SimaxShop.Service.Implementation
                     new Claim("Name", user.Name??""),
                     new Claim("Tid", user.Tid.ToString()??""),
                     new Claim("Role", user.UserRoles.FirstOrDefault()?.Role?.Name ??""),
+                    new Claim("Permissions", user.Permissions ?? ""),
                 }),
                 Expires = DateTime.UtcNow.AddDays(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

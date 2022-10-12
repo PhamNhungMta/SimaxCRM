@@ -131,5 +131,10 @@ namespace SimaxCrm.Model.Entity
         public string? BranchId { get; set; }
 
         public bool IsApproved { get; set; } = true;
+        
+        public bool IsConnectPriceHubble { get; set; } = false;
+
+        public string Permissions { get; set; }
+
     }
 }

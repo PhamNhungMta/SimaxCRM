@@ -105,5 +105,23 @@ namespace SimaxCrm.Model.RequestModel
         public string? CompanyId { get; set; }
 
         public string? BranchId { get; set; }
+
+        public bool IsConnectPriceHubble { get; set; }
+
+        public string LeadPermissions { get; set; }
+
+        public string InventoryPermissions { get; set; }
+
+        public string SetupPermissions { get; set; }
+
+    }
+
+    public class Permissions
+    {
+        public string LeadPermissions { get; set; }
+
+        public string InventoryPermissions { get; set; }
+
+        public string SetupPermissions { get; set; }
     }
 }

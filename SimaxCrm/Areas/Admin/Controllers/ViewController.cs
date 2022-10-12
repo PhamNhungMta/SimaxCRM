@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace SimaxCrm.Areas.Admin.Controllers
 {
@@ -90,7 +91,7 @@ namespace SimaxCrm.Areas.Admin.Controllers
             ViewBag.UserId = new SelectList(base.getUsersForLeadAssignList(_userManager), "Id", "Name");
             ViewBag.LeadType = new SelectList(_leadTypeService.List(), "Id", "Name");
             ViewBag.CategoryId = new SelectList(_categoryService.List(), "Id", "Name");
-            ViewBag.CityId = new SelectList(_cityService.List().Where(m => m.Status).ToList(), "Id", "Name");
+            ViewBag.CityId = new SelectList(_cityService.List().Where(m => m.Status).ToList(), "Id", "Name");        
             return View(leads);
         }
 
@@ -98,6 +99,9 @@ namespace SimaxCrm.Areas.Admin.Controllers
         {
             var loggedUid = getUidFromClaim().ToString();
             var uids = new List<string>();
+            var user = _userManager.Users.Include(u => u.UserRoles).ThenInclude(ur => ur.Role)
+                        .Where(u => u.Id == loggedUid).FirstOrDefault();
+            var role = user.UserRoles.FirstOrDefault()?.Role?.Name;
             if (this.Request.UserIsRole(UserType.Admin))
             {
                 uids = null;
@@ -106,6 +110,35 @@ namespace SimaxCrm.Areas.Admin.Controllers
             {
                 var filteredUsers = base.getAgentList(_userManager);
                 uids = filteredUsers.Select(m => m.Id).ToList();
+
+                if (user.Permissions != null)
+                {
+                    var permissions = JsonConvert.DeserializeObject<Permissions>(user.Permissions);
+                    if (leadsViewFilterModel.LeadStatus.Contains("FollowUp"))
+                    {
+                        if (permissions.LeadPermissions != null && permissions.LeadPermissions.Contains("followup-own") && !permissions.LeadPermissions.Contains("all"))
+                        {
+                            uids.Add(loggedUid);
+                        }
+                        if (permissions.LeadPermissions != null && (permissions.LeadPermissions.Contains("followup-global") || permissions.LeadPermissions.Contains("all")))
+                        {
+                            uids = null;
+                        }
+                    }
+                    else
+                    {
+                        if (permissions.LeadPermissions != null && permissions.LeadPermissions.Contains("view-own") && !permissions.LeadPermissions.Contains("all"))
+                        {
+                            uids.Add(loggedUid);
+                        }
+                        if (permissions.LeadPermissions != null && (permissions.LeadPermissions.Contains("view-global") || permissions.LeadPermissions.Contains("all")))
+                        {
+                            uids = null;
+                        }
+                    }
+                    
+                }
+            
             }
 
             List<Lead> leads = null;
@@ -160,6 +193,14 @@ namespace SimaxCrm.Areas.Admin.Controllers
             if (leadsViewFilterModel.Budget.HasValue && leadsViewFilterModel.Budget > 0)
             {
                 leads = leads.Where(m => leadsViewFilterModel.Budget >= m.BudgetMin && leadsViewFilterModel.Budget <= m.BudgetMax).ToList();
+            }
+
+            if (role.Equals(UserType.CompanyAdmin.ToString()))
+            {
+                leads = leads.Where(l => l.CompanyId == user.CompanyId).ToList();
+            } else if (role.Equals(UserType.BranchAdmin.ToString()) || role.Equals(UserType.Employee.ToString()))
+            {
+                leads = leads.Where(l => l.BranchId == user.BranchId).ToList();
             }
 
             return leads.OrderByDescending(m => m.Id).ToList();
@@ -309,6 +350,25 @@ namespace SimaxCrm.Areas.Admin.Controllers
             ViewBag.CategoryId = new SelectList(_categoryService.List(), "Id", "Name");
             ViewBag.LocationId = new SelectList(_locationService.List().Where(m => m.Status).ToList(), "Id", "Name");
             ViewBag.SocietyId = new SelectList(_societyService.List().Where(m => m.Status).ToList(), "Id", "Name");
+            var user = _userManager.Users.Where(u => u.Id ==  model.CurrentUid).FirstOrDefault();
+           
+            if (user.Permissions != null)
+            {
+                var permissions = JsonConvert.DeserializeObject<Permissions>(user.Permissions);
+                
+                if (permissions.InventoryPermissions.Contains("create") || permissions.InventoryPermissions.Contains("all"))
+                {
+                    ViewBag.CreatePermission = true;
+                }
+                if (permissions.InventoryPermissions.Contains("edit") || permissions.InventoryPermissions.Contains("all"))
+                {
+                    ViewBag.EditPermission = true;
+                }
+                if (permissions.InventoryPermissions.Contains("delete") || permissions.InventoryPermissions.Contains("all"))
+                {
+                    ViewBag.DeletePermission = true;
+                }
+            }
             return View(leads);
         }
 
@@ -323,13 +383,35 @@ namespace SimaxCrm.Areas.Admin.Controllers
             ViewBag.CategoryId = new SelectList(_categoryService.List(), "Id", "Name");
             ViewBag.LocationId = new SelectList(_locationService.List().Where(m => m.Status).ToList(), "Id", "Name");
             ViewBag.SocietyId = new SelectList(_societyService.List().Where(m => m.Status).ToList(), "Id", "Name");
-
+            
+            var user = _userManager.Users.Where(u => u.Id ==  model.CurrentUid).FirstOrDefault();
+            if (user.Permissions != null)
+            {
+                var permissions = JsonConvert.DeserializeObject<Permissions>(user.Permissions);
+                
+                if (permissions.InventoryPermissions.Contains("create") || permissions.InventoryPermissions.Contains("all"))
+                {
+                    ViewBag.CreatePermission = true;
+                }
+                if (permissions.InventoryPermissions.Contains("edit") || permissions.InventoryPermissions.Contains("all"))
+                {
+                    ViewBag.EditPermission = true;
+                }
+                if (permissions.InventoryPermissions.Contains("delete") || permissions.InventoryPermissions.Contains("all"))
+                {
+                    ViewBag.DeletePermission = true;
+                }
+            }
             return View(leads);
         }
 
         private List<Product> getProductsByStatus(ProductsViewFilterModel model)
         {
             var uids = new List<string>();
+            var user = _userManager.Users.Include(u => u.UserRoles).ThenInclude(ur => ur.Role)
+                            .Where(u => u.Id == model.CurrentUid).FirstOrDefault();
+            var role = user.UserRoles.FirstOrDefault()?.Role?.Name;
+
             if (this.Request.UserIsRole(UserType.Admin))
             {
                 uids = null;
@@ -338,10 +420,22 @@ namespace SimaxCrm.Areas.Admin.Controllers
             {
                 var filteredUsers = base.getAgentList(_userManager);
                 uids = filteredUsers.Select(m => m.Id).ToList();
-                uids.Add(model.CurrentUid);
+                
+                if (user.Permissions != null)
+                {
+                    var permissions = JsonConvert.DeserializeObject<Permissions>(user.Permissions);
+                    if (permissions.InventoryPermissions.Contains("view-own") && !permissions.InventoryPermissions.Contains("all"))
+                    {
+                        uids.Add(model.CurrentUid);
+                    }
+                    if (permissions.InventoryPermissions.Contains("view-global") || permissions.InventoryPermissions.Contains("all"))
+                    {
+                        uids = null;
+                    }
+                }
             }
 
-            List<Product> leads = null;
+            List<Product> products = null;
 
             if (!string.IsNullOrEmpty(model.UserId))
             {
@@ -351,29 +445,38 @@ namespace SimaxCrm.Areas.Admin.Controllers
 
             if (model.Status.ToLower() == "productmissedfollowup")
             {
-                leads = _productService.ByLeadStatusAndUserId("FollowUp", uids, model);
-                leads = leads.Where(m => m.AlertDate.Value.Date < DateTime.Now.Date).ToList();
+                products = _productService.ByLeadStatusAndUserId("FollowUp", uids, model);
+                products = products.Where(m => m.AlertDate.Value.Date < DateTime.Now.Date).ToList();
             }
             else if (model.Status.ToLower() == "productfollowup")
             {
-                leads = _productService.ByLeadStatusAndUserId("FollowUp", uids, model);
-                leads = leads.Where(m => m.AlertDate.Value.Date == DateTime.Now.Date).ToList();
+                products = _productService.ByLeadStatusAndUserId("FollowUp", uids, model);
+                products = products.Where(m => m.AlertDate.Value.Date == DateTime.Now.Date).ToList();
             }
             else if (model.Status.ToLower() == "productmyfollowup")
             {
-                leads = _productService.ByLeadStatusAndUserId("FollowUp", uids, model);
-                leads = leads.ToList();
+                products = _productService.ByLeadStatusAndUserId("FollowUp", uids, model);
+                products = products.ToList();
             }
             else if (model.Status.ToLower() == "allproduct")
             {
-                leads = _productService.ByLeadStatusAndUserId(null, uids, model);
+                products = _productService.ByLeadStatusAndUserId(null, uids, model);
             }
             else
             {
-                leads = _productService.ByLeadStatusAndUserId(model.Status, uids, model);
+                products = _productService.ByLeadStatusAndUserId(model.Status, uids, model);
             }
 
-            return leads.OrderByDescending(m => m.Id).ToList();
+            if (role.Equals(UserType.CompanyAdmin.ToString()))
+            {
+                products = products.Where(p => p.CompanyId == user.CompanyId).ToList();
+            }
+            if (role.Equals(UserType.BranchAdmin.ToString()) || role.Equals(UserType.Employee.ToString()))
+            {
+                products = products.Where(p => p.BranchId == user.BranchId).ToList();
+            }
+
+            return products.OrderByDescending(m => m.Id).ToList();
         }
 
         public IActionResult Product(string id)

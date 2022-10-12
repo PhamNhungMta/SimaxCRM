@@ -22,12 +22,14 @@
 
                             <div class="form-group"><label asp-for="Status" class="control-label"></label><input asp-for="Status" disabled="disabled"/><span asp-validation-for="Status" class="text-danger"></span></div>
 
+                            <div class="form-group"><label asp-for="CurrentApiCount" class="control-label"></label><input asp-for="CurrentApiCount" disabled="disabled"/><span asp-validation-for="CurrentApiCount" class="text-danger"></span></div>
+
                             <div class="form-group">
                                 <label class="control-label">List Branch</label>
                                 <table class="table table-responsive-sm">
                                     <thead>
                                         <tr>
-                                            <th>@Html.DisplayNameFor(model => model.Name)</th>
+                                            <th>Branch Name</th>
                                             <th>Country</th>
                                             <th>Region</th>
                                             <th>@Html.DisplayNameFor(model => model.Status)</th>
