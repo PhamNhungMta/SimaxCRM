@@ -26,6 +26,11 @@ namespace SimaxShop.Service.Implementation
             return _contentHomepageRepository.SearchFor(x => x.Id == Id).FirstOrDefault();
         }
 
+        public ContentHomepage ByTitle(string Title)
+        {
+            return _contentHomepageRepository.SearchFor(x => x.Title == Title).FirstOrDefault();
+        }
+
         public ContentHomepage GetHomepageByAgentId(string AgentId)
         {
             return _contentHomepageRepository.SearchFor(x => x.AgentId == AgentId).FirstOrDefault();
@@ -39,7 +44,7 @@ namespace SimaxShop.Service.Implementation
         public ContentHomepage GetHomepageByCompanyName(string Name)
         {
             var company = _companyRepository.SearchFor(x => x.Name == Name).FirstOrDefault();
-            return _contentHomepageRepository.SearchFor(x => x.CompanyId == company.Id).FirstOrDefault();
+            return company != null ? _contentHomepageRepository.SearchFor(x => x.CompanyId == company.Id).FirstOrDefault() : null;
         }
 
         public ContentHomepage GetHomepageByBranchId(string BranchId)

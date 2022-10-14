@@ -14,7 +14,6 @@ COPY ["SimaxCrm.Service/SimaxCrm.Service.csproj", "SimaxCrm.Service/"]
 RUN dotnet restore "SimaxCrm/SimaxCrm.csproj"
 COPY . .
 WORKDIR "/src/SimaxCrm"
-RUN dotnet ef database update
 RUN dotnet build "SimaxCrm.csproj" -c Release -o /app/build
 
 FROM build AS publish

@@ -133,9 +133,12 @@ namespace SimaxCrm.Controllers
         public IActionResult Company(string id)
         {
             base.LoadViewBagDefaultData(_systemSetupService);
-            
-            var homepage = _contentHomepageService.GetHomepageByCompanyName(id);
-            return View("/Views/Home/Homepage.cshtml", homepage);
+            if (id != null && id != "")
+            {
+                var homepage = _contentHomepageService.GetHomepageByCompanyName(id);
+                return View("/Views/Home/Homepage.cshtml", homepage);
+            }
+            return View("/Views/Home/Homepage.cshtml");
         }
 
         public IActionResult Branch(string id)
@@ -175,6 +178,48 @@ namespace SimaxCrm.Controllers
             }
             return View(dossiers);
         }
+
+        public IActionResult PageBuilderView()
+        {
+            base.LoadViewBagDefaultData(_systemSetupService);
+            
+            var homepage = _contentHomepageService.ByTitle("Page builder");
+            ViewBag.Content = homepage != null ? homepage.Body : null;
+            return View();
+        }
+
+        public IActionResult PageBuilder()
+        {
+            base.LoadViewBagDefaultData(_systemSetupService);
+            
+            return View();
+        }
+
+        [HttpPost]
+        // [ValidateAntiForgeryToken]
+        public JsonResult PageBuilder(string content)
+        {
+            base.LoadViewBagDefaultData(_systemSetupService);
+
+            var homepage = _contentHomepageService.ByTitle("Page builder");
+            if (homepage != null)
+            {
+                homepage.Body = content;
+                homepage.UpdatedDate = DateTime.Now;
+                _contentHomepageService.Update(homepage);
+            }
+            else
+            {
+                homepage = new ContentHomepage {
+                    Title = "Page builder",
+                    Body = content,
+                    CreatedDate = DateTime.Now,
+                };
+                _contentHomepageService.Create(homepage);
+            }
+            return Json(content);
+        }
+
     }
 
 

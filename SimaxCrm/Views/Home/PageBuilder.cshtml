@@ -1,0 +1,14 @@
+
+@* @Html.AntiForgeryToken() *@
+@section Scripts {
+    <script>
+        var builder = new Editor({
+            root: '/builderjs/dist/',
+            url: 'https://localhost:5001/home/pagebuilderview',
+            saveUrl: 'https://localhost:5001/home/pagebuilder',
+            saveMethod: 'POST',
+            backUrl: 'https://localhost:5001/home'
+        });
+        builder.init();
+    </script>
+}

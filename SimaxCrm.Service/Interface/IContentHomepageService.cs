@@ -6,6 +6,7 @@ namespace SimaxCrm.Service.Interface
     public interface IContentHomepageService
     {
         ContentHomepage ById(int Id);
+        ContentHomepage ByTitle(string Title);
         ContentHomepage GetHomepageByAgentId(string AgentId);
         ContentHomepage GetHomepageByCompanyId(string CompanyId);
         ContentHomepage GetHomepageByBranchId(string BranchId);
