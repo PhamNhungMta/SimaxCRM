@@ -1,17 +1,33 @@
-﻿   
-   <partial name="_Banner" />
+﻿
+    <partial name="_Banner" />
 
-   <partial name="_Categories" />
+@if (ViewBag.Name == null || ViewBag.Name == "buy") 
+{
 
-   <partial name="_Introduction" />
+    <partial name="_FinestProperties" />
 
-   <partial name="_TopProducts" />
+    <partial name="_NewBuild" />
 
-   <partial name="_LookingFor" />
+    <partial name="_SearchAllHome" />
 
     <partial name="_Modules" />
 
     <partial name="_Newsletter" />
+}
+@if (ViewBag.Name == "rent") 
+{
+
+    <partial name="_FeatureListing" />
+
+    <partial name="_DiscoverFeatureListing" />
+
+    <partial name="_SearchAllHome" />
+
+    <partial name="_Modules" />
+
+    <partial name="_Newsletter" />
+} 
+   
 
 
 

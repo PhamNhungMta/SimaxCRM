@@ -63,6 +63,13 @@ namespace SimaxCrm.Controllers
             return View();
         }
 
+        public IActionResult Property(string id)
+        {
+            base.LoadViewBagDefaultData(_systemSetupService);
+            ViewBag.Name = id;
+            return View("/Views/Home/Index.cshtml");
+        }
+
         private List<ApplicationUser> getFeaturedAgents()
         {
 

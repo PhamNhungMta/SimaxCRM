@@ -1,0 +1,61 @@
+<div class="finest-properties">
+    <div class="container">
+        <div class="finest-properties-info">
+            <h4 class="title">Check Our Selection Of Finest Properties</h4>
+            <div class="description">
+                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard
+            </div>
+        </div>
+        <div class="finest-property-list">
+            <div class="row gy-4">
+                @for (int i=0; i<6; i++)
+                {
+                    <div class="col-4">
+                        <div class="property-item">
+                            @* <div class="property-image" style="background-image: url(../images/homepage/property@(i + ".svg")"> *@
+                            <div class="property-image" style="background-image: url(/images/homepage/property0.svg">
+                                <div class="btn-feature">FEATURED</div>
+                                <div class="change-image row justify-content-center">
+                                    <button class="btn-change-image prev">
+                                        <svg width="6" height="9" viewBox="0 0 11 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M10.1313 2.71056L4.34185 8.50004L10.1313 14.2895L8.97343 16.6053L0.868164 8.50004L8.97343 0.394775L10.1313 2.71056Z" fill="white"></path>
+                                        </svg>
+                                    </button>
+                                    <button class="btn-change-image next">
+                                        <svg width="6" height="9" viewBox="0 0 11 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M0.868678 2.71056L6.65815 8.50004L0.868678 14.2895L2.02657 16.6053L10.1318 8.50004L2.02657 0.394775L0.868678 2.71056Z" fill="white"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="property-type">FOR BUY</div>
+                            <div class="property-title">New Apartment Nice View</div>
+                            <div class="property-price">$11,000/mo</div>
+                            <div class="property-room-info row">
+                                <div class="room bedroom row col-3">
+                                    <img class="col-6" src="/images/homepage/bedroom.svg" />
+                                    <div class="col-6 bedroom-count">03</div>
+                                </div>
+                                <div class="space"></div>
+                                <div class="room bathrooms row col-3">
+                                    <img class="col-6" src="/images/homepage/bathrooms.svg" />
+                                    <div class="col-6 bathrooms-count">03</div>
+                                </div>
+                                <div class="space"></div>
+                                <div class="room parking row col-3">
+                                    <img class="col-6" src="/images/homepage/parking.svg" />
+                                    <div class="col-6 parking-count">03</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                
+            </div>
+        </div>
+        
+        <div class="loadmore">
+            <button class="button properties-loadmore">LOAD MORE</button>
+        </div>
+    </div>
+</div>
